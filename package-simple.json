@@ -1,0 +1,16 @@
+{
+  "name": "capersports-simple",
+  "version": "1.0.0",
+  "description": "CaperSports Simple Backend",
+  "main": "simple-server.js",
+  "scripts": {
+    "start": "node simple-server.js"
+  },
+  "engines": {
+    "node": "18.x"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  }
+}
