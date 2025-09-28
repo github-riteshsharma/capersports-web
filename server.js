@@ -125,9 +125,9 @@ app.use('*', (req, res) => {
   });
 });
 
-// Start server - Azure App Service compatible
-const PORT = process.env.PORT || process.env.WEBSITE_PORT || 5001;
-const HOST = process.env.WEBSITE_HOSTNAME || '0.0.0.0';
+// Start server - Node.js 22 compatible
+const PORT = process.env.PORT || 8000;
+const HOST = '0.0.0.0';
 
 app.listen(PORT, HOST, () => {
   console.log(`🚀 Server running on ${HOST}:${PORT} in ${process.env.NODE_ENV} mode`);

@@ -16,7 +16,7 @@ build/
 dist/
 client/build/
 
-# Uploads (exclude from deployment)
+# Uploads
 uploads/*
 !uploads/.gitkeep
 
@@ -37,17 +37,14 @@ coverage/
 
 # OS generated files
 .DS_Store
-.DS_Store?
 ._*
 Thumbs.db
-ehthumbs.db
 
 # Editor directories and files
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
 
 # Temporary folders
 tmp/
@@ -62,7 +59,5 @@ temp/
 .yarn-integrity
 .pnp.*
 
-# Azure deployment files
-.deployment
-deploy.cmd
+# Deployment files
 *.zip
