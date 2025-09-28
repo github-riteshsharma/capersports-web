@@ -1,0 +1,96 @@
+# Azure DevOps Pipeline for CaperSports MERN Application
+trigger:
+- main
+- develop
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  nodeVersion: '18.x'
+  buildConfiguration: 'production'
+
+stages:
+- stage: Build
+  displayName: 'Build Application'
+  jobs:
+  - job: BuildJob
+    displayName: 'Build'
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: $(nodeVersion)
+      displayName: 'Install Node.js'
+
+    # Install server dependencies
+    - script: |
+        cd server
+        npm ci --production
+      displayName: 'Install Server Dependencies'
+
+    # Install client dependencies
+    - script: |
+        cd client
+        npm ci
+      displayName: 'Install Client Dependencies'
+
+    # Build client application
+    - script: |
+        cd client
+        npm run build
+      displayName: 'Build Client Application'
+      env:
+        REACT_APP_API_URL: $(REACT_APP_API_URL)
+        REACT_APP_ENV: production
+
+    # Run tests (if available)
+    - script: |
+        cd client
+        npm test -- --coverage --watchAll=false
+      displayName: 'Run Client Tests'
+      continueOnError: true
+
+    # Copy client build to server public directory
+    - script: |
+        mkdir -p server/public
+        cp -r client/build/* server/public/
+      displayName: 'Copy Client Build to Server'
+
+    # Archive application
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/capersports-$(Build.BuildId).zip'
+        replaceExistingArchive: true
+      displayName: 'Archive Application'
+
+    # Publish build artifacts
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathToPublish: '$(Build.ArtifactStagingDirectory)'
+        artifactName: 'drop'
+      displayName: 'Publish Artifacts'
+
+- stage: Deploy
+  displayName: 'Deploy to Azure'
+  dependsOn: Build
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - deployment: DeployJob
+    displayName: 'Deploy to Azure App Service'
+    environment: 'production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureWebApp@1
+            inputs:
+              azureSubscription: '$(azureSubscription)'
+              appType: 'webAppLinux'
+              appName: '$(appName)'
+              package: '$(Pipeline.Workspace)/drop/capersports-$(Build.BuildId).zip'
+              runtimeStack: 'NODE|18-lts'
+              startUpCommand: 'cd server && npm start'
+            displayName: 'Deploy to Azure App Service'
