@@ -16,8 +16,9 @@ build/
 dist/
 client/build/
 
-# Uploads
-uploads/
+# Uploads (exclude from deployment)
+uploads/*
+!uploads/.gitkeep
 
 # Logs
 logs/
@@ -60,3 +61,7 @@ temp/
 # Package managers
 .yarn-integrity
 .pnp.*
+
+# Azure deployment
+.deployment
+deploy.cmd
