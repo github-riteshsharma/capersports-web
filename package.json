@@ -14,7 +14,8 @@
     "install-all": "npm install && npm run client:install",
     "dev:full": "concurrently \"npm run dev\" \"npm run client\"",
     "build:production": "npm run client:build && mkdir -p public && cp -r client/build/* public/",
-    "deploy:azure": "npm run build:production && npm start"
+    "deploy:azure": "npm run build:production && npm start",
+    "postinstall": "cd client && npm install --include=dev && npm run build && cd .. && mkdir -p public && cp -r client/build/* public/"
   },
   "dependencies": {
     "express": "^4.18.2",
@@ -36,6 +37,10 @@
   "devDependencies": {
     "nodemon": "^3.0.1",
     "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": "18.x",
+    "npm": "9.x"
   },
   "keywords": ["ecommerce", "api", "nodejs", "express"],
   "author": "CaperSports",
