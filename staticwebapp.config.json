@@ -6,7 +6,7 @@
     },
     {
       "route": "/admin/*",
-      "allowedRoles": ["admin"]
+      "allowedRoles": ["authenticated"]
     },
     {
       "route": "/*",
@@ -16,7 +16,7 @@
   ],
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/images/*.{png,jpg,gif}", "/css/*", "/api/*"]
+    "exclude": ["/images/*.{png,jpg,gif,svg}", "/css/*", "/js/*", "/api/*"]
   },
   "responseOverrides": {
     "401": {
@@ -24,7 +24,7 @@
       "statusCode": 302
     },
     "403": {
-      "redirect": "/unauthorized",
+      "redirect": "/",
       "statusCode": 302
     }
   },
