@@ -13,6 +13,84 @@ import { login, clearError } from '../../store/slices/authSlice';
 import Button from '../../components/common/Button';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 
+// FloatingLabelInput component moved outside to prevent re-creation on each render
+const FloatingLabelInput = ({ icon: Icon, label, type = 'text', name, value, onChange, onFocus, onBlur, showToggle, onToggleShow }) => {
+  const [isFocused, setIsFocused] = useState(false);
+  const hasValue = value && value.length > 0;
+  const isFloating = isFocused || hasValue;
+
+  const handleFocus = (e) => {
+    setIsFocused(true);
+    onFocus && onFocus(e);
+  };
+
+  const handleBlur = (e) => {
+    setIsFocused(false);
+    onBlur && onBlur(e);
+  };
+
+  return (
+    <div className="relative group">
+      <div className="relative">
+        <Icon className={`absolute left-4 top-1/2 transform -translate-y-1/2 z-10 ${
+          isFocused ? 'text-blue-600' : 'text-gray-400'
+        }`} size={20} />
+        
+        <input
+          type={type}
+          name={name}
+          value={value}
+          onChange={onChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          className={`
+            w-full h-16 pl-12 pr-12 pt-6 pb-2 
+            bg-white/80 backdrop-blur-sm 
+            border-2 rounded-2xl 
+            text-gray-900 text-lg font-medium
+            focus:outline-none focus:bg-white
+            placeholder-transparent
+            ${
+              isFocused 
+                ? 'border-blue-500 shadow-lg shadow-blue-500/20' 
+                : 'border-gray-200 hover:border-gray-300'
+            }
+          `}
+          placeholder={label}
+          required
+        />
+        
+        <label
+          className={`
+            absolute left-12 pointer-events-none
+            ${
+              isFloating
+                ? 'top-2 text-xs font-semibold text-blue-600'
+                : 'top-1/2 transform -translate-y-1/2 text-base text-gray-500'
+            }
+          `}
+          style={{
+            transition: 'all 0.15s ease-out',
+            transformOrigin: 'left center'
+          }}
+        >
+          {label}
+        </label>
+        
+        {showToggle && (
+          <button
+            type="button"
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 z-10"
+            onClick={onToggleShow}
+          >
+            {type === 'password' ? <FiEye size={20} /> : <FiEyeOff size={20} />}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -86,82 +164,6 @@ const Login = () => {
     }
   };
 
-  const FloatingLabelInput = ({ icon: Icon, label, type = 'text', name, value, onChange, onFocus, onBlur, showToggle, onToggleShow }) => {
-    const [isFocused, setIsFocused] = useState(false);
-    const hasValue = value && value.length > 0;
-    const isFloating = isFocused || hasValue;
-
-    const handleFocus = (e) => {
-      setIsFocused(true);
-      onFocus && onFocus(e);
-    };
-
-    const handleBlur = (e) => {
-      setIsFocused(false);
-      onBlur && onBlur(e);
-    };
-
-    return (
-      <div className="relative group">
-        <div className="relative">
-          <Icon className={`absolute left-4 top-1/2 transform -translate-y-1/2 z-10 ${
-            isFocused ? 'text-blue-600' : 'text-gray-400'
-          }`} size={20} />
-          
-          <input
-            type={type}
-            name={name}
-            value={value}
-            onChange={onChange}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            className={`
-              w-full h-16 pl-12 pr-12 pt-6 pb-2 
-              bg-white/80 backdrop-blur-sm 
-              border-2 rounded-2xl 
-              text-gray-900 text-lg font-medium
-              focus:outline-none focus:bg-white
-              placeholder-transparent
-              ${
-                isFocused 
-                  ? 'border-blue-500 shadow-lg shadow-blue-500/20' 
-                  : 'border-gray-200 hover:border-gray-300'
-              }
-            `}
-            placeholder={label}
-            required
-          />
-          
-          <label
-            className={`
-              absolute left-12 pointer-events-none
-              ${
-                isFloating
-                  ? 'top-2 text-xs font-semibold text-blue-600'
-                  : 'top-1/2 transform -translate-y-1/2 text-base text-gray-500'
-              }
-            `}
-            style={{
-              transition: 'all 0.15s ease-out',
-              transformOrigin: 'left center'
-            }}
-          >
-            {label}
-          </label>
-          
-          {showToggle && (
-            <button
-              type="button"
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 z-10"
-              onClick={onToggleShow}
-            >
-              {type === 'password' ? <FiEye size={20} /> : <FiEyeOff size={20} />}
-            </button>
-          )}
-        </div>
-      </div>
-    );
-  };
 
   return (
     <>
