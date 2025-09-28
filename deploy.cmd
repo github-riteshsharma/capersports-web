@@ -40,7 +40,7 @@ IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
 echo Installing frontend dependencies...
 IF EXIST "%DEPLOYMENT_TARGET%\client\package.json" (
   pushd "%DEPLOYMENT_TARGET%\client"
-  call npm install --no-optional
+  call npm install --include=dev --no-optional
   IF !ERRORLEVEL! NEQ 0 goto error
   
   echo Building frontend...
