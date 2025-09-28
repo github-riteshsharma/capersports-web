@@ -56,9 +56,12 @@ The application is configured for deployment using:
    WEBSITE_NODE_DEFAULT_VERSION=18.17.0
    ```
 
-3. **Deploy using GitHub Actions**:
-   - Push code to GitHub
-   - GitHub Actions will automatically deploy using `.github/workflows/azure-deploy.yml`
+3. **Deploy Backend Only**:
+   - **Option A**: Deploy only the `/server` folder to Azure App Service
+   - **Option B**: Use GitHub Actions to deploy the entire repository
+   - **Option C**: Use Azure DevOps pipeline
+   
+   **Important**: If deploying backend only, deploy the `/server` directory contents directly to avoid client-side build errors.
 
 #### Step 2: Deploy Frontend to Azure Static Web Apps
 

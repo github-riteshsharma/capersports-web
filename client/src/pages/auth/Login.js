@@ -429,19 +429,6 @@ const Login = () => {
                   </p>
                 </motion.div>
 
-                {/* Demo Accounts */}
-                <motion.div 
-                  className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-xl"
-                  variants={itemVariants}
-                >
-                  <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Demo Accounts
-                  </p>
-                  <div className="space-y-1 text-xs text-gray-500 dark:text-gray-400">
-                    <p>Admin: admin@capersports.com / admin123</p>
-                    <p>User: john@example.com / password123</p>
-                  </div>
-                </motion.div>
               </form>
             </motion.div>
           </div>

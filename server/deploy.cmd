@@ -1,7 +1,7 @@
 @if "%SCM_TRACE_LEVEL%" NEQ "4" @echo off
 
 :: ----------------------
-:: KUDU Deployment Script
+:: KUDU Deployment Script for Backend Only
 :: Version: 1.0.17
 :: ----------------------
 
@@ -52,7 +52,7 @@ IF NOT DEFINED KUDU_SYNC_CMD (
 :: Deployment
 :: ----------
 
-echo Handling node.js deployment.
+echo Handling backend node.js deployment.
 
 :: 1. KuduSync
 IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
@@ -60,34 +60,12 @@ IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
   IF !ERRORLEVEL! NEQ 0 goto error
 )
 
-:: 2. Select deployment approach based on what exists
-IF EXIST "%DEPLOYMENT_TARGET%\server\package.json" (
-  :: Full stack deployment - install server dependencies
-  pushd "%DEPLOYMENT_TARGET%\server"
+:: 2. Install npm packages
+IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
+  pushd "%DEPLOYMENT_TARGET%"
   call :ExecuteCmd npm install --production
   IF !ERRORLEVEL! NEQ 0 goto error
   popd
-  
-  :: Build client if it exists
-  IF EXIST "%DEPLOYMENT_TARGET%\client\package.json" (
-    pushd "%DEPLOYMENT_TARGET%\client"
-    call :ExecuteCmd npm install
-    IF !ERRORLEVEL! NEQ 0 goto error
-    
-    call :ExecuteCmd npm run build
-    IF !ERRORLEVEL! NEQ 0 goto error
-    popd
-    
-    :: Copy client build to server public directory
-    IF EXIST "%DEPLOYMENT_TARGET%\client\build" (
-      call :ExecuteCmd xcopy "%DEPLOYMENT_TARGET%\client\build\*" "%DEPLOYMENT_TARGET%\server\public\" /E /Y
-      IF !ERRORLEVEL! NEQ 0 goto error
-    )
-  )
-) ELSE (
-  :: Backend only deployment
-  call :ExecuteCmd npm install --production
-  IF !ERRORLEVEL! NEQ 0 goto error
 )
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
