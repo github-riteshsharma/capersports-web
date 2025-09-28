@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0ea5e9" />
+    <meta name="description" content="CaperSports - Premium Sports Clothing and Gear" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="keywords" content="sports clothing, athletic wear, sportswear, gym clothes, workout gear, fitness apparel">
+    <meta name="author" content="CaperSports">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="CaperSports - Premium Sports Clothing">
+    <meta property="og:description" content="Discover premium sports clothing and gear for your active lifestyle">
+    <meta property="og:image" content="%PUBLIC_URL%/og-image.jpg">
+    <meta property="og:url" content="https://capersports.com">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="CaperSports - Premium Sports Clothing">
+    <meta property="twitter:description" content="Discover premium sports clothing and gear for your active lifestyle">
+    <meta property="twitter:image" content="%PUBLIC_URL%/og-image.jpg">
+    
+    <title>CaperSports - Premium Sports Clothing</title>
+    
+    <style>
+      /* Loading animation */
+      .loading-spinner {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #0ea5e9;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      /* Initial loading screen */
+      .initial-loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        flex-direction: column;
+        gap: 20px;
+      }
+      
+      .initial-loading h1 {
+        font-family: 'Inter', sans-serif;
+        font-size: 24px;
+        font-weight: 600;
+        color: #0ea5e9;
+        margin: 0;
+      }
+      
+      /* Dark mode support */
+      @media (prefers-color-scheme: dark) {
+        .initial-loading {
+          background: #18181b;
+        }
+        .initial-loading h1 {
+          color: #38bdf8;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root">
+      <div class="initial-loading">
+        <h1>CaperSports</h1>
+        <div class="loading-spinner"></div>
+      </div>
+    </div>
+    
+    <script>
+      // Theme detection
+      if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
+      
+      // Performance monitoring
+      if ('performance' in window) {
+        window.addEventListener('load', function() {
+          setTimeout(function() {
+            const perfData = performance.getEntriesByType('navigation')[0];
+            if (perfData && perfData.loadEventEnd > 0) {
+              console.log('Page load time:', perfData.loadEventEnd - perfData.navigationStart + 'ms');
+            }
+          }, 0);
+        });
+      }
+    </script>
+  </body>
+</html>

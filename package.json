@@ -1,0 +1,28 @@
+{
+  "name": "capersports",
+  "version": "1.0.0",
+  "description": "CaperSports - Premium Sports Clothing E-commerce Platform",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "build:production": "cd client && npm run build && mkdir -p server/public && cp -r client/build/* server/public/",
+    "install-server": "cd server && npm install",
+    "install-client": "cd client && npm install",
+    "install-all": "npm run install-server && npm run install-client",
+    "start": "cd server && npm start",
+    "start:production": "NODE_ENV=production cd server && npm start",
+    "deploy:azure": "npm run build:production && npm run start:production",
+    "test": "cd client && npm test",
+    "test:coverage": "cd client && npm test -- --coverage --watchAll=false",
+    "postinstall": "npm run install-all"
+  },
+  "keywords": ["ecommerce", "mern", "sports", "clothing"],
+  "author": "CaperSports",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
