@@ -1,10 +1,4 @@
 
-P***ck***ge deployment using ZIP Deploy initi***ted.
-Fetching ch***nges.
-Cle***ning up temp folders from previous zip deployments ***nd extr***cting pushed zip file C:\loc***l\Temp\zipdeploy\qyxcvsd2.zip (9.48 MB) to C:\loc***l\Temp\zipdeploy\extr***cted
-Error: F***iled to deploy web p***ck***ge to App Service.
-Error: Deployment F***iled, P***ck***ge deployment using ZIP Deploy f***iled. Refer logs for more det***ils.
-
 # CaperSports - MERN Stack E-commerce Platform
 
 A full-stack e-commerce platform for premium sports clothing built with React, Node.js, Express, and MongoDB. **Ready for Azure deployment!**
