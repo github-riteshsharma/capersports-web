@@ -1,13 +1,13 @@
 
 # CaperSports - MERN Stack E-commerce Platform
 
-A full-stack e-commerce platform for premium sports clothing built with **React**, **Node.js 22**, **Express**, and **MongoDB**.
+A full-stack e-commerce platform for premium sports clothing built with **React**, **Node.js 20/22 LTS**, **Express**, and **MongoDB**.
 
 ## 🏗️ Clean Project Structure
 
 ```
 capersports/
-├── client/                    # React Frontend (Node.js 22)
+├── client/                    # React Frontend
 │   ├── src/                  # React source code
 │   ├── public/               # Static assets
 │   └── package.json         # Frontend dependencies
@@ -15,16 +15,17 @@ capersports/
 ├── models/                   # MongoDB Models
 ├── middleware/               # Express Middleware
 ├── uploads/                  # File upload directory
-├── server.js                # Express Backend (Node.js 22)
+├── server.js                # Express Backend
 ├── package.json             # Backend Dependencies
 ├── seedData.js              # Database seeding script
-├── .env                     # Environment Variables
+├── .env                     # Environment Variables (gitignored)
+├── .gitignore               # Git ignore file
 └── README.md                # This documentation
 ```
 
 ## 🚀 **Tech Stack**
 
-- **Backend**: Node.js 22 + Express.js
+- **Backend**: Node.js 20/22 LTS + Express.js
 - **Frontend**: React 18 + Redux Toolkit
 - **Database**: MongoDB with Mongoose
 - **Styling**: Tailwind CSS
@@ -32,6 +33,7 @@ capersports/
 - **File Upload**: Cloudinary
 - **Payments**: Stripe
 - **Email**: Nodemailer
+- **Cloud**: Microsoft Azure
 
 ## ☁️ Azure Deployment Guide
 
@@ -40,113 +42,70 @@ capersports/
 - **Azure Account** with active subscription
 - **GitHub Account** for source code and CI/CD
 - **MongoDB Atlas** database
-- **Node.js 22+** installed locally
+- **Node.js 20 or 22 LTS** installed locally
 
 ### 🎯 Deployment Architecture
 
 - **Frontend**: Azure Static Web Apps
-- **Backend**: Azure App Service (Node.js)
+- **Backend**: Azure App Service (Node.js 20/22 LTS)
 - **Database**: MongoDB Atlas
 - **CI/CD**: GitHub Actions
 
 ---
 
-## 🔧 **Simple Azure Deployment (App Service Editor)**
+## 🚀 **Azure Deployment Steps**
 
-### **Step 1: Create Azure App Service**
-1. **Azure Portal** → **Create Resource** → **Web App**
-2. **Runtime**: **Node.js 22 LTS**
-3. **Name**: `capersports-app` (must be unique)
+### **Step 1: Prepare Your Project**
 
-### **Step 2: Deploy via App Service Editor**
-1. **App Service** → **App Service Editor** → **Go →**
-2. **Delete all existing files**
-3. **Create `server.js`** with minimal backend code
-4. **Create `package.json`** with Node.js 22 dependencies
-5. **Save files** and **restart app service**
+1. **Clean Install Dependencies:**
+   ```bash
+   # Install backend dependencies
+   npm install
+   
+   # Install frontend dependencies
+   cd client && npm install && cd ..
+   ```
 
-### **Step 3: Test Deployment**
-- **Health Check**: `https://capersports-app.azurewebsites.net/api/health`
-- **API Test**: `https://capersports-app.azurewebsites.net/api/test`
+2. **Create Environment Files:**
+   ```bash
+   # Copy environment templates
+   cp .env.azure.template .env
+   cp client/.env.azure.template client/.env
+   
+   # Edit with your actual values
+   ```
 
-### **Minimal server.js for Azure:**
-```javascript
-const express = require('express');
-const app = express();
+3. **Test Locally:**
+   ```bash
+   # Seed database
+   npm run seed
+   
+   # Start backend
+   npm start
+   
+   # Start frontend (in new terminal)
+   cd client && npm start
+   ```
 
-app.use(express.json());
+### **Step 2: Deploy Backend to Azure App Service**
 
-app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
-    message: 'CaperSports API is running!',
-    node: process.version 
-  });
-});
+1. **Create Azure App Service:**
+   - Go to **Azure Portal** → **Create Resource** → **Web App**
+   - **Runtime Stack**: **Node.js 20 LTS** or **Node.js 22 LTS**
+   - **Operating System**: **Linux**
+   - **Name**: `capersports-backend` (must be unique)
 
-app.get('/', (req, res) => {
-  res.json({ message: 'CaperSports Backend - Node.js 22' });
-});
+2. **Configure Deployment:**
+   - **Deployment Center** → **GitHub**
+   - **Build Provider**: **GitHub Actions**
+   - **Repository**: Your GitHub repo
+   - **Branch**: `main`
 
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
-```
-
-### **Minimal package.json for Azure:**
-```json
-{
-  "name": "capersports-backend",
-  "version": "1.0.0",
-  "main": "server.js",
-  "engines": { "node": "22.x" },
-  "scripts": { "start": "node server.js" },
-  "dependencies": { "express": "^4.18.2" }
-}
-```
-
----
-
-## 📋 Step-by-Step Azure Deployment
-
-### 1. Prepare Your Environment
-
-1. **Fork/Clone this repository** to your GitHub account
-
-2. **Set up MongoDB Atlas**:
-   - Create a MongoDB Atlas account
-   - Create a new cluster
-   - Get your connection string
-   - Add your IP to the whitelist
-
-3. **Get required API keys**:
-   - Cloudinary account (for image uploads)
-   - Stripe account (for payments)
-   - Email service credentials
-
-### 2. Deploy Backend to Azure App Service
-
-#### Option A: Using Azure Portal (Recommended)
-
-1. **Create App Service**:
-   - Go to Azure Portal → Create Resource → Web App
-   - Choose **Node.js 18 LTS** runtime
-   - Select your resource group and region
-   - Choose a unique name (e.g., `capersports-backend`)
-
-2. **Configure Deployment**:
-   - Go to **Deployment Center** → **GitHub**
-   - Connect your repository
-   - Select **GitHub Actions** as build provider
-   - Choose your repository and `main` branch
-
-3. **Set Environment Variables**:
-   Go to **Configuration** → **Application Settings** and add:
+3. **Set Environment Variables:**
+   Go to **Configuration** → **Application Settings**:
    ```
    NODE_ENV=production
-   PORT=80
-   WEBSITE_PORT=80
+   PORT=8080
    MONGODB_URI=your_mongodb_atlas_connection_string
    JWT_SECRET=your_super_secure_jwt_secret
    JWT_EXPIRE=30d
@@ -161,44 +120,22 @@ app.listen(PORT, () => {
    SMTP_PASSWORD=your_email_app_password
    FRONTEND_URL=https://your-frontend-app.azurestaticapps.net
    WEBSITES_ENABLE_APP_SERVICE_STORAGE=false
-   WEBSITE_NODE_DEFAULT_VERSION=18.17.0
-   RATE_LIMIT_WINDOW_MS=900000
-   RATE_LIMIT_MAX_REQUESTS=100
+   WEBSITE_NODE_DEFAULT_VERSION=20-lts
    ```
 
-#### Option B: Using Azure CLI
+### **Step 3: Deploy Frontend to Azure Static Web Apps**
 
-```bash
-# Create App Service
-az webapp create \
-  --resource-group your-resource-group \
-  --plan your-app-service-plan \
-  --name capersports-backend \
-  --runtime "NODE|18-lts"
+1. **Create Static Web App:**
+   - Go to **Azure Portal** → **Create Resource** → **Static Web App**
+   - **Source**: **GitHub**
+   - **Repository**: Your GitHub repo
+   - **Branch**: `main`
+   - **Build Presets**: **React**
+   - **App location**: `/client`
+   - **Output location**: `build`
 
-# Configure deployment from GitHub
-az webapp deployment source config \
-  --name capersports-backend \
-  --resource-group your-resource-group \
-  --repo-url https://github.com/yourusername/capersports \
-  --branch main \
-  --manual-integration
-```
-
-### 3. Deploy Frontend to Azure Static Web Apps
-
-#### Option A: Using Azure Portal (Recommended)
-
-1. **Create Static Web App**:
-   - Go to Azure Portal → Create Resource → Static Web App
-   - Connect to your **GitHub repository**
-   - **Build Details**:
-     - App location: `/client`
-     - API location: `` (leave empty)
-     - Output location: `build`
-
-2. **Configure Environment Variables**:
-   Go to **Configuration** and add:
+2. **Configure Environment Variables:**
+   Go to **Configuration** → **Environment variables**:
    ```
    REACT_APP_API_URL=https://your-backend-app.azurewebsites.net/api
    REACT_APP_NAME=CaperSports
@@ -207,56 +144,49 @@ az webapp deployment source config \
    REACT_APP_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
    ```
 
-#### Option B: Using Azure CLI
+### **Step 4: GitHub Actions Setup (Automated)**
 
-```bash
-az staticwebapp create \
-  --name capersports-frontend \
-  --resource-group your-resource-group \
-  --source https://github.com/yourusername/capersports \
-  --location "Central US" \
-  --branch main \
-  --app-location "/client" \
-  --output-location "build"
-```
-
-### 4. Set up GitHub Actions (Automated)
-
-The repository includes a pre-configured GitHub Actions workflow. You need to add these **GitHub Secrets**:
+The repository includes pre-configured GitHub Actions workflows. Add these **GitHub Secrets**:
 
 Go to your GitHub repository → **Settings** → **Secrets and variables** → **Actions**:
 
 **Required Secrets:**
-- `AZURE_BACKEND_APP_NAME` - Your App Service name
 - `AZURE_BACKEND_PUBLISH_PROFILE` - Download from Azure Portal → App Service → Get publish profile
 - `AZURE_STATIC_WEB_APPS_API_TOKEN` - Found in Static Web App → Manage deployment token
 - `REACT_APP_API_URL` - Your backend URL (https://your-backend.azurewebsites.net/api)
 - `REACT_APP_STRIPE_PUBLISHABLE_KEY` - Your Stripe publishable key
 
-### 5. Update URLs
+### **Step 5: Deploy and Test**
 
-After deployment, update the URLs in your Azure configuration:
+1. **Push to GitHub:**
+   ```bash
+   git add .
+   git commit -m "Initial commit for Azure deployment"
+   git push origin main
+   ```
 
-1. **Backend Environment Variables**:
-   - Update `FRONTEND_URL` to your Static Web App URL
+2. **Monitor Deployment:**
+   - Check **GitHub Actions** tab for build status
+   - Check **Azure Portal** for deployment logs
 
-2. **Frontend Environment Variables**:
-   - Update `REACT_APP_API_URL` to your App Service URL
+3. **Test Your Application:**
+   - **Backend**: `https://your-backend.azurewebsites.net/api/health`
+   - **Frontend**: `https://your-frontend.azurestaticapps.net`
 
 ---
 
-## 🚀 Local Development
+## 🛠️ Local Development
 
 ### Quick Start
 
-1. **Clone and install**:
+1. **Clone and install:**
    ```bash
    git clone https://github.com/yourusername/capersports.git
    cd capersports
    npm run install-all
    ```
 
-2. **Environment Setup**:
+2. **Environment Setup:**
    ```bash
    # Copy and configure backend environment
    cp .env.azure.template .env
@@ -267,7 +197,7 @@ After deployment, update the URLs in your Azure configuration:
    # Edit client/.env with your values
    ```
 
-3. **Run the application**:
+3. **Run the application:**
    ```bash
    npm run dev:full
    ```
@@ -278,7 +208,6 @@ After deployment, update the URLs in your Azure configuration:
 - `npm start` - Start production server
 - `npm run dev` - Start development server with nodemon
 - `npm run seed` - Seed database with sample data
-- `npm run deploy:azure` - Build and start for Azure
 
 #### Frontend Scripts
 - `npm run client` - Start React development server
@@ -304,60 +233,6 @@ After deployment, update the URLs in your Azure configuration:
 - **Admin Dashboard** - Manage products, orders, and users
 - **Responsive Design** - Mobile-friendly UI
 
-## 📦 Tech Stack
-
-### Frontend
-- React 18
-- Redux Toolkit
-- React Router
-- Tailwind CSS
-- Framer Motion
-- Axios
-
-### Backend
-- Node.js
-- Express.js
-- MongoDB with Mongoose
-- JWT Authentication
-- Cloudinary
-- Stripe
-- Nodemailer
-
-### Azure Services
-- Azure App Service (Backend)
-- Azure Static Web Apps (Frontend)
-- GitHub Actions (CI/CD)
-
----
-
-## 🔐 Security Features
-
-- JWT token authentication
-- Password hashing with bcrypt
-- Rate limiting
-- CORS protection (Azure domains included)
-- Security headers with Helmet
-- Input validation and sanitization
-
-## 📱 API Endpoints
-
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - User login
-- `GET /api/auth/profile` - Get user profile
-
-### Products
-- `GET /api/products` - Get all products
-- `GET /api/products/:id` - Get single product
-- `POST /api/products` - Create product (admin)
-- `PUT /api/products/:id` - Update product (admin)
-- `DELETE /api/products/:id` - Delete product (admin)
-
-### Orders
-- `GET /api/orders` - Get user orders
-- `POST /api/orders` - Create new order
-- `GET /api/orders/:id` - Get single order
-
 ---
 
 ## 🚨 Troubleshooting
@@ -365,11 +240,11 @@ After deployment, update the URLs in your Azure configuration:
 ### Common Issues
 
 1. **CORS Errors**:
-   - Ensure `FRONTEND_URL` in backend matches your Static Web App URL
+   - Update `FRONTEND_URL` in backend environment variables
    - Check CORS configuration in `server.js`
 
 2. **Build Failures**:
-   - Verify Node.js version is 18.x in Azure
+   - Verify Node.js version is 20 or 22 LTS in Azure
    - Check all dependencies are listed in `package.json`
 
 3. **Database Connection**:
@@ -437,4 +312,4 @@ This project is licensed under the MIT License.
 
 ---
 
-**🚀 Built with ❤️ using React, Node.js, Express, MongoDB and deployed on Microsoft Azure**
+**🚀 Built with ❤️ using React, Node.js 20/22 LTS, Express, MongoDB and deployed on Microsoft Azure**
