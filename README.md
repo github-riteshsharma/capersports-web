@@ -1,4 +1,6 @@
 
+Cleaning up temp folders from previous zip deployments and extracting pushed zip file C:\local\Temp\zipdeploy\zvu4hjma.zip (10.97 MB) to C:\local\Temp\zipdeploy\extracted
+
 P***ck***ge deployment using ZIP Deploy initi***ted.
 Fetching ch***nges.
 Cle***ning up temp folders from previous zip deployments ***nd extr***cting pushed zip file C:\loc***l\Temp\zipdeploy\qyxcvsd2.zip (9.48 MB) to C:\loc***l\Temp\zipdeploy\extr***cted
