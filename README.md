@@ -1,3 +1,4 @@
+
 # CaperSports - MERN Stack E-commerce Platform
 
 A full-stack e-commerce platform for premium sports clothing built with React, Node.js, Express, and MongoDB. **Ready for Azure deployment!**
