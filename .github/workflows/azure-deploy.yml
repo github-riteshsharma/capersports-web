@@ -24,12 +24,19 @@ jobs:
     - name: Install backend dependencies
       run: npm ci --production
 
+    - name: Create deployment package
+      run: |
+        # Remove unnecessary files to reduce package size
+        rm -rf client/node_modules client/build .git
+        # Create a clean deployment package
+        zip -r deployment.zip . -x "*.git*" "client/node_modules/*" "client/build/*" "node_modules/.cache/*"
+
     - name: Deploy Backend to Azure App Service
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ secrets.AZURE_BACKEND_APP_NAME }}
         publish-profile: ${{ secrets.AZURE_BACKEND_PUBLISH_PROFILE }}
-        package: .
+        package: deployment.zip
 
     # Frontend deployment
     - name: Install frontend dependencies
