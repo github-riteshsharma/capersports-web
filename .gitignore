@@ -1,0 +1,94 @@
+# =============================
+# General OS / Editor files
+# =============================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# =============================
+# Logs and diagnostics
+# =============================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# =============================
+# Node / Package managers
+# =============================
+node_modules/
+.npm/
+.yarn/
+.pnpm-store/
+
+# =============================
+# Environment files
+# Keep example env files tracked
+# =============================
+.env
+.env.*
+!.env.example
+!.env.local.example
+
+# Explicit per-package envs (for clarity)
+server/.env
+client/.env
+client/.env.local
+client/.env.development.local
+client/.env.test.local
+client/.env.production.local
+
+# =============================
+# Build outputs / caches
+# =============================
+# Generic
+build/
+dist/
+coverage/
+.cache/
+.eslintcache
+.stylelintcache
+
+# React / CRA
+client/build/
+
+# Next.js
+.next/
+.next/cache/
+out/
+
+# Nuxt
+.nuxt/
+
+# SvelteKit
+.svelte-kit/
+
+# Storybook
+storybook-static/
+
+# Parcel
+.parcel-cache/
+
+# Turborepo / Task runners
+.turbo/
+turbo/
+
+# Cypress
+cypress/screenshots/
+cypress/videos/
+
+# =============================
+# Misc
+# =============================
+# Local tooling configs that shouldn't be shared
+*.local
+*.secret
+
+# Docker / Compose overrides (optional - uncomment if desired)
+# docker-compose.override.yml
