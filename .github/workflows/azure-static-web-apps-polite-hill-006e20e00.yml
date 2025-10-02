@@ -35,7 +35,11 @@ jobs:
         env:
           DISABLE_ESLINT_PLUGIN: true
           CI: false
-          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+          REACT_APP_API_URL: https://capersports-api-bwbecxggbkbnd2ep.centralindia-01.azurewebsites.net/api
+          GENERATE_SOURCEMAP: false
+          REACT_APP_ENV: production
+          REACT_APP_NAME: CaperSports
+          REACT_APP_STRIPE_PUBLISHABLE_KEY: 1234
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
