@@ -50,7 +50,6 @@
     "install-all": "npm run install-server && npm run install-client",
     "start": "cd server && npm start",
     "start:production": "NODE_ENV=production cd server && npm start",
-    "deploy:azure": "npm run build:production && npm run start:production",
     "test": "cd client && npm test",
     "test:coverage": "cd client && npm test -- --coverage --watchAll=false",
     "postinstall": "npm run install-all"

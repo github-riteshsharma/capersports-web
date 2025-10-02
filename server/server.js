@@ -41,7 +41,7 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// CORS configuration for Azure
+// CORS configuration
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
@@ -49,16 +49,10 @@ const corsOptions = {
     
     const allowedOrigins = [
       process.env.FRONTEND_URL || 'http://localhost:3001',
-      process.env.CORS_ORIGIN,
-      'https://*.azurestaticapps.net',
-      'https://*.azurewebsites.net'
+      process.env.CORS_ORIGIN
     ].filter(Boolean);
     
-    if (allowedOrigins.some(allowedOrigin => 
-      allowedOrigin.includes('*') ? 
-        origin.includes(allowedOrigin.replace('*', '')) : 
-        origin === allowedOrigin
-    )) {
+    if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -120,9 +114,9 @@ app.use('*', (req, res) => {
   });
 });
 
-// Start server - Azure App Service compatibility
-const PORT = process.env.PORT || process.env.WEBSITE_PORT || 5001;
-const HOST = process.env.WEBSITE_HOSTNAME || '0.0.0.0';
+// Start server
+const PORT = process.env.PORT || 5001;
+const HOST = '0.0.0.0';
 
 app.listen(PORT, HOST, () => {
   console.log(`🚀 Server running on ${HOST}:${PORT} in ${process.env.NODE_ENV} mode`);
