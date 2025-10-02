@@ -175,40 +175,53 @@ const Navbar = () => {
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
-            {/* Search */}
-            <div className="relative">
-              <button
-                onClick={() => setIsSearchOpen(!isSearchOpen)}
-                className="p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200"
-              >
-                <FiSearch size={20} />
-              </button>
-              
-              <AnimatePresence>
-                {isSearchOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-4"
-                  >
-                    <form onSubmit={handleSearch}>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          placeholder="Search products..."
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
-                          autoFocus
-                        />
-                        <FiSearch className="absolute left-3 top-2.5 text-gray-400" size={18} />
-                      </div>
-                    </form>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+            {/* Search - Expands inline */}
+            <AnimatePresence mode="wait">
+              {isSearchOpen ? (
+                <motion.form
+                  key="search-form"
+                  initial={{ width: 0, opacity: 0 }}
+                  animate={{ width: 'auto', opacity: 1 }}
+                  exit={{ width: 0, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  onSubmit={handleSearch}
+                  className="flex items-center"
+                >
+                  <div className="relative flex items-center">
+                    <FiSearch className="absolute left-3 text-gray-400 z-10" size={18} />
+                    <input
+                      type="text"
+                      placeholder="Search products..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-64 pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white bg-white transition-all"
+                      autoFocus
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsSearchOpen(false);
+                        setSearchQuery('');
+                      }}
+                      className="absolute right-2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 z-10"
+                    >
+                      <FiX size={18} />
+                    </button>
+                  </div>
+                </motion.form>
+              ) : (
+                <motion.button
+                  key="search-button"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setIsSearchOpen(true)}
+                  className="p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200"
+                >
+                  <FiSearch size={20} />
+                </motion.button>
+              )}
+            </AnimatePresence>
 
             {/* Theme Toggle */}
             <button

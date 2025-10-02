@@ -534,14 +534,18 @@ const ProductDetail = () => {
                     Color: <span className="font-normal">{selectedColor}</span>
                   </h3>
                   <div className="flex flex-wrap gap-2">
-                    {product.colors.map((color) => {
+                    {product.colors.map((color, index) => {
                       // Handle both string and object formats
                       const colorName = typeof color === 'string' ? color : color.name;
-                      const colorKey = typeof color === 'string' ? color : color._id || color.name;
+                      
+                      // Skip invalid or corrupted ObjectId data
+                      if (!colorName || (typeof colorName === 'string' && colorName.length === 24 && /^[0-9a-f]{24}$/i.test(colorName))) {
+                        return null;
+                      }
                       
                       return (
                         <button
-                          key={colorKey}
+                          key={`color-${index}-${colorName}`}
                           onClick={() => setSelectedColor(colorName)}
                           className={`px-4 py-2 rounded-lg border-2 transition-colors ${
                             selectedColor === colorName
@@ -583,7 +587,7 @@ const ProductDetail = () => {
                       
                       return (
                         <button
-                          key={sizeName || index}
+                          key={`size-${index}-${sizeName}`}
                           onClick={() => !isOutOfStock && setSelectedSize(sizeName)}
                           disabled={isOutOfStock}
                           className={`px-4 py-2 rounded-lg border-2 transition-colors relative ${

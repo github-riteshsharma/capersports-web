@@ -67,6 +67,12 @@ const AdminProducts = () => {
     sku: '',
     brand: '',
     category: '',
+    subCategory: '',
+    gender: '',
+    ageGroup: '',
+    material: '',
+    careInstructions: '',
+    weight: '',
     price: '',
     description: '',
     stock: '',
@@ -137,8 +143,8 @@ const AdminProducts = () => {
       salePrice: product.salePrice?.toString() || '',
       isFeatured: product.isFeatured || false,
       isOnSale: product.isOnSale || false,
-      colors: product.colors || [],
-      sizes: product.sizes || []
+      colors: product.colors?.map(c => c.name || c) || [],
+      sizes: product.sizes?.map(s => s.size || s) || []
     });
     // Set existing images if any
     if (product.images && product.images.length > 0) {
@@ -301,7 +307,7 @@ const AdminProducts = () => {
         price: parseFloat(productForm.price),
         weight: parseFloat(productForm.weight),
         salePrice: productForm.salePrice ? parseFloat(productForm.salePrice) : null,
-        totalStock: parseInt(productForm.stock) || 0,
+        totalStock: parseInt(productForm.stock) || 0, // Set initial value, will be recalculated by backend
         images: selectedImages.map(img => img.preview), // For now, use preview URLs
         // Transform colors from array of strings to array of objects
         colors: productForm.colors.map(colorName => ({
@@ -310,10 +316,17 @@ const AdminProducts = () => {
           images: selectedImages.map(img => img.preview) // Use selected images for each color
         })),
         // Transform sizes from array of strings to array of objects  
-        sizes: productForm.sizes.map(sizeName => ({
-          size: sizeName,
-          stock: Math.floor(parseInt(productForm.stock) / productForm.sizes.length) || 0 // Distribute stock equally among sizes
-        }))
+        sizes: productForm.sizes.map((sizeName, index) => {
+          const totalStock = parseInt(productForm.stock) || 0;
+          const numSizes = productForm.sizes.length;
+          const baseStock = Math.floor(totalStock / numSizes);
+          const remainder = totalStock % numSizes;
+          // Distribute remainder to first few sizes to ensure total matches input
+          return {
+            size: sizeName,
+            stock: baseStock + (index < remainder ? 1 : 0)
+          };
+        })
       };
       
       if (editingProduct) {
@@ -346,7 +359,15 @@ const AdminProducts = () => {
       }));
       
     } catch (error) {
-      toast.error(error || 'Failed to save product');
+      console.error('Product save error:', error);
+      
+      // Show detailed error message
+      if (error.details && Array.isArray(error.details)) {
+        const errorMessages = error.details.map(d => `${d.field}: ${d.message}`).join(', ');
+        toast.error(`Validation failed: ${errorMessages}`);
+      } else {
+        toast.error(error || 'Failed to save product');
+      }
     }
   };
 
@@ -1092,6 +1113,12 @@ const AdminProducts = () => {
                           onChange={(e) => handleFormChange('stock', e.target.value)}
                           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                         />
+                        {productForm.sizes.length > 0 && productForm.stock && (
+                          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                            Will be distributed across {productForm.sizes.length} size{productForm.sizes.length > 1 ? 's' : ''} 
+                            (~{Math.floor(parseInt(productForm.stock) / productForm.sizes.length)} per size)
+                          </p>
+                        )}
                       </div>
 
                       {/* Featured */}

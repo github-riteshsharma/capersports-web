@@ -24,6 +24,22 @@ api.interceptors.request.use(
   }
 );
 
+// Response interceptor for error handling
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error('Admin API Error:', error);
+    console.error('Error response:', error.response?.data);
+    console.error('Error status:', error.response?.status);
+    
+    if (error.response?.status === 401) {
+      // Unauthorized - token might be invalid
+      console.error('Unauthorized access - redirecting to login');
+    }
+    return Promise.reject(error);
+  }
+);
+
 const adminService = {
   // Dashboard
   getDashboardData: () => {

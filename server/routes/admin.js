@@ -209,9 +209,15 @@ router.post('/products', [
     });
   } catch (error) {
     console.error('Create product error:', error);
+    console.error('Error details:', error.message);
+    console.error('Validation errors:', error.errors);
     res.status(500).json({
       success: false,
-      message: 'Server error while creating product',
+      message: error.message || 'Server error while creating product',
+      details: error.errors ? Object.keys(error.errors).map(key => ({
+        field: key,
+        message: error.errors[key].message
+      })) : undefined
     });
   }
 });

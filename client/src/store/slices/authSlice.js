@@ -1,11 +1,21 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import authService from '../services/authService';
 
+// Helper to get user from localStorage
+const getUserFromStorage = () => {
+  try {
+    const userStr = localStorage.getItem('user');
+    return userStr ? JSON.parse(userStr) : null;
+  } catch (error) {
+    return null;
+  }
+};
+
 // Initial state
 const initialState = {
-  user: null,
+  user: getUserFromStorage(),
   token: localStorage.getItem('token') || null,
-  isAuthenticated: false,
+  isAuthenticated: !!localStorage.getItem('token'), // Set to true if token exists
   loading: false,
   error: null,
 };
@@ -89,13 +99,20 @@ export const checkAuthStatus = createAsyncThunk(
     try {
       const token = localStorage.getItem('token');
       if (!token) {
-        return rejectWithValue('No token found');
+        return rejectWithValue({ message: 'No token found', shouldLogout: true });
       }
       const response = await authService.getCurrentUser();
       return response.data;
     } catch (error) {
-      localStorage.removeItem('token');
-      return rejectWithValue(error.response?.data?.message || 'Auth check failed');
+      // Only remove token if it's a 401 (unauthorized) error
+      const shouldLogout = error.response?.status === 401;
+      if (shouldLogout) {
+        localStorage.removeItem('token');
+      }
+      return rejectWithValue({ 
+        message: error.response?.data?.message || 'Auth check failed',
+        shouldLogout 
+      });
     }
   }
 );
@@ -115,6 +132,7 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = null;
       localStorage.removeItem('token');
+      localStorage.removeItem('user');
     },
     setCredentials: (state, action) => {
       const { user, token } = action.payload;
@@ -123,6 +141,7 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
       state.error = null;
       localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
     },
   },
   extraReducers: (builder) => {
@@ -139,6 +158,7 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.error = null;
         localStorage.setItem('token', action.payload.token);
+        localStorage.setItem('user', JSON.stringify(action.payload.user));
       })
       .addCase(register.rejected, (state, action) => {
         state.loading = false;
@@ -159,6 +179,7 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.error = null;
         localStorage.setItem('token', action.payload.token);
+        localStorage.setItem('user', JSON.stringify(action.payload.user));
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
@@ -178,6 +199,7 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.error = null;
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
       })
       .addCase(logout.rejected, (state, action) => {
         state.loading = false;
@@ -187,6 +209,7 @@ const authSlice = createSlice({
         state.token = null;
         state.isAuthenticated = false;
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
       })
       // Get current user
       .addCase(getCurrentUser.pending, (state) => {
@@ -198,6 +221,7 @@ const authSlice = createSlice({
         state.user = action.payload.user;
         state.isAuthenticated = true;
         state.error = null;
+        localStorage.setItem('user', JSON.stringify(action.payload.user));
       })
       .addCase(getCurrentUser.rejected, (state, action) => {
         state.loading = false;
@@ -206,6 +230,7 @@ const authSlice = createSlice({
         state.user = null;
         state.token = null;
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
       })
       // Update profile
       .addCase(updateProfile.pending, (state) => {
@@ -216,6 +241,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload.user;
         state.error = null;
+        localStorage.setItem('user', JSON.stringify(action.payload.user));
       })
       .addCase(updateProfile.rejected, (state, action) => {
         state.loading = false;
@@ -244,14 +270,20 @@ const authSlice = createSlice({
         state.user = action.payload.user;
         state.isAuthenticated = true;
         state.error = null;
+        localStorage.setItem('user', JSON.stringify(action.payload.user));
       })
       .addCase(checkAuthStatus.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
-        state.isAuthenticated = false;
-        state.user = null;
-        state.token = null;
-        localStorage.removeItem('token');
+        state.error = action.payload?.message || action.payload;
+        // Only logout if it's an auth error (401), not network errors
+        if (action.payload?.shouldLogout) {
+          state.isAuthenticated = false;
+          state.user = null;
+          state.token = null;
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+        }
+        // Otherwise keep the user logged in (they still have a valid token)
       });
   },
 });
