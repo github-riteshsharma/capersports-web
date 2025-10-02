@@ -21,6 +21,9 @@ const ProductCard = ({ product, className = '' }) => {
   
   // Check if product is in wishlist
   const isInWishlist = wishlistItems.some(item => item._id === product._id);
+  
+  // Detect if this is list view based on className
+  const isListView = className.includes('flex-row');
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
@@ -165,7 +168,9 @@ const ProductCard = ({ product, className = '' }) => {
 
   return (
     <motion.div
-      className={`group relative bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 ${className}`}
+      className={`group relative bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 ${
+        isListView ? 'flex flex-row' : ''
+      } ${className}`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
@@ -173,23 +178,25 @@ const ProductCard = ({ product, className = '' }) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Product Image Container */}
-      <div className="relative aspect-square overflow-hidden bg-gray-50 dark:bg-gray-800 rounded-t-2xl">
+      <div className={`relative overflow-hidden bg-gray-50 dark:bg-gray-800 ${
+        isListView ? 'w-64 h-64 flex-shrink-0' : 'aspect-square rounded-t-2xl'
+      }`}>
         <Link to={`/products/${product._id}`} className="block relative w-full h-full">
           {/* Main Product Image */}
           <div className="relative w-full h-full">
-            <img
-              src={product.images?.[currentImageIndex] || product.images?.[0] || '/images/placeholder-product.jpg'}
-              alt={product.name}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              onError={(e) => {
-                e.target.src = '/images/placeholder-product.jpg';
-              }}
-            />
+              <img
+                src={product.images?.[currentImageIndex] || product.images?.[0] || '/images/placeholder-product.jpg'}
+                alt={product.name}
+                className="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-105"
+                onError={(e) => {
+                  e.target.src = '/images/placeholder-product.jpg';
+                }}
+              />
             
             {/* Image Navigation Dots */}
             {product.images && product.images.length > 1 && (
               <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                {product.images.map((_, index) => (
+                {product.images.map((image, index) => (
                   <button
                     key={index}
                     onClick={(e) => {
@@ -256,7 +263,7 @@ const ProductCard = ({ product, className = '' }) => {
       </div>
 
       {/* Product Info */}
-      <div className="pt-4 pb-2">
+      <div className={`${isListView ? 'flex-1 p-6 flex flex-col justify-between' : 'pt-4 pb-2'}`}>
         {/* Product Category */}
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide font-medium">
           {product.category}

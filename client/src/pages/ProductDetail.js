@@ -22,7 +22,7 @@ import {
 } from 'react-icons/fi';
 
 // Redux
-import { getProductById, clearCurrentProduct, getFeaturedProducts } from '../store/slices/productSlice';
+import { getProductById, clearCurrentProduct, getFeaturedProducts, addReview } from '../store/slices/productSlice';
 import { addToCart, addToCartOptimistic } from '../store/slices/cartSlice';
 import { addToWishlist, removeFromWishlist, toggleWishlist } from '../store/slices/wishlistSlice';
 
@@ -37,7 +37,7 @@ const ProductDetail = () => {
   const dispatch = useDispatch();
   
   const { currentProduct, featuredProducts, loading, error } = useSelector((state) => state.products);
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
   const { items } = useSelector((state) => state.cart);
   const { items: wishlistItems } = useSelector((state) => state.wishlist);
   
@@ -48,6 +48,7 @@ const ProductDetail = () => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showImageModal, setShowImageModal] = useState(false);
   const [showReviews, setShowReviews] = useState(false);
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   // Check if product is in wishlist
   const isInWishlist = currentProduct ? wishlistItems.some(item => item._id === currentProduct._id) : false;
   const [reviewForm, setReviewForm] = useState({
@@ -113,35 +114,45 @@ const ProductDetail = () => {
   const handleAddToCart = () => {
     if (!currentProduct) return;
     
-    if (!selectedColor || !selectedSize) {
-      toast.error('Please select color and size');
+    const hasColors = currentProduct.colors && currentProduct.colors.length > 0;
+    const hasSizes = currentProduct.sizes && currentProduct.sizes.length > 0;
+    
+    // Only require color if product has colors
+    if (hasColors && !selectedColor) {
+      toast.error('Please select a color');
+      return;
+    }
+    
+    // Only require size if product has sizes
+    if (hasSizes && !selectedSize) {
+      toast.error('Please select a size');
       return;
     }
     
     // Check stock availability
     const totalStock = getTotalStock(currentProduct);
-    const sizeStock = getSizeStock(currentProduct, selectedSize);
+    const sizeStock = hasSizes ? getSizeStock(currentProduct, selectedSize) : totalStock;
     
     if (totalStock <= 0) {
       toast.error('Product is out of stock');
       return;
     }
     
-    if (sizeStock <= 0) {
+    if (hasSizes && sizeStock <= 0) {
       toast.error(`Size ${selectedSize} is out of stock`);
       return;
     }
     
     if (quantity > sizeStock) {
-      toast.error(`Only ${sizeStock} items available for size ${selectedSize}`);
+      toast.error(`Only ${sizeStock} items available${hasSizes ? ` for size ${selectedSize}` : ''}`);
       return;
     }
     
     const cartItem = {
       productId: currentProduct._id,
       quantity: quantity,
-      color: selectedColor,
-      size: selectedSize
+      color: selectedColor || null,
+      size: selectedSize || null
     };
     
     // Optimistic update for immediate UI feedback
@@ -296,6 +307,72 @@ const ProductDetail = () => {
     }
   };
   
+  // Handle review submission
+  const handleReviewSubmit = async () => {
+    if (!reviewForm.title.trim() || !reviewForm.comment.trim()) {
+      toast.error('Please fill in all review fields');
+      return;
+    }
+    
+    setIsSubmittingReview(true);
+    
+    try {
+      await dispatch(addReview({ 
+        productId: id, 
+        reviewData: {
+          rating: reviewForm.rating,
+          title: reviewForm.title,
+          comment: reviewForm.comment
+        }
+      })).unwrap();
+      
+      toast.success('Thank you for your review!');
+      
+      // Reset form
+      setReviewForm({
+        rating: 5,
+        title: '',
+        comment: ''
+      });
+      
+      // Refresh product data to get updated reviews
+      dispatch(getProductById(id));
+    } catch (error) {
+      toast.error(error || 'Failed to submit review. Please try again.');
+      console.error('Review submission error:', error);
+    } finally {
+      setIsSubmittingReview(false);
+    }
+  };
+  
+  // Handle share
+  const handleShare = async () => {
+    const shareData = {
+      title: currentProduct.name,
+      text: `Check out ${currentProduct.name} on Caper Sports!`,
+      url: window.location.href
+    };
+    
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        toast.success('Shared successfully!');
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        toast.success('Link copied to clipboard!');
+      }
+    } catch (error) {
+      if (error.name !== 'AbortError') {
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          toast.success('Link copied to clipboard!');
+        } catch (clipboardError) {
+          toast.error('Failed to share. Please copy the URL manually.');
+        }
+      }
+    }
+  };
+  
   // Loading state
   if (loading) {
     return (
@@ -333,7 +410,7 @@ const ProductDetail = () => {
   
   const product = currentProduct;
   const isInCart = items.some(item => item.product === product._id);
-  const averageRating = product.ratings?.average || 0;
+  const averageRating = product.ratings?.average || product.rating || 0;
   const totalReviews = product.reviews?.length || 0;
   const totalStock = getTotalStock(product);
   const stockStatus = getStockStatus(product);
@@ -376,7 +453,7 @@ const ProductDetail = () => {
                 <img
                   src={product.images?.[selectedImageIndex] || '/images/placeholder-product.jpg'}
                   alt={product.name}
-                  className="w-full h-full object-cover cursor-zoom-in"
+                  className="w-full h-full object-contain cursor-zoom-in p-4"
                   onClick={() => setShowImageModal(true)}
                   onError={(e) => {
                     if (e.target.dataset.errorHandled) return;
@@ -425,7 +502,7 @@ const ProductDetail = () => {
                       <img
                         src={image}
                         alt={`${product.name} ${index + 1}`}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain p-2"
                         onError={(e) => {
                           if (e.target.dataset.errorHandled) return;
                           e.target.dataset.errorHandled = 'true';
@@ -670,20 +747,37 @@ const ProductDetail = () => {
                 <div className="flex space-x-4">
                   <Button
                     onClick={handleAddToCart}
-                    disabled={!selectedColor || !selectedSize || (selectedSize && getSizeStock(product, selectedSize) <= 0)}
+                    disabled={
+                      // Only require color if product has colors
+                      (product.colors && product.colors.length > 0 && !selectedColor) ||
+                      // Only require size if product has sizes
+                      (product.sizes && product.sizes.length > 0 && !selectedSize) ||
+                      // Check if selected size is out of stock
+                      (selectedSize && getSizeStock(product, selectedSize) <= 0) ||
+                      // Check if product has no stock at all
+                      (getTotalStock(product) <= 0)
+                    }
                     className={`flex-1 ${
-                      (selectedSize && getSizeStock(product, selectedSize) <= 0)
+                      (selectedSize && getSizeStock(product, selectedSize) <= 0) || getTotalStock(product) <= 0
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         : 'bg-primary-600 hover:bg-primary-700 text-white'
                     }`}
                   >
                     <FiShoppingCart className="w-5 h-5 mr-2" />
                     {(() => {
-                       const sizeStock = selectedSize ? getSizeStock(product, selectedSize) : 0;
+                       const hasColors = product.colors && product.colors.length > 0;
+                       const hasSizes = product.sizes && product.sizes.length > 0;
+                       const totalStock = getTotalStock(product);
+                       const sizeStock = selectedSize ? getSizeStock(product, selectedSize) : totalStock;
                        
-                       // Only check size-specific stock, not total stock
+                       // Check stock first
+                       if (totalStock <= 0) return 'Out of Stock';
                        if (selectedSize && sizeStock <= 0) return 'Size Out of Stock';
-                       if (!selectedSize || !selectedColor) return 'Select Options';
+                       
+                       // Check if options need to be selected
+                       if (hasColors && !selectedColor) return 'Select Color';
+                       if (hasSizes && !selectedSize) return 'Select Size';
+                       
                        if (isInCart) return 'Added to Cart';
                        return 'Add to Cart';
                      })()}
@@ -707,7 +801,11 @@ const ProductDetail = () => {
                   >
                     <FiHeart className={`w-5 h-5 ${isInWishlist ? 'fill-current' : ''}`} />
                   </button>
-                  <button className="p-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-primary-300 dark:hover:border-primary-700 transition-colors">
+                  <button 
+                    onClick={handleShare}
+                    className="p-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-primary-300 dark:hover:border-primary-700 transition-colors"
+                    title="Share this product"
+                  >
                     <FiShare2 className="w-5 h-5" />
                   </button>
                 </div>
@@ -911,10 +1009,16 @@ const ProductDetail = () => {
                         <motion.button
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
-                          className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-8 py-4 rounded-full font-semibold shadow-xl transition-all duration-300 backdrop-blur-sm"
+                          onClick={handleReviewSubmit}
+                          disabled={isSubmittingReview}
+                          className={`px-8 py-4 rounded-full font-semibold shadow-xl transition-all duration-300 backdrop-blur-sm ${
+                            isSubmittingReview
+                              ? 'bg-gray-400 cursor-not-allowed'
+                              : 'bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white'
+                          }`}
                           style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif' }}
                         >
-                          Submit Review
+                          {isSubmittingReview ? 'Submitting...' : 'Submit Review'}
                         </motion.button>
                       </div>
                     ) : (

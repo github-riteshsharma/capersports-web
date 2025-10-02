@@ -149,9 +149,6 @@ const Navbar = () => {
                   <span className="text-white font-bold text-xl">CS</span>
                 </div>
               </motion.div>
-              <span className="text-xl font-bold text-gray-900 dark:text-white">
-                Caper Sports
-              </span>
             </Link>
           </div>
 
