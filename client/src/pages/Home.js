@@ -104,8 +104,8 @@ const Home = () => {
   return (
     <>
       <Helmet>
-        <title>CaperSports - Just Do It. Premium Athletic Performance</title>
-        <meta name="description" content="Unleash your potential with CaperSports premium athletic wear. Engineered for champions, designed for victory." />
+        <title>Caper Sports - Just Do It. Premium Athletic Performance</title>
+        <meta name="description" content="Unleash your potential with Caper Sports premium athletic wear. Engineered for champions, designed for victory." />
         <meta name="keywords" content="athletic performance, sports clothing, nike style, apple design, premium sportswear" />
         <link rel="canonical" href="https://capersports.com" />
       </Helmet>
@@ -369,7 +369,7 @@ const Home = () => {
               className="mb-8"
               variants={fadeInUp}
             >
-              <h1 className="text-6xl md:text-8xl lg:text-9xl font-black mb-4 leading-none tracking-tight" 
+              <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-black mb-4 leading-none tracking-tight" 
                   style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif' }}>
                 <span className="block text-white mb-2">PUSH</span>
                 <span className="block bg-gradient-to-r from-red-500 to-orange-400 bg-clip-text text-transparent">BEYOND</span>

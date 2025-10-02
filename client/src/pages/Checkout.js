@@ -387,7 +387,7 @@ const Checkout = () => {
   return (
     <>
       <Helmet>
-        <title>Checkout - CaperSports</title>
+        <title>Checkout - Caper Sports</title>
         <meta name="description" content="Complete your purchase" />
       </Helmet>
 

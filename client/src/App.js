@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AnimatePresence } from 'framer-motion';
 import { checkAuthStatus } from './store/slices/authSlice';
-import { Toaster } from 'react-hot-toast';
 
 // Components
 import Navbar from './components/layout/Navbar';
@@ -44,8 +43,12 @@ import { Helmet } from 'react-helmet';
 
 function App() {
   const dispatch = useDispatch();
+  const location = useLocation();
   const { isAuthenticated, loading: authLoading } = useSelector((state) => state.auth);
   const { theme } = useSelector((state) => state.ui);
+  
+  // Check if current route is auth page
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
 
   useEffect(() => {
     // Check authentication status on app load
@@ -88,7 +91,7 @@ function App() {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">
       <Helmet>
-        <title>CaperSports - Premium Sports Clothing</title>
+        <title>Caper Sports - Premium Sports Clothing</title>
         <meta name="description" content="Discover premium sports clothing and gear for your active lifestyle" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#0ea5e9" />
@@ -97,7 +100,7 @@ function App() {
       <ScrollToTop />
       
       <div className="flex flex-col min-h-screen">
-        <Navbar />
+        {!isAuthPage && <Navbar />}
         
         <main className="flex-grow">
           <AnimatePresence mode="wait">
@@ -229,35 +232,8 @@ function App() {
           </AnimatePresence>
         </main>
         
-        <Footer />
+        {!isAuthPage && <Footer />}
       </div>
-      
-      {/* Toast notifications */}
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 4000,
-          style: {
-            background: theme === 'dark' ? '#374151' : '#ffffff',
-            color: theme === 'dark' ? '#ffffff' : '#000000',
-            border: theme === 'dark' ? '1px solid #4B5563' : '1px solid #E5E7EB',
-          },
-          success: {
-            duration: 3000,
-            iconTheme: {
-              primary: '#10B981',
-              secondary: '#ffffff',
-            },
-          },
-          error: {
-            duration: 5000,
-            iconTheme: {
-              primary: '#EF4444',
-              secondary: '#ffffff',
-            },
-          },
-        }}
-      />
     </div>
   );
 }

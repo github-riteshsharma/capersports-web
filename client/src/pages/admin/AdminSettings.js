@@ -6,7 +6,7 @@ const AdminSettings = () => {
   return (
     <>
       <Helmet>
-        <title>Admin Settings - CaperSports</title>
+        <title>Admin Settings - Caper Sports</title>
         <meta name="description" content="Admin settings" />
       </Helmet>
 

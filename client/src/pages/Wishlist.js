@@ -348,7 +348,7 @@ const Wishlist = () => {
   return (
     <>
       <Helmet>
-        <title>My Wishlist - CaperSports</title>
+        <title>My Wishlist - Caper Sports</title>
         <meta name="description" content="Your saved items and wishlist" />
       </Helmet>
 

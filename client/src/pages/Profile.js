@@ -486,7 +486,7 @@ const Profile = () => {
   return (
     <>
       <Helmet>
-        <title>Profile & Settings - CaperSports</title>
+        <title>Profile & Settings - Caper Sports</title>
         <meta name="description" content="Manage your profile and account settings" />
       </Helmet>
 

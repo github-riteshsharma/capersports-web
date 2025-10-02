@@ -125,7 +125,7 @@ const Orders = () => {
   return (
     <>
       <Helmet>
-        <title>My Orders - CaperSports</title>
+        <title>My Orders - Caper Sports</title>
         <meta name="description" content="View and manage your orders" />
       </Helmet>
 

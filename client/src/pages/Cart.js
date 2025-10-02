@@ -256,7 +256,7 @@ const Cart = () => {
   return (
     <>
       <Helmet>
-        <title>{`Shopping Cart (${totalItems || 0}) - CaperSports`}</title>
+        <title>{`Shopping Cart (${totalItems || 0}) - Caper Sports`}</title>
         <meta name="description" content="Review your selected items and proceed to checkout" />
       </Helmet>
 

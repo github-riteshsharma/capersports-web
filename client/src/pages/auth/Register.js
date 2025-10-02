@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';
 import { Helmet } from 'react-helmet';
-import { FiEye, FiEyeOff, FiMail, FiLock, FiUser, FiPhone, FiArrowRight, FiShield, FiCheck } from 'react-icons/fi';
+import { FiEye, FiEyeOff, FiMail, FiLock, FiUser, FiPhone, FiArrowRight, FiShield, FiCheck, FiHome } from 'react-icons/fi';
+import { FcGoogle } from 'react-icons/fc';
 
 // Store
 import { register, clearError } from '../../store/slices/authSlice';
@@ -32,8 +33,8 @@ const FloatingLabelInput = ({ icon: Icon, label, type = 'text', name, value, onC
   return (
     <div className={`relative group ${className}`}>
       <div className="relative">
-        <Icon className={`absolute left-4 top-1/2 transform -translate-y-1/2 z-10 ${
-          isFocused ? 'text-blue-600' : 'text-gray-400'
+        <Icon className={`absolute left-4 top-1/2 transform -translate-y-1/2 z-10 transition-colors ${
+          isFocused ? 'text-blue-500' : 'text-gray-400'
         }`} size={20} />
         
         <input
@@ -44,20 +45,20 @@ const FloatingLabelInput = ({ icon: Icon, label, type = 'text', name, value, onC
           onFocus={handleFocus}
           onBlur={handleBlur}
           className={`
-            w-full h-16 pl-12 pr-12 pt-6 pb-2 
-            bg-white/80 backdrop-blur-sm 
-            border-2 rounded-2xl 
-            text-gray-900 text-lg font-medium
-            focus:outline-none focus:bg-white
+            w-full h-14 pl-12 pr-12 pt-5 pb-2 
+            bg-white dark:bg-gray-800 
+            border-2 border-gray-200 dark:border-gray-700 rounded-xl 
+            text-gray-900 dark:text-white text-base font-medium
+            focus:outline-none
             placeholder-transparent
+            transition-all duration-200
             ${
               isFocused 
-                ? 'border-blue-500 shadow-lg shadow-blue-500/20' 
-                : 'border-gray-200 hover:border-gray-300'
+                ? 'border-blue-500 dark:border-blue-400' 
+                : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
             }
           `}
           placeholder={label}
-          required
         />
         
         <label
@@ -65,7 +66,7 @@ const FloatingLabelInput = ({ icon: Icon, label, type = 'text', name, value, onC
             absolute left-12 pointer-events-none
             ${
               isFloating
-                ? 'top-2 text-xs font-semibold text-blue-600'
+                ? 'top-2 text-xs font-semibold text-blue-500'
                 : 'top-1/2 transform -translate-y-1/2 text-base text-gray-500'
             }
           `}
@@ -138,10 +139,12 @@ const Register = () => {
 
     try {
       await dispatch(register(formData)).unwrap();
-      navigate('/', { replace: true });
-      toast.success('Welcome to CaperSports!');
+      toast.success('Welcome to Caper Sports!', { toastId: 'register-success' });
+      setTimeout(() => {
+        navigate('/', { replace: true });
+      }, 100);
     } catch (error) {
-      toast.error(error || 'Registration failed');
+      toast.error(error || 'Registration failed', { toastId: 'register-error' });
     }
   };
 
@@ -196,140 +199,150 @@ const Register = () => {
   return (
     <>
       <Helmet>
-        <title>Sign Up - CaperSports</title>
-        <meta name="description" content="Create your CaperSports account" />
+        <title>Sign Up - Caper Sports</title>
+        <meta name="description" content="Create your Caper Sports account" />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-red-50 dark:from-gray-900 dark:via-gray-800 dark:to-red-900 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-red-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-red-600/3 rounded-full blur-2xl" />
+      <div className="min-h-screen bg-gradient-to-br from-blue-50/50 via-white to-red-50/50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden">
+      
+      {/* Decorative elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 right-20 w-72 h-72 bg-blue-200/30 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 left-20 w-96 h-96 bg-purple-200/20 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative z-10 min-h-screen flex">
-        {/* Left Side - Branding */}
+      <div className="relative z-10 min-h-screen flex flex-col lg:flex-row lg:p-4">
+        {/* Left Side - Illustration/Branding */}
         <motion.div 
-          className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-red-600 via-red-700 to-blue-600 relative overflow-hidden"
-          initial={{ x: -100, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 1, ease: "easeOut" }}
+          className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-400 via-blue-300 to-red-400 relative overflow-hidden items-center justify-center p-12 rounded-3xl shadow-2xl"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8 }}
         >
-          {/* Animated Background */}
+          {/* Decorative circles */}
           <div className="absolute inset-0">
-            <motion.div 
-              className="absolute top-1/4 right-1/4 w-64 h-64 bg-white/10 rounded-full blur-2xl"
-              animate={{ 
-                scale: [1, 1.2, 1],
-                opacity: [0.3, 0.6, 0.3]
-              }}
-              transition={{ 
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
-            <motion.div 
-              className="absolute bottom-1/4 left-1/4 w-48 h-48 bg-white/5 rounded-full blur-xl"
-              animate={{ 
-                scale: [1.2, 1, 1.2],
-                opacity: [0.2, 0.4, 0.2]
-              }}
-              transition={{ 
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: 1
-              }}
-            />
+            <div className="absolute top-10 left-10 w-32 h-32 bg-white/10 rounded-full" />
+            <div className="absolute bottom-20 right-20 w-24 h-24 bg-white/10 rounded-full" />
+            <div className="absolute top-1/3 right-10 w-16 h-16 bg-white/5 rounded-full" />
           </div>
 
           {/* Content */}
-          <div className="relative z-10 w-full h-full">
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md text-center text-white">
-              <div className="flex flex-col items-center space-y-8">
+          <div className="relative z-10 text-center space-y-8 max-w-lg">
+            {/* Logo */}
+            <Link to="/">
               <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-                className="flex flex-col items-center"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                whileHover={{ scale: 1.1 }}
+                className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-3xl shadow-2xl mb-8 cursor-pointer"
               >
-                <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center mb-6">
-                  <span className="text-3xl font-black">C</span>
-                </div>
-                <h1 className="text-4xl font-black mb-4 leading-tight">
-                  Join the<br />
-                  <span className="bg-gradient-to-r from-white to-red-100 bg-clip-text text-transparent">
-                    CaperSports Family
-                  </span>
-                </h1>
-                <p className="text-xl text-red-100 max-w-md leading-relaxed">
-                  Start your journey to athletic excellence with premium gear and expert guidance.
-                </p>
+                <span className="text-4xl font-black bg-gradient-to-br from-blue-500 to-red-500 bg-clip-text text-transparent">C</span>
               </motion.div>
+            </Link>
 
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
-                className="flex flex-col items-center space-y-4 text-red-100"
-              >
-                <div className="flex items-center space-x-3">
-                  <FiCheck className="w-5 h-5" />
-                  <span>Free shipping on orders over ₹2000</span>
+            {/*Illustration placeholder - using geometric shapes */}
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              className="relative w-full h-64 flex items-center justify-center"
+            >
+              <div className="relative w-48 h-48">
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                  className="absolute inset-0 border-4 border-white/30 border-t-white rounded-full"
+                />
+                <motion.div
+                  animate={{ rotate: -360 }}
+                  transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                  className="absolute inset-4 border-4 border-white/20 border-b-white/60 rounded-full"
+                />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-20 h-20 bg-white rounded-2xl shadow-2xl flex items-center justify-center">
+                    <FiUser className="w-10 h-10 text-blue-600" />
+                  </div>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <FiCheck className="w-5 h-5" />
-                  <span>30-day return guarantee</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <FiCheck className="w-5 h-5" />
-                  <span>Exclusive member discounts</span>
-                </div>
-              </motion.div>
               </div>
-            </div>
+            </motion.div>
+
+            {/* Text */}
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+              className="space-y-4"
+            >
+              <h1 className="text-4xl font-bold text-white">
+                Join Caper Sports
+              </h1>
+              <p className="text-xl text-white/80">
+                Start your athletic journey with premium gear and expert guidance
+              </p>
+            </motion.div>
+
+            {/* Stats */}
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.8, duration: 0.6 }}
+              className="flex justify-center gap-8 pt-8"
+            >
+              <div className="text-center">
+                <div className="text-3xl font-bold text-white">10K+</div>
+                <div className="text-sm text-white/70">Athletes</div>
+              </div>
+              <div className="w-px bg-white/20" />
+              <div className="text-center">
+                <div className="text-3xl font-bold text-white">500+</div>
+                <div className="text-sm text-white/70">Products</div>
+              </div>
+              <div className="w-px bg-white/20" />
+              <div className="text-center">
+                <div className="text-3xl font-bold text-white">98%</div>
+                <div className="text-sm text-white/70">Satisfaction</div>
+              </div>
+            </motion.div>
           </div>
         </motion.div>
 
         {/* Right Side - Register Form */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
+        <div className="w-full lg:w-1/2 flex items-start lg:items-center justify-center p-6 sm:p-8 lg:p-12 overflow-y-auto min-h-screen lg:min-h-0 bg-gray-50/30 dark:bg-gray-900/30">
           <motion.div 
-            className="w-full max-w-md"
+            className="w-full max-w-md py-8 lg:py-0"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
             {/* Header */}
             <motion.div 
-              className="text-center mb-8"
+              className="mb-8"
               variants={itemVariants}
             >
-              <Link to="/" className="lg:hidden flex items-center justify-center space-x-2 mb-8">
-                <div className="w-12 h-12 bg-gradient-to-r from-red-600 to-blue-600 rounded-2xl flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">C</span>
+              <Link to="/" className="lg:hidden flex items-center space-x-2 mb-8 hover:scale-105 transition-transform duration-200">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-red-400 rounded-xl flex items-center justify-center shadow-lg">
+                  <span className="text-white font-bold text-lg">C</span>
                 </div>
-                <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                  CaperSports
+                <span className="text-xl font-bold text-gray-900 dark:text-white">
+                  Caper Sports
                 </span>
               </Link>
-              
-              <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-2">
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2">
                 Create Account
               </h2>
               <p className="text-gray-600 dark:text-gray-400">
-                Join thousands of athletes worldwide
+                Sign up to get started
               </p>
             </motion.div>
 
             {/* Form */}
             <form 
-              className="space-y-6" 
+              className="space-y-4 sm:space-y-5" 
               onSubmit={handleSubmit}
             >
               {/* Name Fields */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FloatingLabelInput
                   icon={FiUser}
                   label="First Name"
@@ -360,17 +373,6 @@ const Register = () => {
                 value={formData.email}
                 onChange={handleChange}
                 onFocus={() => setFocusedField('email')}
-                onBlur={() => setFocusedField(null)}
-              />
-
-              <FloatingLabelInput
-                icon={FiPhone}
-                label="Phone Number"
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                onFocus={() => setFocusedField('phone')}
                 onBlur={() => setFocusedField(null)}
               />
 
@@ -467,14 +469,14 @@ const Register = () => {
                   disabled={loading || !agreedToTerms}
                   onClick={handleSubmit}
                   className="
-                    w-full h-14 bg-gradient-to-r from-red-600 to-blue-600 
-                    text-white font-bold text-lg rounded-2xl
-                    hover:from-red-700 hover:to-blue-700
-                    focus:outline-none focus:ring-4 focus:ring-red-500/30
+                    w-full h-14 bg-gradient-to-r from-blue-500 to-red-500
+                    text-white font-semibold text-lg rounded-xl
+                    hover:from-blue-600 hover:to-red-600
+                    hover:shadow-lg
+                    focus:outline-none focus:ring-4 focus:ring-blue-500/30
                     disabled:opacity-50 disabled:cursor-not-allowed
-                    transition-all duration-300 ease-out
+                    transition-all duration-200 ease-out
                     flex items-center justify-center space-x-2
-                    group relative overflow-hidden
                   "
                   whileHover={{ scale: agreedToTerms ? 1.02 : 1 }}
                   whileTap={{ scale: agreedToTerms ? 0.98 : 1 }}
@@ -512,6 +514,28 @@ const Register = () => {
                     )}
                   </AnimatePresence>
                 </motion.button>
+              </motion.div>
+
+              {/* Divider */}
+              <motion.div variants={itemVariants} className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-white dark:bg-gray-900 text-gray-500">Or continue with</span>
+                </div>
+              </motion.div>
+
+              {/* Google Sign Up */}
+              <motion.div variants={itemVariants}>
+                <button
+                  type="button"
+                  onClick={() => toast.info('Google OAuth coming soon!')}
+                  className="w-full h-14 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-xl flex items-center justify-center space-x-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200"
+                >
+                  <FcGoogle className="w-6 h-6" />
+                  <span className="font-semibold text-gray-700 dark:text-gray-300">Sign up with Google</span>
+                </button>
               </motion.div>
 
               {/* Error Message */}

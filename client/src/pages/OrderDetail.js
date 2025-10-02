@@ -201,7 +201,7 @@ const OrderDetail = () => {
   return (
     <>
       <Helmet>
-        <title>Order #{currentOrder.orderNumber} - CaperSports</title>
+        <title>Order #{currentOrder.orderNumber} - Caper Sports</title>
         <meta name="description" content={`View details for order ${currentOrder.orderNumber}`} />
       </Helmet>
 

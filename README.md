@@ -11,7 +11,7 @@ Error: F***iled to deploy web p***ck***ge to App Service.
 Error: Deployment F***iled, P***ck***ge deployment using ZIP Deploy f***iled. Refer logs for more det***ils.
 
 >>>>>>> parent of 56485b0 (clean: remove unnecessary deployment files and clean project structure)
-# CaperSports - MERN Stack E-commerce Platform
+# Caper Sports - MERN Stack E-commerce Platform
 
 A full-stack e-commerce platform for premium sports clothing built with React, Node.js, Express, and MongoDB. **Ready for Azure deployment!**
 
@@ -190,7 +190,7 @@ az webapp deployment source config \
    Go to **Configuration** and add:
    ```
    REACT_APP_API_URL=https://your-backend-app.azurewebsites.net/api
-   REACT_APP_NAME=CaperSports
+   REACT_APP_NAME=Caper Sports
    REACT_APP_VERSION=1.0.0
    REACT_APP_ENV=production
    REACT_APP_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key

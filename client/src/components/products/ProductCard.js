@@ -165,7 +165,7 @@ const ProductCard = ({ product, className = '' }) => {
 
   return (
     <motion.div
-      className={`group relative bg-white dark:bg-gray-900 overflow-hidden ${className}`}
+      className={`group relative bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 ${className}`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
@@ -173,7 +173,7 @@ const ProductCard = ({ product, className = '' }) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Product Image Container */}
-      <div className="relative aspect-square overflow-hidden bg-gray-50 dark:bg-gray-800">
+      <div className="relative aspect-square overflow-hidden bg-gray-50 dark:bg-gray-800 rounded-t-2xl">
         <Link to={`/products/${product._id}`} className="block relative w-full h-full">
           {/* Main Product Image */}
           <div className="relative w-full h-full">

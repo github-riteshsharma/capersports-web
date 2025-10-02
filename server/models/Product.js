@@ -55,15 +55,15 @@ const productSchema = new mongoose.Schema({
   colors: [{
     name: {
       type: String,
-      required: true,
+      required: false,
     },
     hex: {
       type: String,
-      required: true,
+      required: false,
     },
     images: [{
       type: String,
-      required: true,
+      required: false,
     }],
   }],
   sizes: [{
@@ -179,7 +179,8 @@ const productSchema = new mongoose.Schema({
   },
   weight: {
     type: Number, // in grams
-    required: [true, 'Product weight is required'],
+    required: false,
+    default: 0,
   },
   dimensions: {
     length: Number,

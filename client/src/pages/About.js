@@ -94,36 +94,24 @@ const About = () => {
 
   const teamMembers = [
     {
-      name: 'Rajesh Kumar',
+      name: 'Avinash Sharma',
       role: 'Founder & CEO',
       image: '/images/team-placeholder.jpg',
-      bio: 'Former professional athlete with 20+ years in sports industry'
+      bio: 'Visionary leader with passion for sports and innovation'
     },
     {
-      name: 'Priya Sharma',
+      name: 'Abhishek Sharma',
       role: 'Head of Design',
       image: '/images/team-placeholder.jpg',
-      bio: 'Award-winning designer specializing in athletic wear'
-    },
-    {
-      name: 'Arjun Patel',
-      role: 'CTO',
-      image: '/images/team-placeholder.jpg',
-      bio: 'Tech innovator bringing cutting-edge solutions to sports'
-    },
-    {
-      name: 'Meera Singh',
-      role: 'Head of Operations',
-      image: '/images/team-placeholder.jpg',
-      bio: 'Operations expert ensuring quality and timely delivery'
+      bio: 'Creative designer crafting exceptional athletic wear experiences'
     }
   ];
 
   return (
     <>
       <Helmet>
-        <title>About Us - CaperSports | Premium Sports Clothing</title>
-        <meta name="description" content="Learn about CaperSports' mission to provide premium sports clothing for athletes. Discover our story, values, and commitment to quality." />
+        <title>About Us - Caper Sports | Premium Sports Clothing</title>
+        <meta name="description" content="Learn about Caper Sports' mission to provide premium sports clothing for athletes. Discover our story, values, and commitment to quality." />
         <meta name="keywords" content="about capersports, sports clothing company, athletic wear brand, sports apparel mission" />
       </Helmet>
 
@@ -207,17 +195,17 @@ const About = () => {
                 </h2>
                 <div className="space-y-4 text-gray-600 dark:text-gray-300">
                   <p className="text-lg leading-relaxed">
-                    CaperSports was born from a simple belief: athletes deserve gear that enhances their performance, 
-                    not holds them back. Founded in 2008 by former professional athlete Rajesh Kumar, we started with 
+                    Caper Sports was born from a simple belief: athletes deserve gear that enhances their performance, 
+                    not holds them back. Founded in 2020 by visionary entrepreneurs Avinash Sharma and Abhishek Sharma, we started with 
                     a mission to create premium sports clothing that combines cutting-edge technology with uncompromising comfort.
                   </p>
                   <p className="text-lg leading-relaxed">
-                    What began as a small startup in Mumbai has grown into a trusted brand serving athletes across India and beyond. 
+                    What began as a small startup in Noida has grown into a trusted brand serving athletes across India and beyond. 
                     Our journey has been driven by continuous innovation, customer feedback, and an unwavering commitment to quality.
                   </p>
                   <p className="text-lg leading-relaxed">
                     Today, we're proud to be the go-to choice for athletes who demand excellence in every aspect of their gear. 
-                    From weekend warriors to professional competitors, CaperSports empowers athletes to perform at their best.
+                    From weekend warriors to professional competitors, Caper Sports empowers athletes to perform at their best.
                   </p>
                 </div>
               </motion.div>
@@ -226,7 +214,7 @@ const About = () => {
                 <div className="aspect-w-16 aspect-h-12 bg-gradient-to-br from-blue-600 to-red-600 rounded-2xl overflow-hidden">
                   <img
                     src="/images/about-story-placeholder.jpg"
-                    alt="CaperSports Story"
+                    alt="Caper Sports Story"
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       e.target.style.display = 'none';
@@ -354,7 +342,7 @@ const About = () => {
                 Meet Our Team
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                The passionate individuals behind CaperSports, dedicated to bringing you the best in sports apparel.
+                The passionate individuals behind Caper Sports, dedicated to bringing you the best in sports apparel.
               </p>
             </motion.div>
 
@@ -363,7 +351,7 @@ const About = () => {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+              className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto"
             >
               {teamMembers.map((member, index) => (
                 <motion.div
@@ -409,7 +397,7 @@ const About = () => {
               transition={{ duration: 0.6 }}
             >
               <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900 dark:text-white">
-                Ready to Join the CaperSports Family?
+                Ready to Join the Caper Sports Family?
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
                 Discover premium sports clothing designed for athletes who never settle for less. 

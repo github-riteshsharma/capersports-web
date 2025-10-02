@@ -97,7 +97,7 @@ app.use('/api/admin', adminRoutes);
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'success',
-    message: 'CaperSports API is running!',
+    message: 'Caper Sports API is running!',
     timestamp: new Date().toISOString(),
   });
 });

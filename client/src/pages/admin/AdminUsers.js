@@ -250,7 +250,7 @@ const AdminUsers = () => {
   return (
     <>
       <Helmet>
-        <title>Admin Users - CaperSports</title>
+        <title>Admin Users - Caper Sports</title>
         <meta name="description" content="Manage users - View, edit, and manage user accounts" />
       </Helmet>
 

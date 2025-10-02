@@ -44,6 +44,17 @@ const getColorHex = (colorName) => {
   return colorMap[colorName] || '#000000'; // Default to black if color not found
 };
 
+// Helper function for stock status
+const getStockStatus = (product) => {
+  const stock = product.totalStock || product.stock || 0;
+  if (stock === 0) {
+    return { text: 'Out of Stock', color: 'text-red-600 bg-red-100' };
+  } else if (stock < 10) {
+    return { text: 'Low Stock', color: 'text-yellow-600 bg-yellow-100' };
+  }
+  return { text: 'In Stock', color: 'text-green-600 bg-green-100' };
+};
+
 const AdminProducts = () => {
   const dispatch = useDispatch();
   const { products, loading, error, pagination } = useSelector((state) => state.admin);
@@ -51,6 +62,20 @@ const AdminProducts = () => {
   // Extract pagination values to avoid infinite loops
   const currentPage = pagination?.page || 1;
   const pageLimit = pagination?.limit || 10;
+  
+  // Subcategory options based on category
+  const subCategoryOptions = {
+    'T-Shirts': ['Polo', 'Round Neck', 'V-Neck', 'Henley', 'Long Sleeve'],
+    'Hoodies': ['Pullover', 'Zip-Up', 'Sleeveless', 'Oversized'],
+    'Jackets': ['Bomber', 'Windbreaker', 'Puffer', 'Track Jacket', 'Rain Jacket'],
+    'Shorts': ['Athletic', 'Running', 'Basketball', 'Cargo', 'Compression'],
+    'Pants': ['Joggers', 'Track Pants', 'Leggings', 'Sweatpants', 'Cargo Pants'],
+    'Shoes': ['Running', 'Training', 'Basketball', 'Casual', 'Walking'],
+    'Accessories': ['Caps', 'Socks', 'Bags', 'Gloves', 'Headbands', 'Water Bottles'],
+    'Sportswear': ['Jerseys', 'Sports Bra', 'Compression Wear', 'Base Layer'],
+    'Athleisure': ['Casual Wear', 'Loungewear', 'Streetwear'],
+    'Swimwear': ['Swim Trunks', 'Rash Guards', 'Swim Caps']
+  };
   
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -65,21 +90,19 @@ const AdminProducts = () => {
   const [productForm, setProductForm] = useState({
     name: '',
     sku: '',
-    brand: '',
+    brand: 'Caper Sports',
     category: '',
     subCategory: '',
     gender: '',
     ageGroup: '',
     material: '',
     careInstructions: '',
-    weight: '',
     price: '',
     description: '',
     stock: '',
     salePrice: '',
     isFeatured: false,
     isOnSale: false,
-    colors: [],
     sizes: []
   });
 
@@ -107,19 +130,10 @@ const AdminProducts = () => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
         await dispatch(deleteProduct(productId)).unwrap();
-        toast.success('Product deleted successfully');
-        // Refresh the products list
-        dispatch(getAdminProducts({
-          search: searchQuery,
-          category: selectedCategory,
-          brand: selectedBrand,
-          status: statusFilter,
-          sortBy: sortBy,
-          page: pagination.page,
-          limit: pagination.limit
-        }));
+        toast.success('Product deleted successfully', { autoClose: 2000 });
+        // Product is automatically removed from state by the reducer
       } catch (error) {
-        toast.error(error || 'Failed to delete product');
+        toast.error(error || 'Failed to delete product', { autoClose: 3000 });
       }
     }
   };
@@ -129,21 +143,19 @@ const AdminProducts = () => {
     setProductForm({
       name: product.name || '',
       sku: product.sku || '',
-      brand: product.brand || '',
+      brand: product.brand || 'Caper Sports',
       category: product.category || '',
       subCategory: product.subCategory || '',
       gender: product.gender || '',
       ageGroup: product.ageGroup || '',
       material: product.material || '',
       careInstructions: product.careInstructions || '',
-      weight: product.weight?.toString() || '',
       price: product.price?.toString() || '',
       description: product.description || '',
       stock: product.stock?.toString() || product.totalStock?.toString() || '0',
       salePrice: product.salePrice?.toString() || '',
       isFeatured: product.isFeatured || false,
       isOnSale: product.isOnSale || false,
-      colors: product.colors?.map(c => c.name || c) || [],
       sizes: product.sizes?.map(s => s.size || s) || []
     });
     // Set existing images if any
@@ -172,6 +184,28 @@ const AdminProducts = () => {
       setSelectedProducts([]);
     } else {
       setSelectedProducts(products.map(product => product._id));
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedProducts.length === 0) {
+      toast.error('Please select products to delete');
+      return;
+    }
+
+    if (window.confirm(`Are you sure you want to delete ${selectedProducts.length} product(s)?`)) {
+      try {
+        // Delete each product
+        const deletePromises = selectedProducts.map(productId => 
+          dispatch(deleteProduct(productId)).unwrap()
+        );
+        
+        await Promise.all(deletePromises);
+        toast.success(`${selectedProducts.length} product(s) deleted successfully`, { autoClose: 2000 });
+        setSelectedProducts([]);
+      } catch (error) {
+        toast.error(error || 'Failed to delete products', { autoClose: 3000 });
+      }
     }
   };
 
@@ -213,10 +247,20 @@ const AdminProducts = () => {
   };
 
   const handleFormChange = (field, value) => {
-    setProductForm(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    setProductForm(prev => {
+      // Reset subcategory when category changes
+      if (field === 'category') {
+        return {
+          ...prev,
+          [field]: value,
+          subCategory: ''
+        };
+      }
+      return {
+        ...prev,
+        [field]: value
+      };
+    });
   };
 
   const handleColorChange = (color, checked) => {
@@ -241,21 +285,19 @@ const AdminProducts = () => {
     setProductForm({
       name: '',
       sku: '',
-      brand: '',
+      brand: 'Caper Sports',
       category: '',
       subCategory: '',
       gender: '',
       ageGroup: '',
       material: '',
       careInstructions: '',
-      weight: '',
       price: '',
       description: '',
       stock: '',
       salePrice: '',
       isFeatured: false,
       isOnSale: false,
-      colors: [],
       sizes: []
     });
     setSelectedImages([]);
@@ -265,8 +307,8 @@ const AdminProducts = () => {
     e.preventDefault();
     
     // Validate form data
-    if (!productForm.name || !productForm.price || !productForm.category || !productForm.brand || !productForm.description || !productForm.subCategory || !productForm.gender || !productForm.ageGroup || !productForm.material || !productForm.careInstructions || !productForm.weight) {
-      toast.error('Please fill in all required fields (name, price, category, subcategory, brand, description, gender, age group, material, care instructions, weight)');
+    if (!productForm.name || !productForm.price || !productForm.category || !productForm.description || !productForm.subCategory || !productForm.gender || !productForm.ageGroup || !productForm.material || !productForm.careInstructions) {
+      toast.error('Please fill in all required fields (name, price, category, subcategory, description, gender, age group, material, care instructions)');
       return;
     }
     
@@ -282,11 +324,6 @@ const AdminProducts = () => {
       return;
     }
     
-    // Validate colors
-    if (!productForm.colors || productForm.colors.length === 0) {
-      toast.error('Please select at least one color');
-      return;
-    }
     
     // Generate SKU if not provided
     let sku = productForm.sku;
@@ -305,23 +342,17 @@ const AdminProducts = () => {
         ...productForm,
         sku: sku,
         price: parseFloat(productForm.price),
-        weight: parseFloat(productForm.weight),
         salePrice: productForm.salePrice ? parseFloat(productForm.salePrice) : null,
-        totalStock: parseInt(productForm.stock) || 0, // Set initial value, will be recalculated by backend
-        images: selectedImages.map(img => img.preview), // For now, use preview URLs
-        // Transform colors from array of strings to array of objects
-        colors: productForm.colors.map(colorName => ({
-          name: colorName,
-          hex: getColorHex(colorName),
-          images: selectedImages.map(img => img.preview) // Use selected images for each color
-        })),
+        totalStock: parseInt(productForm.stock) || 0,
+        weight: 0, // Default weight to 0
+        colors: [], // Default colors to empty array
+        images: selectedImages.map(img => img.preview),
         // Transform sizes from array of strings to array of objects  
         sizes: productForm.sizes.map((sizeName, index) => {
           const totalStock = parseInt(productForm.stock) || 0;
           const numSizes = productForm.sizes.length;
           const baseStock = Math.floor(totalStock / numSizes);
           const remainder = totalStock % numSizes;
-          // Distribute remainder to first few sizes to ensure total matches input
           return {
             size: sizeName,
             stock: baseStock + (index < remainder ? 1 : 0)
@@ -371,13 +402,7 @@ const AdminProducts = () => {
     }
   };
 
-  const getStockStatus = (product) => {
-    if (product.totalStock === 0) return { text: 'Out of Stock', color: 'text-red-600 bg-red-100' };
-    if (product.totalStock <= (product.lowStockThreshold || 10)) return { text: 'Low Stock', color: 'text-yellow-600 bg-yellow-100' };
-    return { text: 'In Stock', color: 'text-green-600 bg-green-100' };
-  };
-
-  const ProductCard = ({ product }) => {
+  const ProductCard = React.memo(({ product, isSelected, onSelect, onEdit, onDelete }) => {
     const stockStatus = getStockStatus(product);
     
     return (
@@ -392,8 +417,11 @@ const AdminProducts = () => {
             <div className="flex items-center">
               <input
                 type="checkbox"
-                checked={selectedProducts.includes(product._id)}
-                onChange={() => handleSelectProduct(product._id)}
+                checked={isSelected}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  onSelect(product._id);
+                }}
                 className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
               <div className="flex-1">
@@ -437,13 +465,19 @@ const AdminProducts = () => {
             </div>
             <div className="flex items-center space-x-2">
               <button
-                onClick={() => handleEditProduct(product)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit(product);
+                }}
                 className="p-2 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 <FiEdit className="w-4 h-4" />
               </button>
               <button
-                onClick={() => handleDeleteProduct(product._id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete(product._id);
+                }}
                 className="p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
               >
                 <FiTrash2 className="w-4 h-4" />
@@ -498,7 +532,7 @@ const AdminProducts = () => {
         </div>
       </motion.div>
     );
-  };
+  });
 
   if (loading) {
     return (
@@ -511,7 +545,7 @@ const AdminProducts = () => {
   return (
     <>
       <Helmet>
-        <title>Admin Products - CaperSports</title>
+        <title>Admin Products - Caper Sports</title>
         <meta name="description" content="Manage products - Create, edit, and delete products" />
       </Helmet>
 
@@ -581,7 +615,10 @@ const AdminProducts = () => {
                     <span className="text-sm text-gray-600 dark:text-gray-400">
                       {selectedProducts.length} selected
                     </span>
-                    <button className="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700 transition-colors">
+                    <button 
+                      onClick={handleBulkDelete}
+                      className="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700 transition-colors"
+                    >
                       Delete Selected
                     </button>
                   </div>
@@ -628,10 +665,7 @@ const AdminProducts = () => {
                       className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                     >
                       <option value="">All Brands</option>
-                      <option value="CaperSports">CaperSports</option>
-                      <option value="Nike">Nike</option>
-                      <option value="Adidas">Adidas</option>
-                      <option value="Under Armour">Under Armour</option>
+                      <option value="Caper Sports">Caper Sports</option>
                     </select>
                   </div>
 
@@ -738,7 +772,14 @@ const AdminProducts = () => {
               {/* Products Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {products.map((product) => (
-                  <ProductCard key={product._id} product={product} />
+                  <ProductCard 
+                    key={product._id} 
+                    product={product}
+                    isSelected={selectedProducts.includes(product._id)}
+                    onSelect={handleSelectProduct}
+                    onEdit={handleEditProduct}
+                    onDelete={handleDeleteProduct}
+                  />
                 ))}
               </div>
 
@@ -780,8 +821,14 @@ const AdminProducts = () => {
 
           {/* Product Modal */}
           {showProductModal && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto m-4">
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                setShowProductModal(false);
+                setEditingProduct(null);
+                resetForm();
+              }
+            }}>
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -829,24 +876,6 @@ const AdminProducts = () => {
                         />
                       </div>
 
-                      {/* Brand */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          Brand *
-                        </label>
-                        <select 
-                          value={productForm.brand}
-                          onChange={(e) => handleFormChange('brand', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-                        >
-                          <option value="">Select Brand</option>
-                          <option value="CaperSports">CaperSports</option>
-                          <option value="Nike">Nike</option>
-                          <option value="Adidas">Adidas</option>
-                          <option value="Under Armour">Under Armour</option>
-                        </select>
-                      </div>
-
                       {/* Category */}
                       <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -876,13 +905,20 @@ const AdminProducts = () => {
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           Sub Category *
                         </label>
-                        <input
-                          type="text"
-                          placeholder="Enter sub category"
+                        <select
                           value={productForm.subCategory}
                           onChange={(e) => handleFormChange('subCategory', e.target.value)}
                           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-                        />
+                          disabled={!productForm.category}
+                        >
+                          <option value="">Select Sub Category</option>
+                          {productForm.category && subCategoryOptions[productForm.category]?.map((subCat) => (
+                            <option key={subCat} value={subCat}>{subCat}</option>
+                          ))}
+                        </select>
+                        {!productForm.category && (
+                          <p className="mt-1 text-xs text-gray-500">Please select a category first</p>
+                        )}
                       </div>
 
                       {/* Gender */}
@@ -931,21 +967,6 @@ const AdminProducts = () => {
                           placeholder="Enter material (e.g., Cotton, Polyester)"
                           value={productForm.material}
                           onChange={(e) => handleFormChange('material', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-                        />
-                      </div>
-
-                      {/* Weight */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          Weight (grams) *
-                        </label>
-                        <input
-                          type="number"
-                          placeholder="Enter weight in grams"
-                          min="0"
-                          value={productForm.weight}
-                          onChange={(e) => handleFormChange('weight', e.target.value)}
                           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                         />
                       </div>
@@ -1055,46 +1076,23 @@ const AdminProducts = () => {
                       )}
                     </div>
 
-                    {/* Colors and Sizes */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {/* Colors */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          Available Colors
-                        </label>
-                        <div className="space-y-2">
-                          {['Black', 'White', 'Red', 'Blue', 'Green', 'Yellow'].map((color) => (
-                            <label key={color} className="flex items-center">
-                              <input
-                                type="checkbox"
-                                checked={productForm.colors.includes(color)}
-                                onChange={(e) => handleColorChange(color, e.target.checked)}
-                                className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                              />
-                              <span className="text-sm text-gray-700 dark:text-gray-300">{color}</span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Sizes */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          Available Sizes
-                        </label>
-                        <div className="space-y-2">
-                          {['XS', 'S', 'M', 'L', 'XL', 'XXL'].map((size) => (
-                            <label key={size} className="flex items-center">
-                              <input
-                                type="checkbox"
-                                checked={productForm.sizes.includes(size)}
-                                onChange={(e) => handleSizeChange(size, e.target.checked)}
-                                className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                              />
-                              <span className="text-sm text-gray-700 dark:text-gray-300">{size}</span>
-                            </label>
-                          ))}
-                        </div>
+                    {/* Sizes */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Available Sizes *
+                      </label>
+                      <div className="flex flex-wrap gap-3">
+                        {['XS', 'S', 'M', 'L', 'XL', 'XXL'].map((size) => (
+                          <label key={size} className="flex items-center space-x-2 bg-gray-50 dark:bg-gray-700 px-4 py-2 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                            <input
+                              type="checkbox"
+                              checked={productForm.sizes.includes(size)}
+                              onChange={(e) => handleSizeChange(size, e.target.checked)}
+                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{size}</span>
+                          </label>
+                        ))}
                       </div>
                     </div>
 

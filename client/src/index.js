@@ -16,23 +16,28 @@ root.render(
     <Provider store={store}>
       <BrowserRouter>
         <Helmet>
-          <title>CaperSports - Premium Sports Clothing</title>
+          <title>Caper Sports - Premium Sports Clothing</title>
           <meta name="description" content="Discover premium sports clothing and gear for your active lifestyle" />
         </Helmet>
         <App />
         <ToastContainer
-          position="top-right"
+          position="top-center"
           autoClose={3000}
           hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
+          newestOnTop={true}
+          closeOnClick={true}
           rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
+          pauseOnFocusLoss={false}
+          draggable={false}
+          pauseOnHover={false}
           theme="light"
-          toastClassName="text-sm"
-          bodyClassName="text-sm"
+          toastClassName="custom-toast"
+          bodyClassName="custom-toast-body"
+          progressClassName="custom-toast-progress"
+          closeButton={true}
+          icon={true}
+          limit={3}
+          transition={undefined}
         />
       </BrowserRouter>
     </Provider>

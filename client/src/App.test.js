@@ -1,9 +1,9 @@
 /**
- * Basic test suite for CaperSports application
+ * Basic test suite for Caper Sports application
  * This ensures the test infrastructure is working correctly
  */
 
-describe('CaperSports Application', () => {
+describe('Caper Sports Application', () => {
   test('basic test passes', () => {
     expect(true).toBe(true);
   });

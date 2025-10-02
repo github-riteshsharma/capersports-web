@@ -155,7 +155,7 @@ const Settings = () => {
   return (
     <>
       <Helmet>
-        <title>Settings - CaperSports</title>
+        <title>Settings - Caper Sports</title>
         <meta name="description" content="Manage your account settings and preferences" />
       </Helmet>
 

@@ -117,15 +117,15 @@ const Navbar = () => {
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       isScrolled 
-        ? 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg shadow-lg' 
-        : 'bg-white dark:bg-gray-900'
+        ? 'bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl shadow-lg border-b border-white/20 dark:border-gray-700/30' 
+        : 'bg-white/60 dark:bg-gray-900/60 backdrop-blur-lg border-b border-white/10 dark:border-gray-700/20'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-3">
-              {/* Custom CaperSports Logo */}
+              {/* Custom Caper Sports Logo */}
               <motion.div
                 className="w-10 h-10 flex items-center justify-center"
                 whileHover={{ scale: 1.05 }}
@@ -133,7 +133,7 @@ const Navbar = () => {
               >
                 <img
                   src="/images/capersports-logo.png"
-                  alt="CaperSports Logo"
+                  alt="Caper Sports Logo"
                   className="w-10 h-10 object-contain"
                   onError={(e) => {
                     // Fallback to branded text logo if image fails to load
@@ -150,7 +150,7 @@ const Navbar = () => {
                 </div>
               </motion.div>
               <span className="text-xl font-bold text-gray-900 dark:text-white">
-                CaperSports
+                Caper Sports
               </span>
             </Link>
           </div>
@@ -193,7 +193,7 @@ const Navbar = () => {
                       placeholder="Search products..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-64 pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white bg-white transition-all"
+                      className="w-48 sm:w-64 pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white bg-white transition-all"
                       autoFocus
                     />
                     <button
@@ -386,7 +386,7 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700"
+            className="md:hidden bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-t border-white/20 dark:border-gray-700/30"
           >
             <div className="px-4 py-2 space-y-1">
               {navigation.map((item) => (

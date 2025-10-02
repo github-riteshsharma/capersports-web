@@ -165,14 +165,12 @@ router.get('/products', async (req, res) => {
 // @access  Private/Admin
 router.post('/products', [
   body('name').notEmpty().withMessage('Product name is required'),
-  body('description').notEmpty().withMessage('Description is required'),
   body('price').isFloat({ min: 0 }).withMessage('Price must be a positive number'),
   body('category').notEmpty().withMessage('Category is required'),
   body('brand').notEmpty().withMessage('Brand is required'),
   body('sku').notEmpty().withMessage('SKU is required'),
   body('images').isArray({ min: 1 }).withMessage('At least one image is required'),
   body('sizes').isArray({ min: 1 }).withMessage('At least one size is required'),
-  body('colors').isArray({ min: 1 }).withMessage('At least one color is required'),
 ], async (req, res) => {
   try {
     // Check for validation errors
@@ -279,13 +277,13 @@ router.delete('/products/:id', async (req, res) => {
       });
     }
 
-    // Soft delete by setting isActive to false
-    product.isActive = false;
-    await product.save();
+    // Hard delete - permanently remove from database
+    await Product.findByIdAndDelete(req.params.id);
 
     res.json({
       success: true,
       message: 'Product deleted successfully',
+      productId: req.params.id,
     });
   } catch (error) {
     console.error('Delete product error:', error);
@@ -442,6 +440,129 @@ router.get('/users', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Server error while fetching users',
+    });
+  }
+});
+
+// @route   PUT /api/admin/users/:id/role
+// @desc    Update user role
+// @access  Private/Admin
+router.put('/users/:id/role', async (req, res) => {
+  try {
+    const { role } = req.body;
+    
+    if (!['user', 'admin'].includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid role. Must be either "user" or "admin"',
+      });
+    }
+
+    const user = await User.findById(req.params.id);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    user.role = role;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'User role updated successfully',
+      user: {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+        isActive: user.isActive,
+      },
+    });
+  } catch (error) {
+    console.error('Update user role error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while updating user role',
+    });
+  }
+});
+
+// @route   PUT /api/admin/users/:id/activate
+// @desc    Activate user
+// @access  Private/Admin
+router.put('/users/:id/activate', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    user.isActive = true;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'User activated successfully',
+      user: {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+        isActive: user.isActive,
+      },
+    });
+  } catch (error) {
+    console.error('Activate user error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while activating user',
+    });
+  }
+});
+
+// @route   PUT /api/admin/users/:id/deactivate
+// @desc    Deactivate user
+// @access  Private/Admin
+router.put('/users/:id/deactivate', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    user.isActive = false;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'User deactivated successfully',
+      user: {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+        isActive: user.isActive,
+      },
+    });
+  } catch (error) {
+    console.error('Deactivate user error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while deactivating user',
     });
   }
 });

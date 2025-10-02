@@ -1,7 +1,7 @@
 {
   "name": "capersports",
   "version": "1.0.0",
-  "description": "CaperSports - Premium Sports Clothing E-commerce Platform",
+  "description": "Caper Sports - Premium Sports Clothing E-commerce Platform",
   "main": "index.js",
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run client\"",
@@ -22,7 +22,7 @@
     "npm": ">=9.x"
   },
   "keywords": ["ecommerce", "mern", "sports", "clothing", "azure"],
-  "author": "CaperSports",
+  "author": "Caper Sports",
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^8.2.2"

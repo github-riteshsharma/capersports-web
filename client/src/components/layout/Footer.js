@@ -46,7 +46,7 @@ const Footer = () => {
     {
       title: 'Company',
       links: [
-        { name: 'About CaperSports', href: '/about' },
+        { name: 'About Caper Sports', href: '/about' },
         { name: 'Careers', href: '/careers' },
         { name: 'Press', href: '/press' },
         { name: 'Sustainability', href: '/sustainability' },
@@ -97,7 +97,7 @@ const Footer = () => {
                 <div className="w-10 h-10 bg-gradient-to-r from-primary-600 to-primary-700 rounded-xl flex items-center justify-center">
                   <span className="text-white font-bold text-xl">C</span>
                 </div>
-                <span className="text-xl font-bold">CaperSports</span>
+                <span className="text-xl font-bold">Caper Sports</span>
               </Link>
               <p className="text-gray-300 mb-6 max-w-md">
                 Premium sports clothing and gear for athletes who never settle for less. 
@@ -108,7 +108,7 @@ const Footer = () => {
               <div className="space-y-2">
                 <div className="flex items-center space-x-3">
                   <FiMapPin className="text-primary-400" size={16} />
-                  <span className="text-gray-300 text-sm">123 Sports Avenue, Mumbai, India</span>
+                  <span className="text-gray-300 text-sm">Sector 62, Noida, Uttar Pradesh, India</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <FiPhone className="text-primary-400" size={16} />
@@ -147,7 +147,7 @@ const Footer = () => {
           <div className="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
             {/* Copyright */}
             <div className="flex items-center space-x-1 text-gray-400 text-sm">
-              <span>&copy; {currentYear} CaperSports. Made with</span>
+              <span>&copy; {currentYear} Caper Sports. Made with</span>
               <FiHeart className="text-red-500" size={14} />
               <span>in India. All rights reserved.</span>
             </div>

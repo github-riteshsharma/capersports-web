@@ -132,7 +132,7 @@ const AdminDashboard = () => {
   return (
     <>
       <Helmet>
-        <title>Admin Dashboard - CaperSports</title>
+        <title>Admin Dashboard - Caper Sports</title>
       </Helmet>
       
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pt-20">

@@ -102,8 +102,8 @@ const Contact = () => {
     {
       icon: FiMapPin,
       title: 'Visit Us',
-      details: '123 Sports Avenue',
-      subDetails: 'Mumbai, Maharashtra 400001',
+      details: 'Sector 62',
+      subDetails: 'Noida, Uttar Pradesh 201301',
       description: 'Come visit our flagship store',
       color: 'text-red-600'
     },
@@ -152,8 +152,8 @@ const Contact = () => {
   return (
     <>
       <Helmet>
-        <title>Contact Us - CaperSports | Get in Touch</title>
-        <meta name="description" content="Get in touch with CaperSports customer support. Find our contact information, business hours, and send us a message." />
+        <title>Contact Us - Caper Sports | Get in Touch</title>
+        <meta name="description" content="Get in touch with Caper Sports customer support. Find our contact information, business hours, and send us a message." />
         <meta name="keywords" content="contact capersports, customer support, help center, get in touch, sports clothing support" />
       </Helmet>
 
@@ -432,7 +432,7 @@ const Contact = () => {
                 Visit Our Store
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-300">
-                Come experience our products in person at our flagship store in Mumbai.
+                Come experience our products in person at our flagship store in Noida.
               </p>
             </motion.div>
 
@@ -447,9 +447,9 @@ const Contact = () => {
                 <div className="w-full h-96 bg-gradient-to-br from-blue-600 to-red-600 flex items-center justify-center">
                   <div className="text-center text-white">
                     <FiMapPin className="w-16 h-16 mx-auto mb-4" />
-                    <h3 className="text-2xl font-bold mb-2">CaperSports Flagship Store</h3>
-                    <p className="text-lg mb-2">123 Sports Avenue</p>
-                    <p className="text-lg">Mumbai, Maharashtra 400001</p>
+                    <h3 className="text-2xl font-bold mb-2">Caper Sports Flagship Store</h3>
+                    <p className="text-lg mb-2">Sector 62</p>
+                    <p className="text-lg">Noida, Uttar Pradesh 201301</p>
                     <div className="mt-4 text-sm opacity-90">
                       <p>Interactive map coming soon</p>
                     </div>

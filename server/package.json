@@ -1,7 +1,7 @@
 {
   "name": "capersports-server",
   "version": "1.0.0",
-  "description": "CaperSports Backend Server",
+  "description": "Caper Sports Backend Server",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -31,6 +31,6 @@
     "nodemon": "^3.0.1"
   },
   "keywords": ["ecommerce", "api", "nodejs", "express"],
-  "author": "CaperSports",
+  "author": "Caper Sports",
   "license": "MIT"
 }

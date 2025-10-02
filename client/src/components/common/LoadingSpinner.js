@@ -190,7 +190,7 @@ const LoadingSpinner = ({
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8 }}
       >
-        CaperSports
+        Caper Sports
       </motion.div>
     </div>
   );

@@ -266,13 +266,13 @@ const AdminOrders = () => {
   return (
     <>
       <Helmet>
-        <title>Admin Orders - CaperSports</title>
+        <title>Admin Orders - Caper Sports</title>
         <meta name="description" content="Manage orders - View, edit, and track order status" />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/20 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <Helmet>
-          <title>Manage Orders - CaperSports Admin</title>
+          <title>Manage Orders - Caper Sports Admin</title>
           <style type="text/css">{`
             body {
               padding-top: 4rem;
