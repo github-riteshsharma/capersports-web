@@ -22,6 +22,7 @@ capersports/
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ├── client/                           # React Frontend
 │   ├── src/
 │   ├── public/
@@ -41,6 +42,8 @@ capersports/
 ├── .env.azure.template            # Backend Azure env template
 └── README.md                      # This file
 =======
+=======
+>>>>>>> parent of dc8a83f (clean: update to Node.js 22, remove unnecessary files, add simple deployment guide)
 =======
 >>>>>>> parent of dc8a83f (clean: update to Node.js 22, remove unnecessary files, add simple deployment guide)
 =======
@@ -66,6 +69,9 @@ capersports/
 └── README.md                    # This documentation
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of dc8a83f (clean: update to Node.js 22, remove unnecessary files, add simple deployment guide)
+=======
 >>>>>>> parent of dc8a83f (clean: update to Node.js 22, remove unnecessary files, add simple deployment guide)
 =======
 >>>>>>> parent of dc8a83f (clean: update to Node.js 22, remove unnecessary files, add simple deployment guide)
