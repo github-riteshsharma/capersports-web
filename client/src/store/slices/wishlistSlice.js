@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import wishlistService from '../services/wishlistService';
+// import wishlistService from '../services/wishlistService';
 
 // Initial state
 const initialState = {

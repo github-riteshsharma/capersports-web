@@ -71,10 +71,6 @@ const adminService = {
     return api.delete(`/admin/products/${productId}`);
   },
 
-  deleteProduct: (productId) => {
-    return api.delete(`/admin/products/${productId}`);
-  },
-
   // Orders
   getOrders: (params = {}) => {
     const queryParams = new URLSearchParams();

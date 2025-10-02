@@ -25,7 +25,6 @@ import {
 
 // Components
 import Button from '../common/Button';
-import LoadingSpinner from '../common/LoadingSpinner';
 
 // Store
 import { logout } from '../../store/slices/authSlice';
@@ -37,9 +36,9 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  const { isAuthenticated, user, loading } = useSelector((state) => state.auth);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
   const { theme } = useSelector((state) => state.ui);
-  const { totalItems, items } = useSelector((state) => state.cart);
+  const { totalItems } = useSelector((state) => state.cart);
   const { items: wishlistItems } = useSelector((state) => state.wishlist);
   
   // Debug cart and wishlist state
