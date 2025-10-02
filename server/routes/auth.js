@@ -30,7 +30,7 @@ router.post('/register', [
   body('lastName').trim().notEmpty().withMessage('Last name is required'),
   body('email').isEmail().normalizeEmail().withMessage('Please enter a valid email'),
   body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
-  body('phone').optional().isMobilePhone().withMessage('Please enter a valid phone number'),
+  body('phone').optional({ checkFalsy: true }).isMobilePhone().withMessage('Please enter a valid phone number'),
 ], async (req, res) => {
   try {
     // Check for validation errors
@@ -220,7 +220,7 @@ router.get('/me', protect, async (req, res) => {
 router.put('/profile', protect, [
   body('firstName').optional().trim().notEmpty().withMessage('First name cannot be empty'),
   body('lastName').optional().trim().notEmpty().withMessage('Last name cannot be empty'),
-  body('phone').optional().isMobilePhone().withMessage('Please enter a valid phone number'),
+  body('phone').optional({ checkFalsy: true }).isMobilePhone().withMessage('Please enter a valid phone number'),
 ], async (req, res) => {
   try {
     // Check for validation errors
