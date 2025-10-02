@@ -63,10 +63,13 @@ temp/
 .pnp.*
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Azure deployment (commented out to allow editing)
 # .deployment
 # deploy.cmd
 =======
+=======
+>>>>>>> parent of dc8a83f (clean: update to Node.js 22, remove unnecessary files, add simple deployment guide)
 # Azure deployment files
 .deployment
 deploy.cmd

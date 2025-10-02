@@ -20,6 +20,7 @@ A full-stack e-commerce platform for premium sports clothing built with React, N
 ```
 capersports/
 <<<<<<< HEAD
+<<<<<<< HEAD
 ├── client/                           # React Frontend
 │   ├── src/
 │   ├── public/
@@ -39,6 +40,8 @@ capersports/
 ├── .env.azure.template            # Backend Azure env template
 └── README.md                      # This file
 =======
+=======
+>>>>>>> parent of dc8a83f (clean: update to Node.js 22, remove unnecessary files, add simple deployment guide)
 ├── client/                         # React Frontend
 │   ├── src/                       # React source code
 │   ├── public/                    # Static assets
@@ -58,6 +61,9 @@ capersports/
 ├── .env.azure.template          # Backend environment template
 ├── seedData.js                  # Database seeding script
 └── README.md                    # This documentation
+<<<<<<< HEAD
+>>>>>>> parent of dc8a83f (clean: update to Node.js 22, remove unnecessary files, add simple deployment guide)
+=======
 >>>>>>> parent of dc8a83f (clean: update to Node.js 22, remove unnecessary files, add simple deployment guide)
 ```
 
