@@ -62,7 +62,6 @@ temp/
 .yarn-integrity
 .pnp.*
 
-# Azure deployment files
-.deployment
-deploy.cmd
-*.zip
+# Azure deployment (commented out to allow editing)
+# .deployment
+# deploy.cmd
