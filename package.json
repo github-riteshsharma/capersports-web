@@ -18,8 +18,8 @@
     "test:coverage": "cd client && npm test -- --coverage --watchAll=false"
   },
   "engines": {
-    "node": "18.x",
-    "npm": "9.x"
+    "node": ">=18.x",
+    "npm": ">=9.x"
   },
   "keywords": ["ecommerce", "mern", "sports", "clothing", "azure"],
   "author": "CaperSports",
