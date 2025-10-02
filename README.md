@@ -19,6 +19,7 @@ A full-stack e-commerce platform for premium sports clothing built with React, N
 
 ```
 capersports/
+<<<<<<< HEAD
 ├── client/                           # React Frontend
 │   ├── src/
 │   ├── public/
@@ -37,6 +38,27 @@ capersports/
 ├── .env                           # Backend Environment Variables
 ├── .env.azure.template            # Backend Azure env template
 └── README.md                      # This file
+=======
+├── client/                         # React Frontend
+│   ├── src/                       # React source code
+│   ├── public/                    # Static assets
+│   ├── package.json              # Frontend dependencies
+│   └── .env.azure.template       # Frontend environment template
+├── .github/workflows/             # GitHub Actions for CI/CD
+│   └── azure-deploy.yml          # Azure deployment workflow
+├── routes/                        # Express API Routes
+├── models/                        # MongoDB Models
+├── middleware/                    # Express Middleware
+├── uploads/                       # File upload directory
+├── server.js                     # Express Backend Entry Point
+├── package.json                  # Backend Dependencies
+├── web.config                    # IIS configuration for Azure
+├── staticwebapp.config.json      # Azure Static Web Apps config
+├── .env                         # Backend Environment Variables
+├── .env.azure.template          # Backend environment template
+├── seedData.js                  # Database seeding script
+└── README.md                    # This documentation
+>>>>>>> parent of dc8a83f (clean: update to Node.js 22, remove unnecessary files, add simple deployment guide)
 ```
 
 ## ☁️ Azure Deployment Guide
