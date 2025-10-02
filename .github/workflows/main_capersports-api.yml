@@ -36,11 +36,44 @@ jobs:
         env:
           CI: true
 
+      - name: Prepare deployment package
+        run: |
+          # Create deployment directory
+          mkdir -p deploy
+          
+          # Copy server files
+          cp -r server deploy/
+          
+          # Copy built client files to server public directory
+          mkdir -p deploy/server/public
+          cp -r client/build/* deploy/server/public/
+          
+          # Copy deployment configuration
+          cp .deployment deploy/ 2>/dev/null || true
+          cp deploy.sh deploy/ 2>/dev/null || true
+          cp web.config deploy/ 2>/dev/null || true
+          
+          # Remove node_modules from server (will be installed on Azure)
+          rm -rf deploy/server/node_modules
+          
+          # Create a simple package.json for Azure
+          echo '{
+            "name": "capersports-deploy",
+            "version": "1.0.0",
+            "scripts": {
+              "start": "cd server && npm install --production && node server.js"
+            },
+            "engines": {
+              "node": ">=18.x",
+              "npm": ">=9.x"
+            }
+          }' > deploy/package.json
+          
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: .
+          path: deploy/
 
   deploy:
     runs-on: ubuntu-latest
