@@ -37,8 +37,8 @@
     "concurrently": "^8.2.2"
   },
   "engines": {
-    "node": "22.x",
-    "npm": "10.x"
+    "node": "18.x",
+    "npm": "9.x"
   },
   "keywords": ["ecommerce", "api", "nodejs", "express"],
   "author": "CaperSports",

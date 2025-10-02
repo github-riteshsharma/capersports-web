@@ -1,36 +1,31 @@
 # CaperSports - MERN Stack E-commerce Platform
 
-A full-stack e-commerce platform for premium sports clothing built with **React**, **Node.js 22**, **Express**, and **MongoDB**.
+A full-stack e-commerce platform for premium sports clothing built with React, Node.js, Express, and MongoDB. **Ready for Azure deployment!**
 
 ## 🏗️ Clean Project Structure
 
 ```
 capersports/
-├── client/                    # React Frontend (Node.js 22)
-│   ├── src/                  # React source code
-│   ├── public/               # Static assets
-│   └── package.json         # Frontend dependencies
-├── routes/                   # Express API Routes
-├── models/                   # MongoDB Models
-├── middleware/               # Express Middleware
-├── uploads/                  # File upload directory
-├── server.js                # Express Backend (Node.js 22)
-├── package.json             # Backend Dependencies
-├── seedData.js              # Database seeding script
-├── .env                     # Environment Variables
-└── README.md                # This documentation
+├── client/                         # React Frontend
+│   ├── src/                       # React source code
+│   ├── public/                    # Static assets
+│   ├── package.json              # Frontend dependencies
+│   └── .env.azure.template       # Frontend environment template
+├── .github/workflows/             # GitHub Actions for CI/CD
+│   └── azure-deploy.yml          # Azure deployment workflow
+├── routes/                        # Express API Routes
+├── models/                        # MongoDB Models
+├── middleware/                    # Express Middleware
+├── uploads/                       # File upload directory
+├── server.js                     # Express Backend Entry Point
+├── package.json                  # Backend Dependencies
+├── web.config                    # IIS configuration for Azure
+├── staticwebapp.config.json      # Azure Static Web Apps config
+├── .env                         # Backend Environment Variables
+├── .env.azure.template          # Backend environment template
+├── seedData.js                  # Database seeding script
+└── README.md                    # This documentation
 ```
-
-## 🚀 **Tech Stack**
-
-- **Backend**: Node.js 22 + Express.js
-- **Frontend**: React 18 + Redux Toolkit
-- **Database**: MongoDB with Mongoose
-- **Styling**: Tailwind CSS
-- **Authentication**: JWT
-- **File Upload**: Cloudinary
-- **Payments**: Stripe
-- **Email**: Nodemailer
 
 ## ☁️ Azure Deployment Guide
 
@@ -39,7 +34,7 @@ capersports/
 - **Azure Account** with active subscription
 - **GitHub Account** for source code and CI/CD
 - **MongoDB Atlas** database
-- **Node.js 22+** installed locally
+- **Node.js 18+** installed locally
 
 ### 🎯 Deployment Architecture
 
@@ -47,63 +42,6 @@ capersports/
 - **Backend**: Azure App Service (Node.js)
 - **Database**: MongoDB Atlas
 - **CI/CD**: GitHub Actions
-
----
-
-## 🔧 **Simple Azure Deployment (App Service Editor)**
-
-### **Step 1: Create Azure App Service**
-1. **Azure Portal** → **Create Resource** → **Web App**
-2. **Runtime**: **Node.js 22 LTS**
-3. **Name**: `capersports-app` (must be unique)
-
-### **Step 2: Deploy via App Service Editor**
-1. **App Service** → **App Service Editor** → **Go →**
-2. **Delete all existing files**
-3. **Create `server.js`** with minimal backend code
-4. **Create `package.json`** with Node.js 22 dependencies
-5. **Save files** and **restart app service**
-
-### **Step 3: Test Deployment**
-- **Health Check**: `https://capersports-app.azurewebsites.net/api/health`
-- **API Test**: `https://capersports-app.azurewebsites.net/api/test`
-
-### **Minimal server.js for Azure:**
-```javascript
-const express = require('express');
-const app = express();
-
-app.use(express.json());
-
-app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
-    message: 'CaperSports API is running!',
-    node: process.version 
-  });
-});
-
-app.get('/', (req, res) => {
-  res.json({ message: 'CaperSports Backend - Node.js 22' });
-});
-
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
-```
-
-### **Minimal package.json for Azure:**
-```json
-{
-  "name": "capersports-backend",
-  "version": "1.0.0",
-  "main": "server.js",
-  "engines": { "node": "22.x" },
-  "scripts": { "start": "node server.js" },
-  "dependencies": { "express": "^4.18.2" }
-}
-```
 
 ---
 
