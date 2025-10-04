@@ -23,6 +23,7 @@ import {
 // Store
 import { getAdminUsers, updateUserRole, deactivateUser, activateUser } from '../../store/slices/adminSlice';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+import AdminLayout from '../../components/admin/AdminLayout';
 import Button from '../../components/common/Button';
 
 const AdminUsers = () => {
@@ -130,7 +131,7 @@ const AdminUsers = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden"
+        className="bg-white rounded-lg shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden"
       >
         <div className="p-6">
           <div className="flex items-start justify-between mb-4">
@@ -147,7 +148,7 @@ const AdminUsers = () => {
                     {user.firstName?.charAt(0)}{user.lastName?.charAt(0)}
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                    <h3 className="text-sm font-semibold text-gray-900">
                       {user.firstName} {user.lastName}
                     </h3>
                     <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
@@ -248,14 +249,13 @@ const AdminUsers = () => {
   }
 
   return (
-    <>
+    <AdminLayout>
       <Helmet>
         <title>Admin Users - Caper Sports</title>
         <meta name="description" content="Manage users - View, edit, and manage user accounts" />
       </Helmet>
 
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="space-y-6">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -264,15 +264,15 @@ const AdminUsers = () => {
             className="flex items-center justify-between mb-8"
           >
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 User Management
               </h1>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-gray-600">
                 Manage user accounts, roles, and permissions
               </p>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+              <div className="flex items-center text-sm text-gray-600">
                 <FiUsers className="mr-2" />
                 {pagination.total} total users
               </div>
@@ -284,7 +284,7 @@ const AdminUsers = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8 border border-gray-200 dark:border-gray-700"
+            className="bg-white rounded-lg shadow-md p-6 mb-8 border border-gray-200 dark:border-gray-700"
           >
             <div className="flex flex-col lg:flex-row gap-6">
               {/* Search */}
@@ -314,7 +314,7 @@ const AdminUsers = () => {
                 {/* Bulk Actions */}
                 {selectedUsers.length > 0 && (
                   <div className="flex items-center space-x-2">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                    <span className="text-sm text-gray-600">
                       {selectedUsers.length} selected
                     </span>
                     <button className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition-colors">
@@ -412,7 +412,7 @@ const AdminUsers = () => {
           ) : users.length === 0 ? (
             <div className="text-center py-12">
               <FiUsers className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 dark:text-gray-400 text-lg mb-2">
+              <p className="text-gray-600 text-lg mb-2">
                 No users found
               </p>
               <p className="text-gray-500 dark:text-gray-500 text-sm">
@@ -430,12 +430,12 @@ const AdminUsers = () => {
                     onChange={handleSelectAll}
                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="text-sm text-gray-600">
                     {selectedUsers.length > 0 ? `${selectedUsers.length} selected` : 'Select all'}
                   </span>
                 </div>
                 <div className="flex items-center space-x-4">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="text-sm text-gray-600">
                     Showing {users.length} of {pagination.total} users
                   </span>
                   <button className="p-2 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
@@ -487,8 +487,7 @@ const AdminUsers = () => {
             </>
           )}
         </div>
-      </div>
-    </>
+    </AdminLayout>
   );
 };
 

@@ -167,161 +167,149 @@ const ProductCard = ({ product, className = '' }) => {
   const stockStatus = getStockStatus();
 
   return (
-    <motion.div
-      className={`group relative bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 ${
-        isListView ? 'flex flex-row' : ''
-      } ${className}`}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+        <motion.div
+          className={`group relative bg-transparent rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 ${
+            isListView ? 'flex flex-col sm:flex-row max-w-4xl' : 'h-full flex flex-col'
+          } ${className}`}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
       {/* Product Image Container */}
-      <div className={`relative overflow-hidden bg-gray-50 dark:bg-gray-800 ${
-        isListView ? 'w-64 h-64 flex-shrink-0' : 'aspect-square rounded-t-2xl'
-      }`}>
+      <div className={`relative overflow-hidden ${
+        isListView ? 'w-full sm:w-80 h-48 sm:h-80 flex-shrink-0' : 'aspect-square'
+      } bg-gray-300 rounded-2xl shadow-sm`}>
         <Link to={`/products/${product._id}`} className="block relative w-full h-full">
           {/* Main Product Image */}
           <div className="relative w-full h-full">
-              <img
-                src={product.images?.[currentImageIndex] || product.images?.[0] || '/images/placeholder-product.jpg'}
-                alt={product.name}
-                className="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-105"
-                onError={(e) => {
-                  e.target.src = '/images/placeholder-product.jpg';
-                }}
-              />
+            <img
+              src={product.images?.[currentImageIndex] || product.images?.[0] || '/images/placeholder-product.jpg'}
+              alt={product.name}
+              className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500 ease-out"
+              onError={(e) => {
+                e.target.style.display = 'none';
+                const fallback = e.target.nextSibling;
+                if (fallback) {
+                  fallback.style.display = 'flex';
+                }
+              }}
+            />
             
-            {/* Image Navigation Dots */}
-            {product.images && product.images.length > 1 && (
-              <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                {product.images.map((image, index) => (
-                  <button
-                    key={index}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setCurrentImageIndex(index);
-                    }}
-                    className={`w-2 h-2 rounded-full transition-all duration-200 ${
-                      index === currentImageIndex
-                        ? 'bg-white scale-125'
-                        : 'bg-white/50 hover:bg-white/75'
-                    }`}
-                  />
-                ))}
+            {/* Premium Fallback */}
+            <div className="hidden w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 items-center justify-center">
+              <div className="text-gray-500 text-center">
+                <div className="w-16 h-16 bg-gray-400 rounded-full mx-auto mb-4 flex items-center justify-center">
+                  <span className="text-2xl">📦</span>
+                </div>
+                <div className="text-sm font-medium">Product Image</div>
               </div>
-            )}
+            </div>
           </div>
           
-          {/* Discount Badge */}
+          {/* Website Logo - Bottom Left Corner (moves with image) */}
+          <div className="absolute bottom-3 left-3 group-hover:scale-105 transition-transform duration-500 ease-out">
+            <img
+              src="/images/logo.png"
+              alt="Caper Sports"
+              className="w-8 h-8 opacity-70 group-hover:opacity-90 transition-opacity duration-300"
+              onError={(e) => {
+                e.target.style.display = 'none';
+              }}
+            />
+          </div>
+          
+          {/* Sale Indicator - Top Left */}
           {discountPercentage > 0 && (
-            <div className="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 rounded-md text-xs font-medium">
+            <div className="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 rounded-md text-xs font-bold">
+              SALE
+            </div>
+          )}
+          
+          {/* Discount Badge - Top Right */}
+          {discountPercentage > 0 && (
+            <div className="absolute top-3 right-3 bg-red-500 text-white px-2 py-1 rounded-md text-xs font-semibold">
               -{discountPercentage}%
             </div>
           )}
           
-          {/* Stock Status */}
-          {totalStock === 0 ? (
+          {/* Stock Status Overlay */}
+          {totalStock === 0 && (
             <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-              <span className="text-white font-medium text-lg">Out of Stock</span>
-            </div>
-          ) : totalStock <= (product.lowStockThreshold || 10) && (
-            <div className="absolute top-3 left-3 z-10">
-              <span className="bg-yellow-500 text-white px-2 py-1 rounded-md text-xs font-medium">
-                Only {totalStock} left!
-              </span>
+              <span className="text-white font-semibold text-lg">Out of Stock</span>
             </div>
           )}
         </Link>
         
-        {/* Quick Actions - Nike Style */}
-        <div className="absolute top-3 right-3 flex flex-col space-y-2">
+        {/* Quick Actions */}
+        <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <motion.button
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : 20 }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: isHovered ? 1 : 0, scale: isHovered ? 1 : 0.8 }}
             transition={{ duration: 0.2 }}
             onClick={handleAddToWishlist}
-            className={`p-2 rounded-full backdrop-blur-md transition-all duration-200 ${
+            className={`p-2 rounded-full backdrop-blur-md transition-all duration-200 shadow-lg ${
               isInWishlist 
-                ? 'bg-red-500 text-white shadow-lg' 
-                : 'bg-white/90 text-gray-700 hover:bg-red-50 hover:text-red-500 shadow-md'
+                ? 'bg-red-500 text-white' 
+                : 'bg-white/90 text-gray-700 hover:bg-red-50 hover:text-red-500'
             }`}
           >
             <FiHeart size={16} className={isInWishlist ? 'fill-current' : ''} />
           </motion.button>
-          
-          <motion.button
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : 20 }}
-            transition={{ duration: 0.2, delay: 0.1 }}
-            className="p-2 bg-white/90 text-gray-700 rounded-full backdrop-blur-md hover:bg-gray-50 transition-all duration-200 shadow-md"
-          >
-            <FiEye size={16} />
-          </motion.button>
         </div>
       </div>
 
-      {/* Product Info */}
-      <div className={`${isListView ? 'flex-1 p-6 flex flex-col justify-between' : 'pt-4 pb-2'}`}>
-        {/* Product Category */}
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide font-medium">
-          {product.category}
-        </p>
+            {/* Product Info - Transparent Background */}
+            <div className={`${isListView ? 'flex-1 p-4 sm:p-6 flex flex-col justify-between' : 'p-3 sm:p-4 flex-1 flex flex-col'} bg-transparent`}>
         
         {/* Product Name */}
-        <Link to={`/products/${product._id}`} className="block group/link">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover/link:text-primary-600 transition-colors duration-200">
+        <Link to={`/products/${product._id}`} className="block group/link mb-2">
+          <h3 className="text-sm sm:text-base lg:text-lg font-semibold text-gray-900 leading-tight group-hover/link:text-gray-700 transition-colors duration-200 line-clamp-2">
             {product.name}
           </h3>
         </Link>
         
-        {/* Color Options */}
-        {product.colors && product.colors.length > 0 && (
-          <div className="flex items-center space-x-2 mb-3">
-            <div className="flex space-x-1">
-              {product.colors.slice(0, 4).map((color) => (
-                <button
-                  key={color.name}
-                  onClick={() => setSelectedColor(color.name)}
-                  className={`w-5 h-5 rounded-full border-2 transition-all duration-200 ${
-                    selectedColor === color.name
-                      ? 'border-gray-900 dark:border-white scale-110'
-                      : 'border-gray-300 dark:border-gray-600 hover:border-gray-900 dark:hover:border-white'
-                  }`}
-                  style={{ backgroundColor: color.hex }}
-                  title={color.name}
-                />
-              ))}
-              {product.colors.length > 4 && (
-                <span className="text-sm text-gray-500 dark:text-gray-400 ml-1">
-                  +{product.colors.length - 4}
-                </span>
-              )}
-            </div>
+        {/* Rating - Always Show */}
+        <div className="flex items-center space-x-1 mb-2 sm:mb-3">
+          <div className="flex items-center">
+            {product.rating ? renderStars(product.rating) : renderStars(0)}
           </div>
-        )}
-        
-        {/* Price */}
-        <div className="flex items-center space-x-2 mb-4">
-          <span className="text-xl font-bold text-gray-900 dark:text-white">
-            ₹{product.price?.toLocaleString()}
+          <span className="text-xs sm:text-sm text-gray-500 ml-1">
+            {product.rating ? `${product.rating.toFixed(1)}/5` : '0.0/5'}
           </span>
-          {product.originalPrice && product.originalPrice > product.price && (
-            <span className="text-base text-gray-500 dark:text-gray-400 line-through">
-              ₹{product.originalPrice?.toLocaleString()}
+          {product.numReviews > 0 && (
+            <span className="text-xs sm:text-sm text-gray-400">
+              ({product.numReviews})
             </span>
           )}
         </div>
         
-        {/* Product Rating */}
-        {product.rating && (
-          <div className="flex items-center space-x-1 mb-4">
-            <div className="flex items-center">
-              {renderStars(product.rating)}
-            </div>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              ({product.numReviews || 0})
+        {/* Price Section */}
+        <div className="flex flex-wrap items-center gap-1 sm:gap-2 mt-auto">
+          <span className="text-base sm:text-lg lg:text-xl font-bold text-gray-900">
+            ₹{product.price?.toLocaleString()}
+          </span>
+          {product.originalPrice && product.originalPrice > product.price && (
+            <>
+              <span className="text-sm sm:text-base text-gray-400 line-through">
+                ₹{product.originalPrice?.toLocaleString()}
+              </span>
+              <div className="bg-red-100 text-red-600 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md text-xs font-bold">
+                -{discountPercentage}% OFF
+              </div>
+            </>
+          )}
+        </div>
+        
+        {/* Sale Price Indicator */}
+        {product.originalPrice && product.originalPrice > product.price && (
+          <div className="mt-1 sm:mt-2 text-xs sm:text-sm">
+            <span className="text-red-600 font-semibold">
+              You save ₹{(product.originalPrice - product.price).toLocaleString()}
+            </span>
+            <span className="text-gray-500 ml-1">
+              ({discountPercentage}% off)
             </span>
           </div>
         )}
@@ -335,104 +323,62 @@ const ProductCard = ({ product, className = '' }) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
             transition={{ duration: 0.2 }}
-            className="absolute bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 p-4"
+                   className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-200 p-3 sm:p-4 rounded-b-2xl"
           >
             {/* Size Selection */}
             {product.sizes && product.sizes.length > 0 && (
               <div className="mb-3">
-                <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Size</p>
+                <p className="text-sm font-medium text-gray-700 mb-2">Size</p>
                 <div className="flex flex-wrap gap-2">
                   {product.sizes.map((size, index) => {
-                    // Handle both string sizes and object sizes {size, stock, _id}
                     const sizeName = typeof size === 'string' ? size : (size.size || size.name || size);
                     const stockValue = getSizeStock(sizeName);
                     
-                    // Skip invalid or corrupted ObjectId data
                     if (typeof sizeName === 'string' && sizeName.length === 24 && /^[0-9a-f]{24}$/i.test(sizeName)) {
                       return null;
                     }
                     
-                    // Skip if sizeName is still an object (shouldn't happen but safety check)
                     if (typeof sizeName === 'object') {
                       return null;
                     }
                     
                     return (
-                      <div key={sizeName || index} className="relative">
-                        <button
-                          onClick={() => setSelectedSize(sizeName)}
-                          disabled={stockValue === 0}
-                          className={`px-3 py-1 text-sm rounded-md border transition-all duration-200 relative ${
-                            selectedSize === sizeName
-                              ? 'bg-gray-900 text-white border-gray-900 dark:bg-white dark:text-gray-900 dark:border-white'
-                              : stockValue === 0
-                              ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed line-through'
-                              : 'bg-white text-gray-700 border-gray-300 hover:border-gray-900 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:border-white'
-                          }`}
-                          title={stockValue === 0 ? 'Out of stock' : `${stockValue} in stock`}
-                        >
-                          {sizeName}
-                          {stockValue === 0 && (
-                            <span className="absolute inset-0 flex items-center justify-center">
-                              <span className="text-xs text-red-500 font-medium">✕</span>
-                            </span>
-                          )}
-                        </button>
-                        {stockValue > 0 && stockValue <= 5 && (
-                          <div className="absolute -top-1 -right-1 bg-yellow-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                            {stockValue}
-                          </div>
-                        )}
-                      </div>
+                             <button
+                               key={sizeName || index}
+                               onClick={() => setSelectedSize(sizeName)}
+                               disabled={stockValue === 0}
+                               className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-md border transition-all duration-200 ${
+                                 selectedSize === sizeName
+                                   ? 'bg-gray-900 text-white border-gray-900'
+                                   : stockValue === 0
+                                   ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                                   : 'bg-white text-gray-700 border-gray-300 hover:border-gray-900'
+                               }`}
+                             >
+                        {sizeName}
+                      </button>
                     );
                   })}
                 </div>
               </div>
             )}
             
-            {/* Stock Information */}
-            <div className="mb-3 flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                  stockStatus.bgColor
-                } ${stockStatus.color}`}>
-                  {stockStatus.text}
-                </span>
-                {totalStock > 0 && totalStock <= (product.lowStockThreshold || 10) && (
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
-                    Only {totalStock} left
-                  </span>
-                )}
-              </div>
-              {totalStock > 0 && (
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  {totalStock} in stock
-                </span>
-              )}
-            </div>
-
             {/* Add to Cart Button */}
             <motion.button
               whileHover={{ scale: totalStock > 0 ? 1.02 : 1 }}
               whileTap={{ scale: totalStock > 0 ? 0.98 : 1 }}
               onClick={handleAddToCart}
-              disabled={isLoading || totalStock === 0 || (selectedSize && getSizeStock(selectedSize) === 0)}
-              className={`w-full py-3 px-4 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center space-x-2 ${
-                totalStock === 0 || (selectedSize && getSizeStock(selectedSize) === 0)
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-gray-900 hover:bg-gray-800 text-white dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100'
-              }`}
+              disabled={isLoading || totalStock === 0}
+                     className={`w-full py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center space-x-2 text-sm sm:text-base ${
+                       totalStock === 0
+                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                         : 'bg-gray-900 hover:bg-gray-800 text-white'
+                     }`}
             >
               {isLoading ? (
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin dark:border-gray-900 dark:border-t-transparent" />
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : totalStock === 0 ? (
-                <>
-                  <span>Out of Stock</span>
-                </>
-              ) : selectedSize && getSizeStock(selectedSize) === 0 ? (
-                <>
-                  <span>Size Out of Stock</span>
-                </>
+                <span>Out of Stock</span>
               ) : (
                 <>
                   <FiShoppingCart size={18} />

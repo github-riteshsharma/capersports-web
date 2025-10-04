@@ -18,7 +18,7 @@ import {
 
 // Components
 import Button from '../components/common/Button';
-import LoadingSpinner from '../components/common/LoadingSpinner';
+import CaperSportsLoader from '../components/common/CaperSportsLoader';
 
 // Store
 import { 
@@ -112,19 +112,19 @@ const Cart = () => {
       return {
         text: 'Out of Stock',
         color: 'text-red-600',
-        bgColor: 'bg-red-100 dark:bg-red-900/20'
+        bgColor: 'bg-red-100'
       };
     } else if (totalStock <= lowStockThreshold) {
       return {
         text: 'Low Stock',
         color: 'text-yellow-600',
-        bgColor: 'bg-yellow-100 dark:bg-yellow-900/20'
+        bgColor: 'bg-yellow-100'
       };
     } else {
       return {
         text: 'In Stock',
         color: 'text-green-600',
-        bgColor: 'bg-green-100 dark:bg-green-900/20'
+        bgColor: 'bg-green-100'
       };
     }
   };
@@ -243,10 +243,10 @@ const Cart = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex justify-center items-center py-12">
-            <LoadingSpinner size="lg" text="Loading your cart..." />
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-20">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
+          <div className="flex flex-col items-center justify-center py-32">
+            <CaperSportsLoader size="xl" showText />
           </div>
         </div>
       </div>
@@ -260,7 +260,7 @@ const Cart = () => {
         <meta name="description" content="Review your selected items and proceed to checkout" />
       </Helmet>
 
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-20">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <motion.div
@@ -278,13 +278,13 @@ const Cart = () => {
                 Continue Shopping
               </Link>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-3xl font-bold text-gray-900">
               Shopping Cart ({totalItems})
             </h1>
             {items.length > 0 && (
               <button
                 onClick={handleClearCart}
-                className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-sm font-medium transition-colors duration-200"
+                className="text-red-600 hover:text-red-700 text-sm font-medium transition-colors duration-200"
               >
                 Clear Cart
               </button>
@@ -300,10 +300,10 @@ const Cart = () => {
               className="text-center py-16"
             >
               <FiShoppingBag className="w-24 h-24 mx-auto mb-6 text-gray-400" />
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
                 Your cart is empty
               </h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">
+              <p className="text-gray-600 mb-8 max-w-md mx-auto">
                 Looks like you haven't added any items to your cart yet. Start shopping to fill it up!
               </p>
               <Button
@@ -331,7 +331,7 @@ const Cart = () => {
                     <motion.div
                       key={item._id}
                       variants={itemVariants}
-                      className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200"
+                      className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-200 border border-gray-200"
                     >
                       <div className="flex items-start space-x-4">
                         {/* Product Image */}
@@ -360,21 +360,21 @@ const Cart = () => {
                         <div className="flex-1 min-w-0">
                           <Link
                             to={`/products/${item.product._id}`}
-                            className="text-lg font-semibold text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200"
+                            className="text-lg font-semibold text-gray-900 hover:text-red-600 transition-colors duration-200"
                           >
                             {item.product.name}
                           </Link>
-                          <p className="text-gray-600 dark:text-gray-400 mt-1">
+                          <p className="text-gray-600 mt-1">
                             {item.product.brand}
                           </p>
                           <div className="flex items-center space-x-4 mt-2">
                             {item.size && (
-                              <span className="text-sm text-gray-500 dark:text-gray-400">
+                              <span className="text-sm text-gray-500">
                                 Size: <span className="font-medium">{item.size}</span>
                               </span>
                             )}
                             {item.color && (
-                              <span className="text-sm text-gray-500 dark:text-gray-400">
+                              <span className="text-sm text-gray-500">
                                 Color: <span className="font-medium">{item.color}</span>
                               </span>
                             )}
@@ -390,9 +390,9 @@ const Cart = () => {
                           >
                             <FiMinus size={16} />
                           </button>
-                          <span className="w-12 text-center font-medium text-gray-900 dark:text-white">
+                          <span className="w-12 text-center font-medium text-gray-900">
                             {updateLoading[item._id] ? (
-                              <LoadingSpinner size="xs" />
+                              <CaperSportsLoader size="sm" />
                             ) : (
                               item.quantity
                             )}
@@ -408,7 +408,7 @@ const Cart = () => {
 
                         {/* Price */}
                         <div className="text-right">
-                          <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                          <p className="text-lg font-semibold text-gray-900">
                             ₹{(item.product.price * item.quantity).toLocaleString()}
                           </p>
                           <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -436,9 +436,9 @@ const Cart = () => {
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
-                  className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 sticky top-24"
+                  className="bg-white rounded-2xl shadow-lg p-6 sticky top-24 border border-gray-200"
                 >
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+                  <h3 className="text-xl font-bold text-gray-900 mb-6">
                     Order Summary
                   </h3>
 
@@ -487,20 +487,20 @@ const Cart = () => {
                   {/* Order Details */}
                   <div className="space-y-3 mb-6">
                     <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-400">Subtotal ({totalItems} items)</span>
-                      <span className="font-medium text-gray-900 dark:text-white">
+                      <span className="text-gray-600">Subtotal ({totalItems} items)</span>
+                      <span className="font-medium text-gray-900">
                         ₹{totalPrice.toLocaleString()}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-400">Shipping</span>
-                      <span className="font-medium text-gray-900 dark:text-white">
+                      <span className="text-gray-600">Shipping</span>
+                      <span className="font-medium text-gray-900">
                         {shipping === 0 ? 'Free' : `₹${shipping.toLocaleString()}`}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-400">Tax (18% GST)</span>
-                      <span className="font-medium text-gray-900 dark:text-white">
+                      <span className="text-gray-600">Tax (18% GST)</span>
+                      <span className="font-medium text-gray-900">
                         ₹{tax.toLocaleString()}
                       </span>
                     </div>
@@ -514,8 +514,8 @@ const Cart = () => {
                     )}
                     <hr className="border-gray-200 dark:border-gray-700" />
                     <div className="flex justify-between text-lg font-bold">
-                      <span className="text-gray-900 dark:text-white">Total</span>
-                      <span className="text-gray-900 dark:text-white">
+                      <span className="text-gray-900">Total</span>
+                      <span className="text-gray-900">
                         ₹{grandTotal.toLocaleString()}
                       </span>
                     </div>
@@ -523,7 +523,7 @@ const Cart = () => {
 
                   {/* Shipping Info */}
                   <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-6">
-                    <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                    <div className="flex items-center text-sm text-gray-600">
                       <FiTruck className="mr-2" size={16} />
                       {shipping === 0 ? (
                         'Free shipping on orders over ₹1,000'
@@ -537,11 +537,11 @@ const Cart = () => {
                   <div className="grid grid-cols-2 gap-4 mb-6">
                     <div className="text-center">
                       <FiShield className="w-8 h-8 mx-auto mb-2 text-green-600" />
-                      <p className="text-xs text-gray-600 dark:text-gray-400">Secure Payment</p>
+                      <p className="text-xs text-gray-600">Secure Payment</p>
                     </div>
                     <div className="text-center">
                       <FiTruck className="w-8 h-8 mx-auto mb-2 text-blue-600" />
-                      <p className="text-xs text-gray-600 dark:text-gray-400">Fast Delivery</p>
+                      <p className="text-xs text-gray-600">Fast Delivery</p>
                     </div>
                   </div>
 

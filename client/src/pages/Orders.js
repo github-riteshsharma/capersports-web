@@ -135,10 +135,10 @@ const Orders = () => {
           <div className="mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                <h1 className="text-3xl font-bold text-gray-900">
                   My Orders
                 </h1>
-                <p className="text-gray-600 dark:text-gray-400 mt-1">
+                <p className="text-gray-600 mt-1">
                   Track and manage your order history
                 </p>
               </div>
@@ -147,7 +147,7 @@ const Orders = () => {
                 <button
                   onClick={handleRefresh}
                   disabled={loading}
-                  className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-50"
+                  className="p-2 text-gray-600 hover:text-gray-900 dark:hover:text-white disabled:opacity-50"
                   title="Refresh orders"
                 >
                   <ArrowPathIcon className={`h-5 w-5 ${loading ? 'animate-spin' : ''}`} />
@@ -208,7 +208,7 @@ const Orders = () => {
           {filteredOrders.length === 0 ? (
             <div className="text-center py-12">
               <ShoppingBagIcon className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
                 No orders found
               </h3>
               <p className="text-gray-500 dark:text-gray-400 mb-6">
@@ -233,13 +233,13 @@ const Orders = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow"
+                  className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow"
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-4">
                         <div>
-                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                          <h3 className="text-lg font-semibold text-gray-900">
                             Order #{order.orderNumber || 'N/A'}
                           </h3>
                           <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -314,7 +314,7 @@ const Orders = () => {
                 Previous
               </button>
               
-              <span className="text-sm text-gray-600 dark:text-gray-400">
+              <span className="text-sm text-gray-600">
                 Page {currentPage} of {pagination.pages}
               </span>
               

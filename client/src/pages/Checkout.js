@@ -366,13 +366,13 @@ const Checkout = () => {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="text-center bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8"
+            className="text-center bg-white rounded-lg shadow-lg p-8"
           >
             <CheckCircleIcon className="mx-auto h-16 w-16 text-green-500 mb-4" />
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">
               Order Placed Successfully!
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
+            <p className="text-gray-600 mb-6">
               Thank you for your order. You will receive a confirmation email shortly.
             </p>
             <div className="animate-pulse text-sm text-gray-500 dark:text-gray-400">
@@ -406,7 +406,7 @@ const Checkout = () => {
                     <div className={`flex items-center justify-center w-10 h-10 rounded-full ${
                       isActive ? 'bg-blue-600 text-white' : 
                       isCompleted ? 'bg-green-600 text-white' : 
-                      'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                      'bg-gray-200 dark:bg-gray-700 text-gray-600'
                     }`}>
                       <Icon className="h-5 w-5" />
                     </div>
@@ -432,8 +432,8 @@ const Checkout = () => {
             {/* Main Content */}
             <div className="lg:col-span-2">
               {/* This will be populated with step content */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">
                   {steps[currentStep - 1].name} Information
                 </h2>
                 {/* Step 1: Shipping Address */}
@@ -632,9 +632,9 @@ const Checkout = () => {
                         onClick={() => handleInputChange(null, 'paymentMethod', 'card')}
                       >
                         <div className="flex items-center space-x-3">
-                          <CreditCardIcon className="h-6 w-6 text-gray-600 dark:text-gray-400" />
+                          <CreditCardIcon className="h-6 w-6 text-gray-600" />
                           <div>
-                            <h3 className="font-medium text-gray-900 dark:text-white">Credit/Debit Card</h3>
+                            <h3 className="font-medium text-gray-900">Credit/Debit Card</h3>
                             <p className="text-sm text-gray-500 dark:text-gray-400">Visa, MasterCard, RuPay</p>
                           </div>
                         </div>
@@ -654,7 +654,7 @@ const Checkout = () => {
                             <span className="text-white text-xs font-bold">UPI</span>
                           </div>
                           <div>
-                            <h3 className="font-medium text-gray-900 dark:text-white">UPI</h3>
+                            <h3 className="font-medium text-gray-900">UPI</h3>
                             <p className="text-sm text-gray-500 dark:text-gray-400">Pay using UPI ID</p>
                           </div>
                         </div>
@@ -674,7 +674,7 @@ const Checkout = () => {
                             <span className="text-white text-xs font-bold">NB</span>
                           </div>
                           <div>
-                            <h3 className="font-medium text-gray-900 dark:text-white">Net Banking</h3>
+                            <h3 className="font-medium text-gray-900">Net Banking</h3>
                             <p className="text-sm text-gray-500 dark:text-gray-400">All major banks</p>
                           </div>
                         </div>
@@ -690,9 +690,9 @@ const Checkout = () => {
                         onClick={() => handleInputChange(null, 'paymentMethod', 'cod')}
                       >
                         <div className="flex items-center space-x-3">
-                          <TruckIcon className="h-6 w-6 text-gray-600 dark:text-gray-400" />
+                          <TruckIcon className="h-6 w-6 text-gray-600" />
                           <div>
-                            <h3 className="font-medium text-gray-900 dark:text-white">Cash on Delivery</h3>
+                            <h3 className="font-medium text-gray-900">Cash on Delivery</h3>
                             <p className="text-sm text-gray-500 dark:text-gray-400">Pay when you receive</p>
                           </div>
                         </div>
@@ -706,7 +706,7 @@ const Checkout = () => {
                     {/* Payment Details Forms */}
                     {formData.paymentMethod && (
                       <div className="mt-6 p-6 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+                        <h3 className="text-lg font-medium text-gray-900 mb-4">
                           Payment Details
                         </h3>
                         
@@ -890,7 +890,7 @@ const Checkout = () => {
                   <div className="space-y-6">
                     {/* Shipping Address Review */}
                     <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
-                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Shipping Address</h3>
+                      <h3 className="text-lg font-medium text-gray-900 mb-4">Shipping Address</h3>
                       <div className="text-sm text-gray-600 dark:text-gray-300">
                         <p className="font-medium">{formData.shippingAddress.fullName}</p>
                         <p>{formData.shippingAddress.addressLine1}</p>
@@ -907,7 +907,7 @@ const Checkout = () => {
                     
                     {/* Payment Method Review */}
                     <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
-                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Payment Method</h3>
+                      <h3 className="text-lg font-medium text-gray-900 mb-4">Payment Method</h3>
                       <div className="text-sm text-gray-600 dark:text-gray-300">
                         <p className="capitalize">
                           {formData.paymentMethod === 'card' ? 'Credit/Debit Card' :
@@ -986,8 +986,8 @@ const Checkout = () => {
 
             {/* Order Summary Sidebar */}
             <div className="lg:col-span-1">
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 sticky top-24">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+              <div className="bg-white rounded-lg shadow-lg p-6 sticky top-24">
+                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
                   <ShoppingBagIcon className="h-5 w-5 mr-2" />
                   Order Summary
                 </h3>
@@ -1004,14 +1004,14 @@ const Checkout = () => {
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                        <p className="text-sm font-medium text-gray-900 truncate">
                           {item.product.name}
                         </p>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
                           {item.size} • {item.color} • Qty: {item.quantity}
                         </p>
                       </div>
-                      <div className="text-sm font-medium text-gray-900 dark:text-white">
+                      <div className="text-sm font-medium text-gray-900">
                         ₹{(item.product.price * item.quantity).toFixed(2)}
                       </div>
                     </div>
@@ -1021,32 +1021,32 @@ const Checkout = () => {
                 {/* Pricing Summary */}
                 <div className="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">Subtotal</span>
-                    <span className="text-gray-900 dark:text-white">₹{totalPrice.toFixed(2)}</span>
+                    <span className="text-gray-600">Subtotal</span>
+                    <span className="text-gray-900">₹{totalPrice.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">Shipping</span>
-                    <span className="text-gray-900 dark:text-white">
+                    <span className="text-gray-600">Shipping</span>
+                    <span className="text-gray-900">
                       {shipping === 0 ? 'Free' : `₹${shipping.toFixed(2)}`}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">Tax (GST)</span>
-                    <span className="text-gray-900 dark:text-white">₹{tax.toFixed(2)}</span>
+                    <span className="text-gray-600">Tax (GST)</span>
+                    <span className="text-gray-900">₹{tax.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-base font-medium border-t border-gray-200 dark:border-gray-700 pt-2">
-                    <span className="text-gray-900 dark:text-white">Total</span>
-                    <span className="text-gray-900 dark:text-white">₹{grandTotal.toFixed(2)}</span>
+                    <span className="text-gray-900">Total</span>
+                    <span className="text-gray-900">₹{grandTotal.toFixed(2)}</span>
                   </div>
                 </div>
                 
                 {/* Security Features */}
                 <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-                  <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                  <div className="flex items-center space-x-2 text-sm text-gray-600">
                     <ShieldCheckIcon className="h-4 w-4" />
                     <span>Secure checkout</span>
                   </div>
-                  <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 mt-2">
+                  <div className="flex items-center space-x-2 text-sm text-gray-600 mt-2">
                     <TruckIcon className="h-4 w-4" />
                     <span>Free shipping on orders over ₹1000</span>
                   </div>

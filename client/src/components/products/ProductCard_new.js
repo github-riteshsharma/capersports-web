@@ -206,7 +206,7 @@ const ProductCard = ({ product, className = '' }) => {
         
         {/* Product Name */}
         <Link to={`/products/${product._id}`} className="block group/link">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover/link:text-primary-600 transition-colors duration-200">
+          <h3 className="text-lg font-medium text-gray-900 mb-2 line-clamp-2 group-hover/link:text-primary-600 transition-colors duration-200">
             {product.name}
           </h3>
         </Link>
@@ -239,7 +239,7 @@ const ProductCard = ({ product, className = '' }) => {
         
         {/* Price */}
         <div className="flex items-center space-x-2 mb-4">
-          <span className="text-xl font-bold text-gray-900 dark:text-white">
+          <span className="text-xl font-bold text-gray-900">
             ₹{product.price?.toLocaleString()}
           </span>
           {product.originalPrice && product.originalPrice > product.price && (

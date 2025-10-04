@@ -18,11 +18,11 @@ const AdminSettings = () => {
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
               Admin Settings
             </h1>
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
-              <p className="text-gray-600 dark:text-gray-400">
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <p className="text-gray-600">
                 Admin settings page coming soon!
               </p>
             </div>

@@ -41,7 +41,7 @@ import { setTheme, toggleTheme } from '../store/slices/uiSlice';
 
 // Components
 import Button from '../components/common/Button';
-import LoadingSpinner from '../components/common/LoadingSpinner';
+import CaperSportsLoader from '../components/common/CaperSportsLoader';
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -473,10 +473,10 @@ const Profile = () => {
   
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex justify-center items-center h-64">
-            <LoadingSpinner size="large" />
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-20">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
+          <div className="flex flex-col items-center justify-center py-32">
+            <CaperSportsLoader size="xl" showText />
           </div>
         </div>
       </div>
@@ -490,7 +490,7 @@ const Profile = () => {
         <meta name="description" content="Manage your profile and account settings" />
       </Helmet>
 
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-20">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -501,10 +501,10 @@ const Profile = () => {
             <div className="mb-8">
               <div className="flex items-center justify-between">
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                  <h1 className="text-3xl font-bold text-gray-900">
                     Profile & Settings
                   </h1>
-                  <p className="text-gray-600 dark:text-gray-400 mt-2">
+                  <p className="text-gray-600 mt-2">
                     Manage your account information and preferences
                   </p>
                 </div>
@@ -544,12 +544,12 @@ const Profile = () => {
                   <button 
                     onClick={() => document.getElementById('profilePictureInput').click()}
                     disabled={uploadingProfilePicture}
-                    className="absolute -bottom-1 -right-1 w-8 h-8 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center shadow-lg border-2 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="absolute -bottom-1 -right-1 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg border-2 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {uploadingProfilePicture ? (
                       <div className="w-3 h-3 border-2 border-gray-600 border-t-transparent rounded-full animate-spin" />
                     ) : (
-                      <FiCamera size={14} className="text-gray-600 dark:text-gray-400" />
+                      <FiCamera size={14} className="text-gray-600" />
                     )}
                   </button>
                   
@@ -606,12 +606,12 @@ const Profile = () => {
             </div>
             
             {/* Tab Content */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+            <div className="bg-white rounded-lg shadow-lg">
               {/* Personal Information Tab */}
               {activeTab === 'personal' && (
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                    <h2 className="text-xl font-semibold text-gray-900">
                       Personal Information
                     </h2>
                     <Button
@@ -739,10 +739,10 @@ const Profile = () => {
               {activeTab === 'security' && (
                 <div className="p-6">
                   <div className="mb-6">
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-2">
                       Security Settings
                     </h2>
-                    <p className="text-gray-600 dark:text-gray-400">
+                    <p className="text-gray-600">
                       Manage your password and security preferences
                     </p>
                   </div>
@@ -752,10 +752,10 @@ const Profile = () => {
                     <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
                       <div className="flex items-center justify-between mb-4">
                         <div>
-                          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                          <h3 className="text-lg font-medium text-gray-900">
                             Password
                           </h3>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="text-sm text-gray-600">
                             Keep your account secure with a strong password
                           </p>
                         </div>
@@ -873,10 +873,10 @@ const Profile = () => {
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-6">
                     <div>
-                      <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                      <h2 className="text-xl font-semibold text-gray-900 mb-2">
                         Address Management
                       </h2>
-                      <p className="text-gray-600 dark:text-gray-400">
+                      <p className="text-gray-600">
                         Manage your shipping and billing addresses
                       </p>
                     </div>
@@ -897,7 +897,7 @@ const Profile = () => {
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center mb-2">
-                              <h3 className="font-medium text-gray-900 dark:text-white mr-2">
+                              <h3 className="font-medium text-gray-900 mr-2">
                                 {address.name}
                               </h3>
                               {address.isDefault && (
@@ -909,7 +909,7 @@ const Profile = () => {
                                 {address.type}
                               </span>
                             </div>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                            <p className="text-sm text-gray-600">
                               {address.street}<br />
                               {address.city}, {address.state} {address.zipCode}<br />
                               {address.country}
@@ -948,7 +948,7 @@ const Profile = () => {
                   {/* Add Address Form */}
                   {showAddressForm && (
                     <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+                      <h3 className="text-lg font-medium text-gray-900 mb-4">
                         Add New Address
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1081,10 +1081,10 @@ const Profile = () => {
               {activeTab === 'shopping' && (
                 <div className="p-6">
                   <div className="mb-6">
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-2">
                       Shopping Preferences
                     </h2>
-                    <p className="text-gray-600 dark:text-gray-400">
+                    <p className="text-gray-600">
                       Customize your shopping experience
                     </p>
                   </div>
@@ -1092,7 +1092,7 @@ const Profile = () => {
                   <div className="space-y-6">
                     {/* Preferred Sizes */}
                     <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+                      <h3 className="text-lg font-medium text-gray-900 mb-4">
                         Preferred Sizes
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1132,7 +1132,7 @@ const Profile = () => {
                     
                     {/* Favorite Sports */}
                     <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+                      <h3 className="text-lg font-medium text-gray-900 mb-4">
                         Favorite Sports
                       </h3>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -1160,7 +1160,7 @@ const Profile = () => {
                     
                     {/* Price Range */}
                     <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+                      <h3 className="text-lg font-medium text-gray-900 mb-4">
                         Preferred Price Range
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1202,10 +1202,10 @@ const Profile = () => {
               {activeTab === 'preferences' && (
                 <div className="p-6">
                   <div className="mb-6">
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-2">
                       Preferences
                     </h2>
-                    <p className="text-gray-600 dark:text-gray-400">
+                    <p className="text-gray-600">
                       Customize your experience
                     </p>
                   </div>
@@ -1287,10 +1287,10 @@ const Profile = () => {
               {activeTab === 'notifications' && (
                 <div className="p-6">
                   <div className="mb-6">
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-2">
                       Notification Settings
                     </h2>
-                    <p className="text-gray-600 dark:text-gray-400">
+                    <p className="text-gray-600">
                       Choose what notifications you want to receive
                     </p>
                   </div>
@@ -1300,10 +1300,10 @@ const Profile = () => {
                       {/* Email Notifications */}
                       <div className="flex items-center justify-between">
                         <div>
-                          <h3 className="text-sm font-medium text-gray-900 dark:text-white">
+                          <h3 className="text-sm font-medium text-gray-900">
                             Email Notifications
                           </h3>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="text-sm text-gray-600">
                             Receive notifications via email
                           </p>
                         </div>
@@ -1321,10 +1321,10 @@ const Profile = () => {
                       {/* Order Updates */}
                       <div className="flex items-center justify-between">
                         <div>
-                          <h3 className="text-sm font-medium text-gray-900 dark:text-white">
+                          <h3 className="text-sm font-medium text-gray-900">
                             Order Updates
                           </h3>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="text-sm text-gray-600">
                             Get notified about order status changes
                           </p>
                         </div>
@@ -1342,10 +1342,10 @@ const Profile = () => {
                       {/* Newsletter */}
                       <div className="flex items-center justify-between">
                         <div>
-                          <h3 className="text-sm font-medium text-gray-900 dark:text-white">
+                          <h3 className="text-sm font-medium text-gray-900">
                             Newsletter
                           </h3>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="text-sm text-gray-600">
                             Receive our weekly newsletter with updates and offers
                           </p>
                         </div>
@@ -1382,10 +1382,10 @@ const Profile = () => {
               {activeTab === 'privacy' && (
                 <div className="p-6">
                   <div className="mb-6">
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-2">
                       Privacy Settings
                     </h2>
-                    <p className="text-gray-600 dark:text-gray-400">
+                    <p className="text-gray-600">
                       Control your privacy and data sharing preferences
                     </p>
                   </div>
@@ -1393,7 +1393,7 @@ const Profile = () => {
                   <div className="space-y-6">
                     {/* Profile Visibility */}
                     <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+                      <h3 className="text-lg font-medium text-gray-900 mb-4">
                         Profile Visibility
                       </h3>
                       <div className="space-y-3">
@@ -1428,16 +1428,16 @@ const Profile = () => {
                     
                     {/* Data Sharing */}
                     <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+                      <h3 className="text-lg font-medium text-gray-900 mb-4">
                         Data Sharing
                       </h3>
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
                           <div>
-                            <h4 className="text-sm font-medium text-gray-900 dark:text-white">
+                            <h4 className="text-sm font-medium text-gray-900">
                               Show Order History
                             </h4>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                            <p className="text-sm text-gray-600">
                               Allow others to see your order history
                             </p>
                           </div>
@@ -1454,10 +1454,10 @@ const Profile = () => {
                         
                         <div className="flex items-center justify-between">
                           <div>
-                            <h4 className="text-sm font-medium text-gray-900 dark:text-white">
+                            <h4 className="text-sm font-medium text-gray-900">
                               Allow Data Sharing
                             </h4>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                            <p className="text-sm text-gray-600">
                               Share anonymized data for analytics
                             </p>
                           </div>
@@ -1474,10 +1474,10 @@ const Profile = () => {
                         
                         <div className="flex items-center justify-between">
                           <div>
-                            <h4 className="text-sm font-medium text-gray-900 dark:text-white">
+                            <h4 className="text-sm font-medium text-gray-900">
                               Opt Out of Tracking
                             </h4>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                            <p className="text-sm text-gray-600">
                               Disable analytics and tracking cookies
                             </p>
                           </div>
@@ -1494,10 +1494,10 @@ const Profile = () => {
                         
                         <div className="flex items-center justify-between">
                           <div>
-                            <h4 className="text-sm font-medium text-gray-900 dark:text-white">
+                            <h4 className="text-sm font-medium text-gray-900">
                               Public Reviews
                             </h4>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                            <p className="text-sm text-gray-600">
                               Show your name on product reviews
                             </p>
                           </div>
@@ -1521,10 +1521,10 @@ const Profile = () => {
               {activeTab === 'account' && (
                 <div className="p-6">
                   <div className="mb-6">
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-2">
                       Account Settings
                     </h2>
-                    <p className="text-gray-600 dark:text-gray-400">
+                    <p className="text-gray-600">
                       Advanced account management options
                     </p>
                   </div>
@@ -1534,10 +1534,10 @@ const Profile = () => {
                     <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
                       <div className="flex items-center justify-between mb-4">
                         <div>
-                          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                          <h3 className="text-lg font-medium text-gray-900">
                             Two-Factor Authentication
                           </h3>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="text-sm text-gray-600">
                             Add an extra layer of security to your account
                           </p>
                         </div>
@@ -1567,10 +1567,10 @@ const Profile = () => {
                     <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                          <h3 className="text-lg font-medium text-gray-900">
                             Login Notifications
                           </h3>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="text-sm text-gray-600">
                             Get notified when someone logs into your account
                           </p>
                         </div>
@@ -1590,10 +1590,10 @@ const Profile = () => {
                     <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
                       <div className="flex items-center justify-between mb-4">
                         <div>
-                          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                          <h3 className="text-lg font-medium text-gray-900">
                             Data Export
                           </h3>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="text-sm text-gray-600">
                             Download all your account data
                           </p>
                         </div>
@@ -1651,7 +1651,7 @@ const Profile = () => {
                         </div>
                       )}
                       <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                        <p className="text-xs text-gray-600">
                           <strong>Warning:</strong> Account deactivation is permanent and cannot be undone. 
                           All your data, orders, and preferences will be permanently deleted.
                         </p>

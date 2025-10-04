@@ -179,10 +179,10 @@ const OrderDetail = () => {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">
               Order Not Found
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
+            <p className="text-gray-600 mb-6">
               The order you're looking for doesn't exist or you don't have permission to view it.
             </p>
             <button
@@ -211,7 +211,7 @@ const OrderDetail = () => {
           <div className="mb-8">
             <button
               onClick={() => navigate('/orders')}
-              className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-4"
+              className="inline-flex items-center text-gray-600 hover:text-gray-900 dark:hover:text-white mb-4"
             >
               <ArrowLeftIcon className="h-4 w-4 mr-2" />
               Back to Orders
@@ -219,10 +219,10 @@ const OrderDetail = () => {
             
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                <h1 className="text-3xl font-bold text-gray-900">
                   Order #{currentOrder.orderNumber}
                 </h1>
-                <p className="text-gray-600 dark:text-gray-400 mt-1">
+                <p className="text-gray-600 mt-1">
                   Placed on {formatDate(currentOrder.createdAt)}
                 </p>
               </div>
@@ -237,7 +237,7 @@ const OrderDetail = () => {
                   <button 
                     onClick={handleDownloadInvoice}
                     disabled={invoiceLoading}
-                    className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-50"
+                    className="p-2 text-gray-600 hover:text-gray-900 dark:hover:text-white disabled:opacity-50"
                     title="Download Invoice"
                   >
                     {invoiceLoading ? (
@@ -264,8 +264,8 @@ const OrderDetail = () => {
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-6">
               {/* Order Items */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">
                   Order Items
                 </h2>
                 
@@ -281,7 +281,7 @@ const OrderDetail = () => {
                       </div>
                       
                       <div className="flex-1">
-                        <h3 className="font-medium text-gray-900 dark:text-white">
+                        <h3 className="font-medium text-gray-900">
                           {item.name}
                         </h3>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -293,7 +293,7 @@ const OrderDetail = () => {
                       </div>
                       
                       <div className="text-right">
-                        <p className="font-medium text-gray-900 dark:text-white">
+                        <p className="font-medium text-gray-900">
                           ₹{item.price.toFixed(2)}
                         </p>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -306,8 +306,8 @@ const OrderDetail = () => {
               </div>
 
               {/* Order Timeline */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">
                   Order Timeline
                 </h2>
                 
@@ -320,7 +320,7 @@ const OrderDetail = () => {
                         </div>
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium text-gray-900 dark:text-white capitalize">
+                        <p className="font-medium text-gray-900 capitalize">
                           {history.status.replace('_', ' ')}
                         </p>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -341,7 +341,7 @@ const OrderDetail = () => {
                         </div>
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium text-gray-900 dark:text-white capitalize">
+                        <p className="font-medium text-gray-900 capitalize">
                           {currentOrder.orderStatus.replace('_', ' ')}
                         </p>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -357,50 +357,50 @@ const OrderDetail = () => {
             {/* Sidebar */}
             <div className="space-y-6">
               {/* Order Summary */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">
                   Order Summary
                 </h2>
                 
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Subtotal</span>
-                    <span className="text-gray-900 dark:text-white">₹{currentOrder.subtotal.toFixed(2)}</span>
+                    <span className="text-gray-600">Subtotal</span>
+                    <span className="text-gray-900">₹{currentOrder.subtotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Shipping</span>
-                    <span className="text-gray-900 dark:text-white">
+                    <span className="text-gray-600">Shipping</span>
+                    <span className="text-gray-900">
                       {currentOrder.shippingFee === 0 ? 'Free' : `₹${currentOrder.shippingFee.toFixed(2)}`}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Tax</span>
-                    <span className="text-gray-900 dark:text-white">₹{currentOrder.tax.toFixed(2)}</span>
+                    <span className="text-gray-600">Tax</span>
+                    <span className="text-gray-900">₹{currentOrder.tax.toFixed(2)}</span>
                   </div>
                   {currentOrder.discount > 0 && (
                     <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-400">Discount</span>
+                      <span className="text-gray-600">Discount</span>
                       <span className="text-green-600">-₹{currentOrder.discount.toFixed(2)}</span>
                     </div>
                   )}
                   <div className="border-t border-gray-200 dark:border-gray-700 pt-3">
                     <div className="flex justify-between">
-                      <span className="text-lg font-semibold text-gray-900 dark:text-white">Total</span>
-                      <span className="text-lg font-semibold text-gray-900 dark:text-white">₹{currentOrder.total.toFixed(2)}</span>
+                      <span className="text-lg font-semibold text-gray-900">Total</span>
+                      <span className="text-lg font-semibold text-gray-900">₹{currentOrder.total.toFixed(2)}</span>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Shipping Address */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
                   <MapPinIcon className="h-5 w-5 mr-2" />
                   Shipping Address
                 </h2>
                 
                 <div className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
-                  <p className="font-medium text-gray-900 dark:text-white">{currentOrder.shippingAddress.fullName}</p>
+                  <p className="font-medium text-gray-900">{currentOrder.shippingAddress.fullName}</p>
                   <p>{currentOrder.shippingAddress.addressLine1}</p>
                   {currentOrder.shippingAddress.addressLine2 && (
                     <p>{currentOrder.shippingAddress.addressLine2}</p>
@@ -420,14 +420,14 @@ const OrderDetail = () => {
               </div>
 
               {/* Payment Method */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
                   <CreditCardIcon className="h-5 w-5 mr-2" />
                   Payment Method
                 </h2>
                 
                 <div className="text-sm text-gray-600 dark:text-gray-300">
-                  <p className="font-medium text-gray-900 dark:text-white capitalize">
+                  <p className="font-medium text-gray-900 capitalize">
                     {currentOrder.paymentMethod === 'card' ? 'Credit/Debit Card' :
                      currentOrder.paymentMethod === 'upi' ? 'UPI' :
                      currentOrder.paymentMethod === 'netbanking' ? 'Net Banking' :
@@ -443,8 +443,8 @@ const OrderDetail = () => {
 
               {/* Customer Notes */}
               {currentOrder.customerNotes && (
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                <div className="bg-white rounded-lg shadow-lg p-6">
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
                     <DocumentTextIcon className="h-5 w-5 mr-2" />
                     Order Notes
                   </h2>
@@ -462,11 +462,11 @@ const OrderDetail = () => {
       {/* Cancel Order Modal */}
       {showCancelModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
               Cancel Order
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
+            <p className="text-gray-600 mb-6">
               Are you sure you want to cancel this order? This action cannot be undone.
             </p>
             <div className="flex justify-end space-x-3">

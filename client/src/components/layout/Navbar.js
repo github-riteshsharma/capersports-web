@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -8,27 +8,17 @@ import { toast } from 'react-toastify';
 import { 
   FiSearch, 
   FiShoppingCart, 
-  FiHeart, 
   FiUser, 
   FiMenu, 
   FiX,
-  FiSun,
-  FiMoon,
   FiSettings,
   FiLogOut,
   FiPackage,
-  FiHome,
-  FiGrid,
-  FiMail,
-  FiInfo
+  FiHeart
 } from 'react-icons/fi';
-
-// Components
-import Button from '../common/Button';
 
 // Store
 import { logout } from '../../store/slices/authSlice';
-import { toggleTheme } from '../../store/slices/uiSlice';
 import { getCart } from '../../store/slices/cartSlice';
 
 const Navbar = () => {
@@ -37,31 +27,13 @@ const Navbar = () => {
   const location = useLocation();
   
   const { isAuthenticated, user } = useSelector((state) => state.auth);
-  const { theme } = useSelector((state) => state.ui);
   const { totalItems } = useSelector((state) => state.cart);
   const { items: wishlistItems } = useSelector((state) => state.wishlist);
   
-  // Debug cart and wishlist state
-  console.log('Navbar state:', { 
-    cartItems: totalItems, 
-    wishlistItems: wishlistItems?.length || 0 
-  });
-  
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  // Handle scroll effect
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const profileRef = useRef(null);
 
   // Get cart data on mount
   useEffect(() => {
@@ -74,8 +46,23 @@ const Navbar = () => {
   useEffect(() => {
     setIsMenuOpen(false);
     setIsProfileOpen(false);
-    setIsSearchOpen(false);
   }, [location.pathname]);
+
+  // Close profile dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setIsProfileOpen(false);
+      }
+    };
+
+    if (isProfileOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [isProfileOpen]);
 
   const handleLogout = async () => {
     try {
@@ -91,20 +78,15 @@ const Navbar = () => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
-      setIsSearchOpen(false);
       setSearchQuery('');
     }
   };
 
-  const handleThemeToggle = () => {
-    dispatch(toggleTheme());
-  };
-
   const navigation = [
-    { name: 'Home', href: '/', icon: FiHome },
-    { name: 'Products', href: '/products', icon: FiGrid },
-    { name: 'About', href: '/about', icon: FiInfo },
-    { name: 'Contact', href: '/contact', icon: FiMail },
+    { name: 'Home', href: '/' },
+    { name: 'Products', href: '/products' },
+    { name: 'About', href: '/about' },
+    { name: 'Contact', href: '/contact' },
   ];
 
   const userNavigation = [
@@ -115,252 +97,255 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled 
-        ? 'bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl shadow-lg border-b border-white/20 dark:border-gray-700/30' 
-        : 'bg-white/60 dark:bg-gray-900/60 backdrop-blur-lg border-b border-white/10 dark:border-gray-700/20'
-    }`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-2xl border-b border-gray-100/50">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-3">
-              {/* Custom Caper Sports Logo */}
+            <Link to="/" className="flex items-center space-x-4 group">
               <motion.div
-                className="w-10 h-10 flex items-center justify-center"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                className="flex items-center space-x-4"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
-                <img
-                  src="/images/capersports-logo.png"
-                  alt="Caper Sports Logo"
-                  className="w-10 h-10 object-contain"
-                  onError={(e) => {
-                    // Fallback to branded text logo if image fails to load
-                    e.target.style.display = 'none';
-                    const fallback = e.target.parentElement.querySelector('.logo-fallback');
-                    if (fallback) {
-                      fallback.style.display = 'flex';
-                    }
-                  }}
-                />
+                <div className="relative">
+                  <img
+                    src="/images/logo.png"
+                    alt="Caper Sports"
+                    className="h-16 w-auto object-contain"
+                    onError={(e) => {
+                      e.target.src = "/images/capersports-logo.png";
+                      e.target.onerror = (err) => {
+                        err.target.style.display = 'none';
+                        const fallback = err.target.parentElement.parentElement.querySelector('.logo-fallback');
+                        if (fallback) {
+                          fallback.style.display = 'flex';
+                        }
+                      };
+                    }}
+                  />
+                </div>
+                {/* Brand Text - Desktop Only */}
+                <div className="hidden lg:flex flex-col">
+                  <span className="text-2xl font-black bg-gradient-to-r from-red-600 via-red-700 to-blue-700 bg-clip-text text-transparent tracking-tight leading-none">
+                    CAPER SPORTS
+                  </span>
+                </div>
                 {/* Fallback Logo */}
-                <div className="logo-fallback w-10 h-10 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-xl flex items-center justify-center" style={{ display: 'none' }}>
-                  <span className="text-white font-bold text-xl">CS</span>
+                <div className="logo-fallback hidden items-center space-x-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-blue-600 rounded-xl flex items-center justify-center">
+                    <span className="text-white font-bold text-lg">CS</span>
+                  </div>
+                  <div className="hidden lg:flex flex-col">
+                    <span className="text-2xl font-black bg-gradient-to-r from-red-600 via-red-700 to-blue-700 bg-clip-text text-transparent tracking-tight leading-none">
+                      CAPER SPORTS
+                    </span>
+                  </div>
                 </div>
               </motion.div>
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          {/* Desktop Navigation - Centered */}
+          <div className="hidden lg:flex items-center space-x-8">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`text-sm font-medium transition-colors duration-200 ${
+                className={`relative text-sm font-medium transition-all duration-200 group ${
                   location.pathname === item.href
-                    ? 'text-primary-600 dark:text-primary-400'
-                    : 'text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400'
+                    ? 'text-gray-900'
+                    : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                {item.name}
+                <span className="relative z-10">{item.name}</span>
+                {location.pathname === item.href && (
+                  <motion.div
+                    layoutId="activeTab"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-900 rounded-full"
+                    initial={false}
+                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  />
+                )}
               </Link>
             ))}
           </div>
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
-            {/* Search - Expands inline */}
-            <AnimatePresence mode="wait">
-              {isSearchOpen ? (
-                <motion.form
-                  key="search-form"
-                  initial={{ width: 0, opacity: 0 }}
-                  animate={{ width: 'auto', opacity: 1 }}
-                  exit={{ width: 0, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  onSubmit={handleSearch}
-                  className="flex items-center"
+            {/* Search */}
+            <div className="hidden md:flex items-center">
+              <form onSubmit={handleSearch} className="relative group">
+                <motion.div 
+                  className="relative bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition-all duration-300 focus-within:border-red-400 focus-within:shadow-lg focus-within:shadow-red-100/50"
+                  whileFocus={{ scale: 1.01 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
                 >
-                  <div className="relative flex items-center">
-                    <FiSearch className="absolute left-3 text-gray-400 z-10" size={18} />
-                    <input
-                      type="text"
-                      placeholder="Search products..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-48 sm:w-64 pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white bg-white transition-all"
-                      autoFocus
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsSearchOpen(false);
-                        setSearchQuery('');
-                      }}
-                      className="absolute right-2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 z-10"
-                    >
-                      <FiX size={18} />
-                    </button>
+                  <div className="absolute left-4 top-1/2 transform -translate-y-1/2 group-focus-within:text-red-500 transition-colors duration-300">
+                    <div className="relative">
+                      <FiSearch className="text-gray-400 group-focus-within:text-red-500 transition-colors duration-300" size={18} />
+                      {/* Premium search icon glow */}
+                      <div className="absolute inset-0 bg-red-500/20 rounded-full blur-sm opacity-0 group-focus-within:opacity-100 transition-opacity duration-300"></div>
+                    </div>
                   </div>
-                </motion.form>
-              ) : (
-                <motion.button
-                  key="search-button"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  onClick={() => setIsSearchOpen(true)}
-                  className="p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200"
-                >
-                  <FiSearch size={20} />
-                </motion.button>
-              )}
-            </AnimatePresence>
-
-            {/* Theme Toggle */}
-            <button
-              onClick={handleThemeToggle}
-              className="p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200"
-            >
-              {theme === 'dark' ? <FiSun size={20} /> : <FiMoon size={20} />}
-            </button>
+                  <motion.input
+                    type="text"
+                    placeholder="Search products..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-80 pl-12 pr-6 py-3 text-sm bg-transparent border-0 rounded-full focus:outline-none placeholder-gray-400 text-gray-900 font-medium focus:placeholder-gray-300 transition-all duration-300"
+                    whileFocus={{ 
+                      width: "22rem"
+                    }}
+                    transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                  />
+                  {/* Premium glow effect */}
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-red-500/5 via-purple-500/5 to-blue-500/5 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                </motion.div>
+              </form>
+            </div>
 
             {/* Cart */}
             <Link
               to="/cart"
-              className="relative p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200"
+              className="relative p-2.5 text-gray-600 hover:text-gray-900 transition-colors duration-200 hover:bg-gray-100/50 rounded-xl"
             >
               <FiShoppingCart size={20} />
               {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 bg-primary-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
                   {totalItems}
                 </span>
               )}
             </Link>
 
-            {/* Wishlist */}
-            {isAuthenticated && (
-              <Link
-                to="/wishlist"
-                className="relative p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200"
-              >
-                <FiHeart size={20} />
-                {wishlistItems?.length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    {wishlistItems.length}
-                  </span>
-                )}
-              </Link>
-            )}
-
             {/* User Menu */}
             {isAuthenticated ? (
-              <div className="relative">
+              <div className="relative" ref={profileRef}>
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="flex items-center space-x-2 p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200"
+                  className="flex items-center space-x-3 p-2.5 text-gray-600 hover:text-gray-900 transition-all duration-200 hover:bg-gray-100/50 rounded-2xl group"
                 >
-                  <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center overflow-hidden">
-                    {user?.avatar ? (
-                      <img
-                        src={user.avatar}
-                        alt={`${user.firstName} ${user.lastName}`}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                          e.target.nextSibling.style.display = 'flex';
-                        }}
-                      />
-                    ) : null}
-                    <span 
-                      className={`text-white text-sm font-medium ${user?.avatar ? 'hidden' : 'flex'} items-center justify-center w-full h-full`}
-                      style={{ display: user?.avatar ? 'none' : 'flex' }}
-                    >
-                      {user?.firstName?.charAt(0) || 'U'}
-                    </span>
+                  <div className="relative">
+                    <div className="w-10 h-10 bg-gradient-to-br from-red-500 via-red-600 to-blue-600 rounded-2xl flex items-center justify-center overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300 ring-2 ring-white">
+                      {user?.avatar ? (
+                        <img
+                          src={user.avatar}
+                          alt={`${user.firstName} ${user.lastName}`}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-white text-sm font-bold">
+                          {user?.firstName?.charAt(0) || 'U'}
+                        </span>
+                      )}
+                    </div>
+                    {/* Online indicator */}
+                    <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white"></div>
                   </div>
-                  <span className="hidden sm:block text-sm font-medium">
-                    {user?.firstName || 'User'}
-                  </span>
                 </button>
 
                 <AnimatePresence>
                   {isProfileOpen && (
                     <motion.div
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2"
+                      initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
+                      className="absolute right-0 mt-3 w-72 bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-200/50 py-3 overflow-hidden"
                     >
-                      <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
-                        <p className="text-sm font-medium text-gray-900 dark:text-white">
-                          {user?.firstName} {user?.lastName}
-                        </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
-                          {user?.email}
-                        </p>
+                      {/* Premium header */}
+                      <div className="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100/50 border-b border-gray-100/50">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-12 h-12 bg-gradient-to-br from-red-500 via-red-600 to-blue-600 rounded-2xl flex items-center justify-center overflow-hidden shadow-lg ring-2 ring-white">
+                            {user?.avatar ? (
+                              <img
+                                src={user.avatar}
+                                alt={`${user.firstName} ${user.lastName}`}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <span className="text-white text-lg font-bold">
+                                {user?.firstName?.charAt(0) || 'U'}
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-base font-bold text-gray-900">
+                              {user?.firstName} {user?.lastName}
+                            </p>
+                            <p className="text-sm text-gray-500">{user?.email}</p>
+                            <div className="flex items-center space-x-1 mt-1">
+                              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                              <span className="text-xs text-green-600 font-medium">Online</span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                       
-                      {userNavigation.map((item) => (
-                        <Link
-                          key={item.name}
-                          to={item.href}
-                          className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                      {/* Navigation items */}
+                      <div className="py-2">
+                        {userNavigation.map((item) => (
+                          <Link
+                            key={item.name}
+                            to={item.href}
+                            className="flex items-center px-6 py-3 text-sm text-gray-700 hover:bg-gray-50/80 hover:text-gray-900 transition-all duration-200 group"
+                          >
+                            <div className="w-10 h-10 bg-gray-100 rounded-2xl flex items-center justify-center mr-3 group-hover:bg-gray-200 transition-colors duration-200">
+                              <item.icon className="text-gray-500 group-hover:text-gray-700" size={18} />
+                            </div>
+                            <div className="flex-1">
+                              <span className="font-medium">{item.name}</span>
+                            </div>
+                          </Link>
+                        ))}
+                        
+                        {user?.role === 'admin' && (
+                          <Link
+                            to="/admin"
+                            className="flex items-center px-6 py-3 text-sm text-gray-700 hover:bg-gray-50/80 hover:text-gray-900 transition-all duration-200 group"
+                          >
+                            <div className="w-10 h-10 bg-gray-100 rounded-2xl flex items-center justify-center mr-3 group-hover:bg-gray-200 transition-colors duration-200">
+                              <FiSettings className="text-gray-500 group-hover:text-gray-700" size={18} />
+                            </div>
+                            <div className="flex-1">
+                              <span className="font-medium">Admin Dashboard</span>
+                            </div>
+                          </Link>
+                        )}
+                      </div>
+                      
+                      <hr className="my-2 border-gray-100/50" />
+                      
+                      <div className="px-3 py-2">
+                        <button
+                          onClick={handleLogout}
+                          className="flex items-center w-full px-3 py-3 text-sm text-red-600 hover:bg-red-50/80 transition-all duration-200 group rounded-2xl"
                         >
-                          <item.icon className="mr-3" size={16} />
-                          {item.name}
-                        </Link>
-                      ))}
-                      
-                      {user?.role === 'admin' && (
-                        <Link
-                          to="/admin"
-                          className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
-                        >
-                          <FiSettings className="mr-3" size={16} />
-                          Admin Dashboard
-                        </Link>
-                      )}
-                      
-                      <hr className="my-2 border-gray-200 dark:border-gray-700" />
-                      
-                      <button
-                        onClick={handleLogout}
-                        className="flex items-center w-full px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200"
-                      >
-                        <FiLogOut className="mr-3" size={16} />
-                        Sign Out
-                      </button>
+                          <div className="w-10 h-10 bg-red-50 rounded-2xl flex items-center justify-center mr-3 group-hover:bg-red-100 transition-colors duration-200">
+                            <FiLogOut className="text-red-500 group-hover:text-red-600" size={18} />
+                          </div>
+                          <div className="flex-1">
+                            <span className="font-medium">Sign Out</span>
+                          </div>
+                        </button>
+                      </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
             ) : (
-              <div className="flex items-center space-x-2">
-                <Button
-                  as={Link}
-                  to="/login"
-                  variant="outline"
-                  size="sm"
-                  className="hidden sm:inline-flex"
-                >
-                  Sign In
-                </Button>
-                <Button
-                  as={Link}
-                  to="/register"
-                  size="sm"
-                  className="hidden sm:inline-flex"
-                >
-                  Sign Up
-                </Button>
+              <div className="flex items-center space-x-3">
                 <Link
                   to="/login"
-                  className="sm:hidden p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200"
+                  className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors duration-200 px-3 py-2 rounded-xl hover:bg-gray-100/50"
                 >
-                  <FiUser size={20} />
+                  Sign In
+                </Link>
+                <Link
+                  to="/register"
+                  className="px-4 py-2 text-sm font-medium bg-gray-900 hover:bg-gray-800 text-white rounded-xl transition-colors duration-200"
+                >
+                  Sign Up
                 </Link>
               </div>
             )}
@@ -368,9 +353,9 @@ const Navbar = () => {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200"
+              className="lg:hidden p-2 text-gray-600 hover:text-gray-900 transition-colors duration-200 hover:bg-gray-100/50 rounded-xl"
             >
-              {isMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+              {isMenuOpen ? <FiX size={20} /> : <FiMenu size={20} />}
             </button>
           </div>
         </div>
@@ -383,38 +368,54 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-t border-white/20 dark:border-gray-700/30"
+            className="lg:hidden bg-white/95 backdrop-blur-xl border-t border-gray-100/50"
           >
-            <div className="px-4 py-2 space-y-1">
+            <div className="px-6 py-6 space-y-4">
+              {/* Mobile Search */}
+              <form onSubmit={handleSearch} className="relative group">
+                <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
+                  <div className="relative">
+                    <FiSearch className="text-gray-400 group-focus-within:text-red-500 transition-colors duration-300" size={18} />
+                    {/* Premium search icon glow */}
+                    <div className="absolute inset-0 bg-red-500/20 rounded-full blur-sm opacity-0 group-focus-within:opacity-100 transition-opacity duration-300"></div>
+                  </div>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3 text-sm bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400 font-medium shadow-sm"
+                />
+              </form>
+
+              {/* Mobile Navigation */}
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
+                  className={`block py-3 text-base font-medium transition-colors duration-200 ${
                     location.pathname === item.href
-                      ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'
-                      : 'text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                      ? 'text-gray-900'
+                      : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
-                  <item.icon className="mr-3" size={18} />
                   {item.name}
                 </Link>
               ))}
               
               {!isAuthenticated && (
-                <div className="pt-2 space-y-1">
+                <div className="pt-4 border-t border-gray-200 space-y-3">
                   <Link
                     to="/login"
-                    className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors duration-200"
+                    className="block py-3 text-base font-medium text-gray-600 hover:text-gray-900 transition-colors duration-200"
                   >
-                    <FiUser className="mr-3" size={18} />
                     Sign In
                   </Link>
                   <Link
                     to="/register"
-                    className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors duration-200"
+                    className="block px-4 py-3 text-base font-medium bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-colors duration-200 text-center"
                   >
-                    <FiUser className="mr-3" size={18} />
                     Sign Up
                   </Link>
                 </div>

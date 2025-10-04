@@ -24,6 +24,7 @@ import {
 import { getAdminProducts, deleteProduct, createProduct, updateProduct } from '../../store/slices/adminSlice';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import Button from '../../components/common/Button';
+import AdminLayout from '../../components/admin/AdminLayout';
 
 // Helper function to get hex color from color name
 const getColorHex = (colorName) => {
@@ -410,7 +411,7 @@ const AdminProducts = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden"
+        className="bg-white rounded-lg shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden"
       >
         <div className="p-6">
           <div className="flex items-start justify-between mb-4">
@@ -453,7 +454,7 @@ const AdminProducts = () => {
                     <FiPackage className="w-6 h-6 text-gray-400" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                    <h3 className="text-sm font-semibold text-gray-900">
                       {product.name}
                     </h3>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -488,7 +489,7 @@ const AdminProducts = () => {
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div>
               <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Price</p>
-              <p className="text-sm font-semibold text-gray-900 dark:text-white">
+              <p className="text-sm font-semibold text-gray-900">
                 ₹{product.price?.toLocaleString()}
                 {product.originalPrice && product.originalPrice > product.price && (
                   <span className="text-xs text-gray-500 dark:text-gray-400 line-through ml-2">
@@ -543,14 +544,13 @@ const AdminProducts = () => {
   }
 
   return (
-    <>
+    <AdminLayout>
       <Helmet>
         <title>Admin Products - Caper Sports</title>
         <meta name="description" content="Manage products - Create, edit, and delete products" />
       </Helmet>
 
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="space-y-6">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -559,10 +559,10 @@ const AdminProducts = () => {
             className="flex items-center justify-between mb-8"
           >
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 Product Management
               </h1>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-gray-600">
                 Manage your product catalog - Add, edit, and organize your products
               </p>
             </div>
@@ -582,7 +582,7 @@ const AdminProducts = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8 border border-gray-200 dark:border-gray-700"
+            className="bg-white rounded-lg shadow-md p-6 mb-8 border border-gray-200 dark:border-gray-700"
           >
             <div className="flex flex-col lg:flex-row gap-6">
               {/* Search */}
@@ -612,7 +612,7 @@ const AdminProducts = () => {
                 {/* Bulk Actions */}
                 {selectedProducts.length > 0 && (
                   <div className="flex items-center space-x-2">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                    <span className="text-sm text-gray-600">
                       {selectedProducts.length} selected
                     </span>
                     <button 
@@ -732,7 +732,7 @@ const AdminProducts = () => {
           ) : products.length === 0 ? (
             <div className="text-center py-12">
               <FiPackage className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 dark:text-gray-400 text-lg mb-2">
+              <p className="text-gray-600 text-lg mb-2">
                 No products found
               </p>
               <p className="text-gray-500 dark:text-gray-500 text-sm">
@@ -750,12 +750,12 @@ const AdminProducts = () => {
                     onChange={handleSelectAll}
                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="text-sm text-gray-600">
                     {selectedProducts.length > 0 ? `${selectedProducts.length} selected` : 'Select all'}
                   </span>
                 </div>
                 <div className="flex items-center space-x-4">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="text-sm text-gray-600">
                     Showing {products.length} of {pagination.total} products
                   </span>
                   <div className="flex items-center space-x-2">
@@ -828,10 +828,10 @@ const AdminProducts = () => {
                 resetForm();
               }
             }}>
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+              <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <h2 className="text-2xl font-bold text-gray-900">
                       {editingProduct ? 'Edit Product' : 'Add New Product'}
                     </h2>
                     <button
@@ -1023,7 +1023,7 @@ const AdminProducts = () => {
                       </label>
                       <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center">
                         <FiUpload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                        <p className="text-gray-600 dark:text-gray-400 mb-2">
+                        <p className="text-gray-600 mb-2">
                           Drag & drop images here, or click to select
                         </p>
                         <p className="text-sm text-gray-500 dark:text-gray-500">
@@ -1186,8 +1186,7 @@ const AdminProducts = () => {
             </div>
           )}
         </div>
-      </div>
-    </>
+    </AdminLayout>
   );
 };
 

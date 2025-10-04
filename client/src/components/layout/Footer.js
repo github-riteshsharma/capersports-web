@@ -2,14 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
-  FiMail, 
-  FiPhone, 
-  FiMapPin, 
-  FiFacebook, 
   FiTwitter, 
   FiInstagram, 
-  FiLinkedin,
-  FiHeart 
+  FiDribbble,
+  FiGithub
 } from 'react-icons/fi';
 
 const Footer = () => {
@@ -26,170 +22,122 @@ const Footer = () => {
       ],
     },
     {
-      title: 'Customer Service',
+      title: 'Categories',
+      links: [
+        { name: 'Running', href: '/products?category=running' },
+        { name: 'Training', href: '/products?category=training' },
+        { name: 'Lifestyle', href: '/products?category=lifestyle' },
+        { name: 'Footwear', href: '/products?category=footwear' },
+      ],
+    },
+    {
+      title: 'Support',
       links: [
         { name: 'Help Center', href: '/help' },
-        { name: 'Shipping Info', href: '/shipping' },
-        { name: 'Returns', href: '/returns' },
         { name: 'Size Guide', href: '/size-guide' },
-      ],
-    },
-    {
-      title: 'Account',
-      links: [
-        { name: 'My Account', href: '/profile' },
-        { name: 'Order History', href: '/orders' },
-        { name: 'Wishlist', href: '/wishlist' },
-        { name: 'Track Order', href: '/track' },
-      ],
-    },
-    {
-      title: 'Company',
-      links: [
-        { name: 'About Caper Sports', href: '/about' },
-        { name: 'Careers', href: '/careers' },
-        { name: 'Press', href: '/press' },
-        { name: 'Sustainability', href: '/sustainability' },
+        { name: 'Returns', href: '/returns' },
+        { name: 'Shipping Info', href: '/shipping' },
       ],
     },
   ];
 
   const socialLinks = [
-    { name: 'Facebook', href: '#', icon: FiFacebook },
     { name: 'Twitter', href: '#', icon: FiTwitter },
     { name: 'Instagram', href: '#', icon: FiInstagram },
-    { name: 'LinkedIn', href: '#', icon: FiLinkedin },
+    { name: 'Dribbble', href: '#', icon: FiDribbble },
+    { name: 'GitHub', href: '#', icon: FiGithub },
   ];
 
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Newsletter Section */}
-        <div className="py-12 border-b border-gray-800">
-          <div className="max-w-2xl mx-auto text-center">
-            <h3 className="text-2xl font-bold mb-4">Stay in the Loop</h3>
-            <p className="text-gray-300 mb-6">
-              Subscribe to our newsletter for the latest updates on new arrivals, exclusive deals, and sports tips.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-white placeholder-gray-400"
-              />
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 bg-primary-600 hover:bg-primary-700 rounded-lg font-medium transition-colors duration-200"
-              >
-                Subscribe
-              </motion.button>
-            </div>
-          </div>
-        </div>
-
+    <footer className="bg-gray-50 border-t border-gray-100">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* Main Footer Content */}
-        <div className="py-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
-            {/* Company Info */}
-            <div className="lg:col-span-2">
-              <Link to="/" className="flex items-center space-x-2 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-r from-primary-600 to-primary-700 rounded-xl flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">C</span>
+        <div className="py-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+            {/* Left Section - Brand Description */}
+            <div className="space-y-8">
+              {/* Logo */}
+              <div className="flex items-center space-x-3">
+                <img
+                  src="/images/logo.png"
+                  alt="Caper Sports Logo"
+                  className="h-12 w-auto object-contain"
+                  onError={(e) => {
+                    // Fallback to CSS logo if image fails
+                    e.target.style.display = 'none';
+                    const fallback = e.target.nextSibling;
+                    if (fallback) {
+                      fallback.style.display = 'flex';
+                    }
+                  }}
+                />
+                {/* Fallback Logo */}
+                <div className="hidden items-center space-x-2">
+                  <div className="w-10 h-10 bg-gradient-to-br from-red-600 via-red-700 to-blue-900 rounded-xl flex items-center justify-center shadow-lg">
+                    <span className="text-white font-bold text-lg">CS</span>
+                  </div>
+                  <span className="text-xl font-bold bg-gradient-to-r from-red-600 to-blue-900 bg-clip-text text-transparent">
+                    Caper Sports
+                  </span>
                 </div>
-                <span className="text-xl font-bold">Caper Sports</span>
-              </Link>
-              <p className="text-gray-300 mb-6 max-w-md">
-                Premium sports clothing and gear for athletes who never settle for less. 
-                Quality, comfort, and performance in every product.
-              </p>
+              </div>
               
-              {/* Contact Info */}
-              <div className="space-y-2">
-                <div className="flex items-center space-x-3">
-                  <FiMapPin className="text-primary-400" size={16} />
-                  <span className="text-gray-300 text-sm">Sector 62, Noida, Uttar Pradesh, India</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <FiPhone className="text-primary-400" size={16} />
-                  <span className="text-gray-300 text-sm">+91 98765 43210</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <FiMail className="text-primary-400" size={16} />
-                  <span className="text-gray-300 text-sm">hello@capersports.com</span>
-                </div>
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                  Premium athletic gear for champions.
+                </h3>
+                <p className="text-lg text-gray-600 leading-relaxed max-w-md">
+                  Quality, comfort, and performance in every product. Engineered for athletes who never settle for less.
+                </p>
+              </div>
+
+              {/* Social Links */}
+              <div className="flex items-center space-x-3">
+                {socialLinks.map((social, index) => (
+                  <motion.a
+                    key={index}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-gray-200 hover:bg-red-100 rounded-xl flex items-center justify-center transition-colors duration-200"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <social.icon size={18} className="text-gray-700 hover:text-red-600" />
+                  </motion.a>
+                ))}
               </div>
             </div>
 
-            {/* Footer Links */}
-            {footerSections.map((section, index) => (
-              <div key={index} className="lg:col-span-1">
-                <h4 className="text-lg font-semibold mb-4">{section.title}</h4>
-                <ul className="space-y-2">
-                  {section.links.map((link, linkIndex) => (
-                    <li key={linkIndex}>
-                      <Link
-                        to={link.href}
-                        className="text-gray-300 hover:text-primary-400 transition-colors duration-200 text-sm"
-                      >
-                        {link.name}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+            {/* Right Section - Footer Links */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {footerSections.map((section, index) => (
+                <div key={index}>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-6">{section.title}</h4>
+                  <ul className="space-y-4">
+                    {section.links.map((link, linkIndex) => (
+                      <li key={linkIndex}>
+                        <Link
+                          to={link.href}
+                          className="text-gray-600 hover:text-red-600 transition-colors duration-200"
+                        >
+                          <span>{link.name}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
         {/* Bottom Section */}
-        <div className="py-8 border-t border-gray-800">
-          <div className="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
-            {/* Copyright */}
-            <div className="flex items-center space-x-1 text-gray-400 text-sm">
-              <span>&copy; {currentYear} Caper Sports. Made with</span>
-              <FiHeart className="text-red-500" size={14} />
-              <span>in India. All rights reserved.</span>
-            </div>
-
-            {/* Social Links */}
-            <div className="flex items-center space-x-4">
-              {socialLinks.map((social, index) => (
-                <motion.a
-                  key={index}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 hover:bg-primary-600 rounded-lg flex items-center justify-center transition-colors duration-200"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <social.icon size={18} />
-                </motion.a>
-              ))}
-            </div>
-
-            {/* Legal Links */}
-            <div className="flex items-center space-x-6">
-              <Link
-                to="/privacy"
-                className="text-gray-400 hover:text-primary-400 transition-colors duration-200 text-sm"
-              >
-                Privacy Policy
-              </Link>
-              <Link
-                to="/terms"
-                className="text-gray-400 hover:text-primary-400 transition-colors duration-200 text-sm"
-              >
-                Terms of Service
-              </Link>
-              <Link
-                to="/cookies"
-                className="text-gray-400 hover:text-primary-400 transition-colors duration-200 text-sm"
-              >
-                Cookie Policy
-              </Link>
-            </div>
+        <div className="py-8 border-t border-gray-200">
+          <div className="text-center">
+            <p className="text-gray-500 text-sm">
+              &copy; {currentYear} Caper Sports. All rights reserved.
+            </p>
           </div>
         </div>
       </div>

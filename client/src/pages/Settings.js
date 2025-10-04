@@ -25,7 +25,7 @@ import { updateProfile, changePassword, clearError } from '../store/slices/authS
 
 // Components
 import Button from '../components/common/Button';
-import LoadingSpinner from '../components/common/LoadingSpinner';
+import CaperSportsLoader from '../components/common/CaperSportsLoader';
 
 const Settings = () => {
   const dispatch = useDispatch();
@@ -145,7 +145,7 @@ const Settings = () => {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex justify-center items-center h-64">
-            <LoadingSpinner size="large" />
+            <CaperSportsLoader size="lg" />
           </div>
         </div>
       </div>
@@ -170,10 +170,10 @@ const Settings = () => {
             <div className="mb-8">
               <div className="flex items-center justify-between">
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                  <h1 className="text-3xl font-bold text-gray-900">
                     Settings
                   </h1>
-                  <p className="text-gray-600 dark:text-gray-400 mt-2">
+                  <p className="text-gray-600 mt-2">
                     Manage your account settings and preferences
                   </p>
                 </div>
@@ -213,12 +213,12 @@ const Settings = () => {
             </div>
             
             {/* Tab Content */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+            <div className="bg-white rounded-lg shadow-lg">
               {/* Personal Information Tab */}
               {activeTab === 'personal' && (
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                    <h2 className="text-xl font-semibold text-gray-900">
                       Personal Information
                     </h2>
                     <Button
@@ -346,10 +346,10 @@ const Settings = () => {
               {activeTab === 'security' && (
                 <div className="p-6">
                   <div className="mb-6">
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-2">
                       Security Settings
                     </h2>
-                    <p className="text-gray-600 dark:text-gray-400">
+                    <p className="text-gray-600">
                       Manage your password and security preferences
                     </p>
                   </div>
@@ -359,10 +359,10 @@ const Settings = () => {
                     <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
                       <div className="flex items-center justify-between mb-4">
                         <div>
-                          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                          <h3 className="text-lg font-medium text-gray-900">
                             Password
                           </h3>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="text-sm text-gray-600">
                             Keep your account secure with a strong password
                           </p>
                         </div>
@@ -482,10 +482,10 @@ const Settings = () => {
                     <div className="w-16 h-16 bg-primary-100 dark:bg-primary-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
                       <FiSettings className="w-8 h-8 text-primary-600 dark:text-primary-400" />
                     </div>
-                    <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">
                       {tabs.find(tab => tab.id === activeTab)?.label || 'Settings'}
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-400 mb-4">
+                    <p className="text-gray-600 mb-4">
                       This settings section is being prepared for you.
                     </p>
                     <Button

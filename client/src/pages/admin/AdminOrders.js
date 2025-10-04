@@ -21,6 +21,7 @@ import {
 // Store
 import { getAdminOrders, updateOrderStatus } from '../../store/slices/adminSlice';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+import AdminLayout from '../../components/admin/AdminLayout';
 import Button from '../../components/common/Button';
 
 const AdminOrders = () => {
@@ -159,7 +160,7 @@ const AdminOrders = () => {
                   <FiUser className="w-4 h-4 text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                  <p className="text-sm font-semibold text-gray-900">
                     {order.user?.firstName} {order.user?.lastName}
                   </p>
                   <p className="text-xs text-gray-600 dark:text-gray-300 truncate">
@@ -176,7 +177,7 @@ const AdminOrders = () => {
                   <FiDollarSign className="w-4 h-4 text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                  <p className="text-sm font-semibold text-gray-900">
                     ₹{order.total?.toFixed(2) || order.totalAmount?.toFixed(2)}
                   </p>
                   <p className="text-xs text-gray-600 dark:text-gray-300">
@@ -193,7 +194,7 @@ const AdminOrders = () => {
                   <FiClock className="w-4 h-4 text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-semibold text-gray-900 dark:text-white capitalize">
+                  <p className="text-sm font-semibold text-gray-900 capitalize">
                     {order.paymentMethod}
                   </p>
                   <p className={`text-xs font-medium capitalize ${
@@ -264,7 +265,7 @@ const AdminOrders = () => {
   }
 
   return (
-    <>
+    <AdminLayout>
       <Helmet>
         <title>Admin Orders - Caper Sports</title>
         <meta name="description" content="Manage orders - View, edit, and track order status" />
@@ -513,7 +514,7 @@ const AdminOrders = () => {
           )}
         </div>
       </div>
-    </>
+    </AdminLayout>
   );
 };
 
