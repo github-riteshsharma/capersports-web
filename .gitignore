@@ -99,7 +99,7 @@ dist
 
 # Gatsby files
 .cache/
-public
+# public  # Commented out to allow client/public/images to be tracked
 
 # vuepress build output
 .vuepress/dist
