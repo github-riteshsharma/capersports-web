@@ -11,39 +11,41 @@ const router = express.Router();
 // @access  Public
 router.get('/', async (req, res) => {
   try {
-    let query = Product.find({ isActive: true });
-
+    // Build aggregation pipeline for better performance
+    const pipeline = [];
+    
+    // Match stage - combine all filters
+    const matchStage = { isActive: true };
+    
     // Search functionality
     if (req.query.search) {
       const searchRegex = new RegExp(req.query.search, 'i');
-      query = query.find({
-        $or: [
-          { name: searchRegex },
-          { description: searchRegex },
-          { brand: searchRegex },
-          { tags: { $in: [searchRegex] } },
-        ],
-      });
+      matchStage.$or = [
+        { name: searchRegex },
+        { description: searchRegex },
+        { brand: searchRegex },
+        { tags: { $in: [searchRegex] } },
+      ];
     }
 
     // Filter by category
     if (req.query.category) {
-      query = query.find({ category: req.query.category });
+      matchStage.category = req.query.category;
     }
 
     // Filter by brand
     if (req.query.brand) {
-      query = query.find({ brand: req.query.brand });
+      matchStage.brand = req.query.brand;
     }
 
     // Filter by gender
     if (req.query.gender) {
-      query = query.find({ gender: req.query.gender });
+      matchStage.gender = req.query.gender;
     }
 
     // Filter by age group
     if (req.query.ageGroup) {
-      query = query.find({ ageGroup: req.query.ageGroup });
+      matchStage.ageGroup = req.query.ageGroup;
     }
 
     // Filter by price range
@@ -51,28 +53,30 @@ router.get('/', async (req, res) => {
       const priceFilter = {};
       if (req.query.minPrice) priceFilter.$gte = parseInt(req.query.minPrice);
       if (req.query.maxPrice) priceFilter.$lte = parseInt(req.query.maxPrice);
-      query = query.find({ price: priceFilter });
+      matchStage.price = priceFilter;
     }
 
     // Filter by rating
     if (req.query.minRating) {
-      query = query.find({ 'ratings.average': { $gte: parseFloat(req.query.minRating) } });
+      matchStage['ratings.average'] = { $gte: parseFloat(req.query.minRating) };
     }
 
     // Filter by availability
     if (req.query.inStock === 'true') {
-      query = query.find({ totalStock: { $gt: 0 } });
+      matchStage.totalStock = { $gt: 0 };
     }
 
     // Filter by featured
     if (req.query.featured === 'true') {
-      query = query.find({ isFeatured: true });
+      matchStage.isFeatured = true;
     }
 
     // Filter by sale
     if (req.query.onSale === 'true') {
-      query = query.find({ isOnSale: true });
+      matchStage.isOnSale = true;
     }
+
+    pipeline.push({ $match: matchStage });
 
     // Sort options
     let sortOption = {};
@@ -102,15 +106,32 @@ router.get('/', async (req, res) => {
         sortOption = { createdAt: -1 };
     }
 
-    query = query.sort(sortOption);
+    pipeline.push({ $sort: sortOption });
+
+    // Exclude reviews for better performance
+    pipeline.push({
+      $project: {
+        reviews: 0
+      }
+    });
 
     // Pagination
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 12;
     const skip = (page - 1) * limit;
 
-    const total = await Product.countDocuments(query.getFilter());
-    const products = await query.skip(skip).limit(limit).select('-reviews');
+    // Get total count efficiently
+    const countPipeline = [...pipeline];
+    countPipeline.push({ $count: "total" });
+    const countResult = await Product.aggregate(countPipeline);
+    const total = countResult.length > 0 ? countResult[0].total : 0;
+
+    // Add pagination to main pipeline
+    pipeline.push({ $skip: skip });
+    pipeline.push({ $limit: limit });
+
+    // Execute the main query
+    const products = await Product.aggregate(pipeline);
 
     res.json({
       success: true,

@@ -33,11 +33,11 @@ const orderSchema = new mongoose.Schema({
     },
     size: {
       type: String,
-      required: true,
+      required: false,
     },
     color: {
       type: String,
-      required: true,
+      required: false,
     },
     image: {
       type: String,

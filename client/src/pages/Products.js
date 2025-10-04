@@ -87,16 +87,14 @@ const Products = () => {
       
       try {
         // Load data with proper error handling
-      await Promise.all([
+        await Promise.all([
           dispatch(getProducts()).unwrap(),
           dispatch(getCategories()).unwrap(),
           dispatch(getBrands()).unwrap()
         ]);
         
-        // Add minimum loading time for premium experience
-        await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      setProductsLoaded(true);
+        // Remove artificial delay for better performance
+        setProductsLoaded(true);
       } catch (error) {
         console.error('Failed to load initial data:', error);
       } finally {

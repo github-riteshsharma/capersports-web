@@ -58,12 +58,24 @@ router.post('/', protect, [
       }
 
       // Check stock
-      const sizeStock = product.sizes.find(s => s.size === item.size);
-      if (!sizeStock || sizeStock.stock < item.quantity) {
-        return res.status(400).json({
-          success: false,
-          message: `Insufficient stock for ${product.name}`,
-        });
+      if (item.size) {
+        // If size is provided, check size-specific stock
+        const sizeStock = product.sizes.find(s => s.size === item.size);
+        if (!sizeStock || sizeStock.stock < item.quantity) {
+          return res.status(400).json({
+            success: false,
+            message: `Insufficient stock for ${product.name} (Size: ${item.size})`,
+          });
+        }
+      } else {
+        // If no size provided, check general stock
+        const totalStock = product.totalStock || product.stock || 0;
+        if (totalStock < item.quantity) {
+          return res.status(400).json({
+            success: false,
+            message: `Insufficient stock for ${product.name}`,
+          });
+        }
       }
 
       const itemTotal = product.price * item.quantity;
@@ -74,8 +86,8 @@ router.post('/', protect, [
         name: product.name,
         price: product.price,
         quantity: item.quantity,
-        size: item.size,
-        color: item.color,
+        size: item.size || null,
+        color: item.color || null,
         image: product.images[0],
         sku: product.sku,
       });
@@ -121,8 +133,16 @@ router.post('/', protect, [
     // Update product stock
     for (const item of items) {
       const product = await Product.findById(item.product);
-      const sizeIndex = product.sizes.findIndex(s => s.size === item.size);
-      product.sizes[sizeIndex].stock -= item.quantity;
+      if (item.size) {
+        // Update size-specific stock
+        const sizeIndex = product.sizes.findIndex(s => s.size === item.size);
+        if (sizeIndex !== -1) {
+          product.sizes[sizeIndex].stock -= item.quantity;
+        }
+      } else {
+        // Update general stock
+        product.totalStock = Math.max(0, (product.totalStock || 0) - item.quantity);
+      }
       await product.save();
     }
 
@@ -252,8 +272,16 @@ router.put('/:id/cancel', protect, async (req, res) => {
     // Restore product stock
     for (const item of order.items) {
       const product = await Product.findById(item.product);
-      const sizeIndex = product.sizes.findIndex(s => s.size === item.size);
-      product.sizes[sizeIndex].stock += item.quantity;
+      if (item.size) {
+        // Restore size-specific stock
+        const sizeIndex = product.sizes.findIndex(s => s.size === item.size);
+        if (sizeIndex !== -1) {
+          product.sizes[sizeIndex].stock += item.quantity;
+        }
+      } else {
+        // Restore general stock
+        product.totalStock = (product.totalStock || 0) + item.quantity;
+      }
       await product.save();
     }
 
@@ -417,510 +445,490 @@ function generateInvoiceHTML(order) {
     <head>
       <meta charset="UTF-8">
       <title>Invoice - ${order.orderNumber}</title>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
       <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { 
+          margin: 0; 
+          padding: 0; 
+          box-sizing: border-box; 
+        }
+        
         body { 
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
           line-height: 1.5;
-          color: #1d1d1f;
-          background: linear-gradient(135deg, #f8faff 0%, #fff5f5 100%);
+          color: #000000;
+          background: #ffffff;
           font-size: 14px;
-          -webkit-font-smoothing: antialiased;
-          margin: 0;
-          padding: 40px 20px;
+          padding: 60px 40px;
+          font-weight: 400;
         }
         
         .invoice-container {
           max-width: 800px;
           margin: 0 auto;
           background: #ffffff;
-          min-height: calc(100vh - 80px);
-          box-shadow: 0 4px 25px rgba(59, 130, 246, 0.08);
-          border-radius: 12px;
-          overflow: hidden;
-          position: relative;
         }
         
-        .invoice-container::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 4px;
-          background: linear-gradient(90deg, #3b82f6 0%, #ef4444 100%);
-        }
-        
+        /* Header Section */
         .invoice-header {
-          padding: 50px 50px 40px 50px;
-          border-bottom: 1px solid #f0f2f5;
-          background: linear-gradient(135deg, rgba(59, 130, 246, 0.02) 0%, rgba(239, 68, 68, 0.02) 100%);
-          position: relative;
-        }
-        
-        .header-top {
-          display: table;
-          width: 100%;
-          table-layout: fixed;
-        }
-        
-        .logo-section {
-          display: table-cell;
-          vertical-align: middle;
-          width: 60%;
-        }
-        
-        .logo-content {
           display: flex;
-          align-items: center;
-          gap: 16px;
-        }
-        
-        .logo {
-          width: 52px;
-          height: 52px;
-          background-image: url('/images/capersports-logo.png');
-          background-size: contain;
-          background-repeat: no-repeat;
-          background-position: center;
-          border-radius: 10px;
-          box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
-          background-color: #ffffff;
-          padding: 4px;
-        }
-        
-        .company-info {
-          display: flex;
-          flex-direction: column;
+          justify-content: space-between;
           align-items: flex-start;
+          margin-bottom: 60px;
+          padding-bottom: 30px;
         }
         
-        .company-name {
-          font-size: 26px;
-          font-weight: 700;
-          color: #1d1d1f;
-          margin-bottom: 2px;
-          letter-spacing: -0.5px;
-          line-height: 1.2;
-        }
-        
-        .company-tagline {
-          font-size: 14px;
-          color: #6b7280;
-          font-weight: 500;
-          margin-bottom: 0;
-        }
-        
-        .invoice-meta-header {
-          display: table-cell;
-          vertical-align: middle;
-          text-align: right;
-          width: 40%;
+        .invoice-title-section {
+          flex: 1;
         }
         
         .invoice-title {
-          font-size: 36px;
-          font-weight: 800;
-          color: #1d1d1f;
-          margin-bottom: 6px;
-          letter-spacing: -1.5px;
-          line-height: 1;
+          font-size: 40px;
+          font-weight: 300;
+          color: #000000;
+          margin-bottom: 8px;
+          letter-spacing: -0.8px;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
         .invoice-number {
-          font-size: 16px;
+          font-size: 14px;
           color: #6b7280;
+          font-weight: 400;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .logo-section {
+          flex-shrink: 0;
+          margin-left: 40px;
+        }
+        
+        .logo {
+          width: 60px;
+          height: 60px;
+          background-image: url('/images/logo.png');
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center;
+          border-radius: 8px;
+        }
+        
+        /* Company and Customer Info */
+        .info-section {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 80px;
+          margin-bottom: 60px;
+        }
+        
+        .info-block {
+          
+        }
+        
+        .info-label {
+          font-size: 14px;
+          color: #6b7280;
+          margin-bottom: 10px;
+          font-weight: 400;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .company-name {
+          font-size: 20px;
           font-weight: 600;
-          letter-spacing: 0.5px;
+          color: #000000;
+          margin-bottom: 6px;
+          line-height: 1.2;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
-        .invoice-content {
-          padding: 0 50px 40px 50px;
-          position: relative;
-        }
-        
-        .invoice-details {
-          display: table;
-          width: 100%;
-          table-layout: fixed;
-          margin-bottom: 45px;
-        }
-        
-        .detail-section {
-          display: table-cell;
-          vertical-align: top;
-          padding-right: 40px;
-        }
-        
-        .detail-section:last-child {
-          padding-right: 0;
-          padding-left: 40px;
-        }
-        
-        .section-title {
-          font-size: 12px;
-          font-weight: 700;
+        .company-address,
+        .customer-address {
+          font-size: 14px;
           color: #6b7280;
-          text-transform: uppercase;
-          letter-spacing: 1px;
-          margin-bottom: 20px;
-          padding-bottom: 8px;
-          border-bottom: 2px solid #f0f2f5;
-        }
-        
-        .detail-content {
-          color: #1d1d1f;
           line-height: 1.6;
+          font-weight: 400;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
-        .detail-content .name {
+        .customer-name {
+          font-size: 20px;
           font-weight: 600;
-          margin-bottom: 4px;
-          font-size: 16px;
+          color: #000000;
+          margin-bottom: 6px;
+          line-height: 1.2;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
-        .detail-content .address {
-          color: #86868b;
-          margin-bottom: 2px;
+        /* Date Section */
+        .date-section {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 80px;
+          margin-bottom: 60px;
         }
         
-        .detail-row {
-          display: table;
-          width: 100%;
-          margin-bottom: 12px;
-          table-layout: fixed;
+        .date-block {
+          
         }
         
-        .detail-label {
-          display: table-cell;
+        .date-label {
+          font-size: 14px;
           color: #6b7280;
-          font-weight: 500;
-          width: 40%;
-          vertical-align: top;
-          padding-right: 16px;
+          margin-bottom: 10px;
+          font-weight: 400;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
-        .detail-value {
-          display: table-cell;
-          color: #1d1d1f;
+        .date-value {
+          font-size: 20px;
           font-weight: 600;
-          width: 60%;
-          vertical-align: top;
-          text-align: left;
+          color: #000000;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
-        .status-badge {
-          display: inline-block;
-          padding: 0;
-          border-radius: 12px;
-          font-size: 11px;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          line-height: 20px;
-          height: 20px;
-          min-width: 60px;
-          text-align: center;
-          vertical-align: baseline;
+        /* Invoice Details Title */
+        .invoice-details-title {
+          font-size: 16px;
+          color: #6b7280;
+          margin-bottom: 25px;
+          font-weight: 400;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
-        .status-delivered { background: #d1fae5; color: #065f46; }
-        .status-shipped { background: #dbeafe; color: #1e40af; }
-        .status-processing { background: #fef3c7; color: #92400e; }
-        .status-pending { background: #fee2e2; color: #dc2626; }
-        
-        .items-section {
-          margin-bottom: 40px;
-        }
-        
+        /* Items Table */
         .items-table {
           width: 100%;
           border-collapse: collapse;
-          margin-top: 20px;
+          margin-bottom: 50px;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
         .items-table thead th {
-          padding: 16px 0;
+          padding: 0 0 18px 0;
           text-align: left;
-          font-weight: 600;
-          font-size: 13px;
-          color: #86868b;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          border-bottom: 1px solid #f5f5f7;
+          font-weight: 500;
+          font-size: 14px;
+          color: #6b7280;
+          border-bottom: 1px solid #e5e7eb;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .items-table thead th:nth-child(2) {
+          text-align: center;
+        }
+        
+        .items-table thead th:nth-child(3),
+        .items-table thead th:nth-child(4) {
+          text-align: right;
         }
         
         .items-table tbody td {
-          padding: 20px 0;
-          border-bottom: 1px solid #f5f5f7;
+          padding: 22px 0;
+          border-bottom: 1px solid #f3f4f6;
           vertical-align: top;
+          font-size: 14px;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
         .items-table tbody tr:last-child td {
           border-bottom: none;
+          padding-bottom: 0;
         }
         
         .product-name {
-          font-weight: 600;
-          color: #1d1d1f;
+          font-weight: 500;
+          color: #000000;
           margin-bottom: 4px;
+          line-height: 1.4;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
         .product-details {
           font-size: 13px;
-          color: #86868b;
+          color: #6b7280;
+          line-height: 1.4;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
         .quantity {
           text-align: center;
-          font-weight: 600;
+          font-weight: 500;
+          color: #000000;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
-        .price {
+        .unit-price,
+        .total-price {
           text-align: right;
-          font-weight: 600;
+          font-weight: 500;
+          color: #000000;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
-        .total-section {
-          border-top: 1px solid #f5f5f7;
-          padding-top: 30px;
-          margin-top: 30px;
-        }
-        
-        .total-rows {
-          max-width: 300px;
-          margin-left: auto;
+        /* Totals Section */
+        .totals-section {
+          margin-top: 50px;
+          padding-top: 25px;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
         .total-row {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 8px 0;
-        }
-        
-        .total-row .label {
-          color: #86868b;
+          padding: 10px 0;
           font-size: 14px;
         }
         
-        .total-row .amount {
-          color: #1d1d1f;
-          font-weight: 600;
+        .total-row:last-child {
+          padding-top: 18px;
+          margin-top: 18px;
+          border-top: 1px solid #e5e7eb;
+        }
+        
+        .total-label {
+          color: #000000;
+          font-weight: 500;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .total-amount {
+          color: #000000;
+          font-weight: 500;
           text-align: right;
+          min-width: 120px;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
-        .total-row.final {
-          border-top: 1px solid #f5f5f7;
-          margin-top: 12px;
-          padding-top: 16px;
-        }
-        
-        .total-row.final .label {
-          font-weight: 600;
-          color: #1d1d1f;
-          font-size: 16px;
-        }
-        
-        .total-row.final .amount {
-          font-size: 18px;
+        .total-row:last-child .total-label,
+        .total-row:last-child .total-amount {
           font-weight: 700;
+          font-size: 16px;
         }
         
+        .total-row.discount .total-amount {
+          color: #000000;
+        }
+        
+        /* Notes Section */
+        .notes-section {
+          margin-top: 70px;
+        }
+        
+        .notes-title {
+          font-size: 16px;
+          color: #000000;
+          margin-bottom: 18px;
+          font-weight: 500;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .notes-content {
+          color: #6b7280;
+          font-size: 14px;
+          line-height: 1.6;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .notes-content ul {
+          list-style: none;
+          padding: 0;
+        }
+        
+        .notes-content li {
+          margin-bottom: 4px;
+          position: relative;
+          padding-left: 16px;
+        }
+        
+        .notes-content li:before {
+          content: "•";
+          position: absolute;
+          left: 0;
+          color: #6b7280;
+        }
+        
+        /* Footer */
         .footer {
-          padding: 40px 60px;
-          border-top: 1px solid #f5f5f7;
-          margin-top: 60px;
+          margin-top: 70px;
+          padding-top: 35px;
+          border-top: 1px solid #f3f4f6;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
         }
         
-        .footer-content {
-          text-align: center;
-        }
-        
-        .footer-title {
+        .company-footer {
           font-size: 16px;
           font-weight: 600;
-          color: #1d1d1f;
-          margin-bottom: 8px;
-        }
-        
-        .footer-text {
-          font-size: 13px;
-          color: #86868b;
-          margin-bottom: 20px;
+          color: #000000;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
         .contact-info {
-          display: flex;
-          justify-content: center;
-          gap: 40px;
-          flex-wrap: wrap;
+          font-size: 14px;
+          color: #6b7280;
+          text-align: right;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
-        .contact-item {
-          font-size: 13px;
-          color: #86868b;
-        }
-        
-        .legal-info {
-          margin-top: 30px;
-          padding-top: 20px;
-          border-top: 1px solid #f5f5f7;
-          font-size: 11px;
-          color: #86868b;
-          text-align: center;
-        }
-        
-        .status-badge {
-          display: inline-block;
-          padding: 4px 12px;
-          border-radius: 20px;
-          font-size: 12px;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-        }
-        
-        .status-delivered { background: #dcfce7; color: #166534; }
-        .status-shipped { background: #dbeafe; color: #1d4ed8; }
-        .status-processing { background: #fef3c7; color: #92400e; }
-        .status-pending { background: #fee2e2; color: #dc2626; }
-        
+        /* Print Styles */
         @media print {
-          body { padding: 0; }
-          .invoice-container { box-shadow: none; }
+          body { 
+            padding: 40px 20px;
+            background: #ffffff;
+          }
+          .invoice-container { 
+            box-shadow: none;
+          }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+          body {
+            padding: 40px 20px;
+          }
+          
+          .invoice-header {
+            flex-direction: column;
+            gap: 30px;
+          }
+          
+          .logo-section {
+            margin-left: 0;
+          }
+          
+          .info-section,
+          .date-section {
+            grid-template-columns: 1fr;
+            gap: 40px;
+          }
+          
+          .footer {
+            flex-direction: column;
+            gap: 20px;
+            text-align: center;
+          }
+          
+          .contact-info {
+            text-align: center;
+          }
         }
       </style>
     </head>
     <body>
       <div class="invoice-container">
+        <!-- Header Section -->
         <div class="invoice-header">
-          <div class="header-top">
-            <div class="logo-section">
-              <div class="logo-content">
-                <div class="logo"></div>
-                <div class="company-info">
-                  <div class="company-name">CaperSports</div>
-                  <div class="company-tagline">Premium Athletic Wear & Sports Equipment</div>
-                </div>
-              </div>
+          <div class="invoice-title-section">
+            <div class="invoice-title">Invoice</div>
+            <div class="invoice-number">Invoice Number #${order.orderNumber || 'INV-' + order._id.toString().slice(-6).toUpperCase() + '-000'}</div>
+          </div>
+          <div class="logo-section">
+            <div class="logo"></div>
+          </div>
+        </div>
+        
+        <!-- Company and Customer Info -->
+        <div class="info-section">
+          <div class="info-block">
+            <div class="info-label">Billed By :</div>
+            <div class="company-name">CaperSports</div>
+            <div class="company-address">
+              123 Sports Avenue, Floor 2,<br>
+              Mumbai, India
             </div>
-            <div class="invoice-meta-header">
-              <div class="invoice-title">Invoice</div>
-              <div class="invoice-number">#${order.orderNumber}</div>
+          </div>
+          <div class="info-block">
+            <div class="info-label">Billed To :</div>
+            <div class="customer-name">${order.shippingAddress.fullName}</div>
+            <div class="customer-address">
+              ${order.shippingAddress.addressLine1}<br>
+              ${order.shippingAddress.city}, ${order.shippingAddress.state}, ${order.shippingAddress.pinCode}
             </div>
           </div>
         </div>
         
-        <div class="invoice-content">
-          <div class="invoice-details">
-            <div class="detail-section">
-              <div class="section-title">Bill To</div>
-              <div class="detail-content">
-                <div class="name">${order.shippingAddress.fullName}</div>
-                <div class="address">${order.shippingAddress.addressLine1}</div>
-                ${order.shippingAddress.addressLine2 ? `<div class="address">${order.shippingAddress.addressLine2}</div>` : ''}
-                <div class="address">${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.pinCode}</div>
-                <div class="address">${order.shippingAddress.country}</div>
-                <div class="address">${order.shippingAddress.phone}</div>
-                <div class="address">${order.shippingAddress.email}</div>
-              </div>
-            </div>
-            
-            <div class="detail-section">
-              <div class="section-title">Invoice Details</div>
-              <div class="detail-content">
-                <div class="detail-row">
-                  <span class="detail-label">Order Date</span>
-                  <span class="detail-value">${orderDate}</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Invoice Date</span>
-                  <span class="detail-value">${currentDate}</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Payment Method</span>
-                  <span class="detail-value">${order.paymentMethod.charAt(0).toUpperCase() + order.paymentMethod.slice(1)}</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Status</span>
-                  <span class="status-badge status-${order.orderStatus.replace('_', '-')}">
-                    ${order.orderStatus.replace('_', ' ').toUpperCase()}
-                  </span>
-                </div>
-              </div>
-            </div>
+        <!-- Date Information -->
+        <div class="date-section">
+          <div class="date-block">
+            <div class="date-label">Date Issued :</div>
+            <div class="date-value">${new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
           </div>
-          
-          <div class="items-section">
-            <div class="section-title">Items</div>
-            <table class="items-table">
-              <thead>
-                <tr>
-                  <th>Product</th>
-                  <th>Qty</th>
-                  <th>Price</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${order.items.map(item => `
-                  <tr>
-                    <td>
-                      <div class="product-name">${item.name}</div>
-                      <div class="product-details">${item.size} • ${item.color}</div>
-                    </td>
-                    <td class="quantity">${item.quantity}</td>
-                    <td class="price">₹${(item.price * item.quantity).toFixed(2)}</td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          </div>
-          
-          <div class="total-section">
-            <div class="total-rows">
-              <div class="total-row">
-                <span class="label">Subtotal</span>
-                <span class="amount">₹${order.subtotal.toFixed(2)}</span>
-              </div>
-              <div class="total-row">
-                <span class="label">Shipping</span>
-                <span class="amount">${order.shippingFee === 0 ? 'Free' : `₹${order.shippingFee.toFixed(2)}`}</span>
-              </div>
-              <div class="total-row">
-                <span class="label">Tax (GST 18%)</span>
-                <span class="amount">₹${order.tax.toFixed(2)}</span>
-              </div>
-              ${order.discount > 0 ? `
-                <div class="total-row">
-                  <span class="label">Discount</span>
-                  <span class="amount">-₹${order.discount.toFixed(2)}</span>
-                </div>
-              ` : ''}
-              <div class="total-row final">
-                <span class="label">Total</span>
-                <span class="amount">₹${order.total.toFixed(2)}</span>
-              </div>
-            </div>
+          <div class="date-block">
+            <div class="date-label">Due Date:</div>
+            <div class="date-value">${new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
           </div>
         </div>
         
+        <!-- Invoice Details Title -->
+        <div class="invoice-details-title">Invoice Details</div>
+        
+        <!-- Items Table -->
+        <table class="items-table">
+          <thead>
+            <tr>
+              <th>Items/Service</th>
+              <th>Quantity</th>
+              <th>Unit Price</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${order.items.map(item => `
+              <tr>
+                <td>
+                  <div class="product-name">${item.name}</div>
+                  <div class="product-details">
+                    ${item.size ? `Size: ${item.size}` : ''} ${item.size && item.color ? ', ' : ''} ${item.color ? `Color: ${item.color}` : ''}
+                  </div>
+                </td>
+                <td class="quantity">${item.quantity}</td>
+                <td class="unit-price">₹${item.price.toLocaleString('en-IN')}</td>
+                <td class="total-price">₹${(item.price * item.quantity).toLocaleString('en-IN')}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+        
+        <!-- Totals Section -->
+        <div class="totals-section">
+          <div class="total-row">
+            <div class="total-label">Subtotal</div>
+            <div class="total-amount">₹${order.subtotal.toLocaleString('en-IN')}</div>
+          </div>
+          <div class="total-row">
+            <div class="total-label">Tax (GST 18%)</div>
+            <div class="total-amount">₹${order.tax.toLocaleString('en-IN')}</div>
+          </div>
+          ${order.discount > 0 ? `
+            <div class="total-row discount">
+              <div class="total-label">Discount</div>
+              <div class="total-amount">-₹${order.discount.toLocaleString('en-IN')}</div>
+            </div>
+          ` : ''}
+          <div class="total-row">
+            <div class="total-label">Grand Total</div>
+            <div class="total-amount">₹${order.total.toLocaleString('en-IN')}</div>
+          </div>
+        </div>
+        
+        <!-- Notes Section -->
+        <div class="notes-section">
+          <div class="notes-title">Notes</div>
+          <div class="notes-content">
+            <ul>
+              <li>Payment is due by ${new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</li>
+              <li>Include the invoice number in the payment reference to ensure accurate processing</li>
+            </ul>
+          </div>
+        </div>
+        
+        <!-- Footer -->
         <div class="footer">
-          <div class="footer-content">
-            <div class="footer-title">Thank you for your purchase</div>
-            <div class="footer-text">We appreciate your business and trust in our premium athletic wear.</div>
-            
-            <div class="contact-info">
-              <div class="contact-item">support@capersports.com</div>
-              <div class="contact-item">+91-1800-CAPER-SPORTS</div>
-              <div class="contact-item">www.capersports.com</div>
-            </div>
-            
-            <div class="legal-info">
-              CaperSports Private Limited • 123 Sports Avenue, Athletic District, Mumbai 400001<br>
-              GST: 27ABCCS1234A1Z5 • CIN: U74999MH2023PTC123456
-            </div>
-          </div>
+          <div class="company-footer">CaperSports Private Limited, IND</div>
+          <div class="contact-info">(+91) 823-4567-8901</div>
         </div>
       </div>
     </body>

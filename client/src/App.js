@@ -34,6 +34,11 @@ import AdminProducts from './pages/admin/AdminProducts';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminSettings from './pages/admin/AdminSettings';
+import AdminInvoices from './pages/admin/AdminInvoices';
+import AdminCashFlow from './pages/admin/AdminCashFlow';
+import AdminExpenses from './pages/admin/AdminExpenses';
+import AdminReports from './pages/admin/AdminReports';
+import AdminUpcomingPayments from './pages/admin/AdminUpcomingPayments';
 
 // Route Guards
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -48,8 +53,9 @@ function App() {
   const { isAuthenticated, loading: authLoading } = useSelector((state) => state.auth);
   const { theme } = useSelector((state) => state.ui);
   
-  // Check if current route is auth page
+  // Check if current route is auth page or admin page
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+  const isAdminPage = location.pathname.startsWith('/admin');
 
   useEffect(() => {
     // Check authentication status on app load
@@ -101,7 +107,7 @@ function App() {
       <ScrollToTop />
       
       <div className="flex flex-col min-h-screen">
-        {!isAuthPage && <Navbar />}
+        {!isAuthPage && !isAdminPage && <Navbar />}
         
         <main className="flex-grow">
           <AnimatePresence mode="wait">
@@ -220,6 +226,46 @@ function App() {
                 } 
               />
               <Route 
+                path="/admin/invoices" 
+                element={
+                  <AdminRoute>
+                    <AdminInvoices />
+                  </AdminRoute>
+                } 
+              />
+              <Route 
+                path="/admin/cashflow" 
+                element={
+                  <AdminRoute>
+                    <AdminCashFlow />
+                  </AdminRoute>
+                } 
+              />
+              <Route 
+                path="/admin/expenses" 
+                element={
+                  <AdminRoute>
+                    <AdminExpenses />
+                  </AdminRoute>
+                } 
+              />
+              <Route 
+                path="/admin/reports" 
+                element={
+                  <AdminRoute>
+                    <AdminReports />
+                  </AdminRoute>
+                } 
+              />
+              <Route 
+                path="/admin/payments" 
+                element={
+                  <AdminRoute>
+                    <AdminUpcomingPayments />
+                  </AdminRoute>
+                } 
+              />
+              <Route 
                 path="/admin/settings" 
                 element={
                   <AdminRoute>
@@ -234,7 +280,7 @@ function App() {
           </AnimatePresence>
         </main>
         
-        {!isAuthPage && <Footer />}
+        {!isAuthPage && !isAdminPage && <Footer />}
       </div>
     </div>
   );

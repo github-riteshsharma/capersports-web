@@ -113,8 +113,8 @@ router.get('/cart', protect, async (req, res) => {
 router.post('/cart', protect, [
   body('productId').notEmpty().withMessage('Product ID is required'),
   body('quantity').isInt({ min: 1 }).withMessage('Quantity must be at least 1'),
-  body('size').notEmpty().withMessage('Size is required'),
-  body('color').notEmpty().withMessage('Color is required'),
+  body('size').optional({ nullable: true }),
+  body('color').optional({ nullable: true }),
 ], async (req, res) => {
   try {
     // Check for validation errors
@@ -138,12 +138,24 @@ router.post('/cart', protect, [
     }
 
     // Check stock
-    const sizeStock = product.sizes.find(s => s.size === size);
-    if (!sizeStock || sizeStock.stock < quantity) {
-      return res.status(400).json({
-        success: false,
-        message: 'Insufficient stock',
-      });
+    if (size) {
+      // If size is provided, check size-specific stock
+      const sizeStock = product.sizes.find(s => s.size === size);
+      if (!sizeStock || sizeStock.stock < quantity) {
+        return res.status(400).json({
+          success: false,
+          message: 'Insufficient stock for selected size',
+        });
+      }
+    } else {
+      // If no size provided, check general stock
+      const totalStock = product.totalStock || product.stock || 0;
+      if (totalStock < quantity) {
+        return res.status(400).json({
+          success: false,
+          message: 'Insufficient stock',
+        });
+      }
     }
 
     const user = await User.findById(req.user.id);
@@ -151,8 +163,8 @@ router.post('/cart', protect, [
     // Check if item already exists in cart
     const existingItem = user.cart.find(item => 
       item.product.toString() === productId && 
-      item.size === size && 
-      item.color === color
+      item.size === (size || null) && 
+      item.color === (color || null)
     );
 
     if (existingItem) {
@@ -163,8 +175,8 @@ router.post('/cart', protect, [
       user.cart.push({
         product: productId,
         quantity,
-        size,
-        color,
+        size: size || null,
+        color: color || null,
       });
     }
 

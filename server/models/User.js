@@ -92,11 +92,11 @@ const userSchema = new mongoose.Schema({
     },
     size: {
       type: String,
-      required: true,
+      required: false,
     },
     color: {
       type: String,
-      required: true,
+      required: false,
     },
     addedAt: {
       type: Date,

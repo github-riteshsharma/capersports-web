@@ -229,6 +229,15 @@ productSchema.index({ price: 1 });
 productSchema.index({ 'ratings.average': -1 });
 productSchema.index({ isFeatured: 1, isActive: 1 });
 productSchema.index({ name: 'text', description: 'text', brand: 'text' });
+// Additional performance indexes
+productSchema.index({ isActive: 1, createdAt: -1 });
+productSchema.index({ isActive: 1, totalStock: 1 });
+productSchema.index({ isActive: 1, isOnSale: 1 });
+productSchema.index({ gender: 1, isActive: 1 });
+productSchema.index({ ageGroup: 1, isActive: 1 });
+productSchema.index({ category: 1, brand: 1, isActive: 1 });
+productSchema.index({ price: 1, isActive: 1 });
+productSchema.index({ 'ratings.average': -1, isActive: 1 });
 
 // Virtual for discounted price
 productSchema.virtual('discountedPrice').get(function() {

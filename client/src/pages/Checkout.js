@@ -101,6 +101,38 @@ const Checkout = () => {
     }
   };
 
+  // Helper function to validate steps without setting errors (to avoid recursion)
+  const isStepValid = (step) => {
+    if (step === 1) {
+      const { shippingAddress } = formData;
+      return shippingAddress.fullName && shippingAddress.addressLine1 && 
+             shippingAddress.city && shippingAddress.state && 
+             shippingAddress.pinCode && shippingAddress.phone && 
+             shippingAddress.email;
+    }
+    
+    if (step === 2) {
+      if (!formData.paymentMethod) return false;
+      
+      if (formData.paymentMethod === 'card') {
+        return formData.cardDetails.cardNumber && formData.cardDetails.cardholderName && 
+               formData.cardDetails.expiryDate && formData.cardDetails.cvv;
+      }
+      
+      if (formData.paymentMethod === 'upi') {
+        return formData.upiId;
+      }
+      
+      if (formData.paymentMethod === 'netbanking') {
+        return formData.selectedBank;
+      }
+      
+      return true; // COD doesn't need additional validation
+    }
+    
+    return true;
+  };
+
   const validateStep = (step) => {
     const newErrors = {};
     
@@ -119,6 +151,37 @@ const Checkout = () => {
     if (step === 2) {
       // Validate payment method
       if (!formData.paymentMethod) newErrors['paymentMethod'] = 'Payment method is required';
+      
+      // Additional payment method specific validations
+      if (formData.paymentMethod === 'card') {
+        if (!formData.cardDetails.cardNumber) newErrors['cardDetails.cardNumber'] = 'Card number is required';
+        if (!formData.cardDetails.cardholderName) newErrors['cardDetails.cardholderName'] = 'Cardholder name is required';
+        if (!formData.cardDetails.expiryDate) newErrors['cardDetails.expiryDate'] = 'Expiry date is required';
+        if (!formData.cardDetails.cvv) newErrors['cardDetails.cvv'] = 'CVV is required';
+      }
+      
+      if (formData.paymentMethod === 'upi') {
+        if (!formData.upiId) newErrors['upiId'] = 'UPI ID is required';
+      }
+      
+      if (formData.paymentMethod === 'netbanking') {
+        if (!formData.selectedBank) newErrors['selectedBank'] = 'Please select a bank';
+      }
+    }
+    
+    if (step === 3) {
+      // Validate that all previous steps are complete using helper function
+      if (!isStepValid(1)) {
+        newErrors['general'] = 'Please complete shipping address information';
+      }
+      if (!isStepValid(2)) {
+        newErrors['payment'] = 'Please complete payment method selection';
+      }
+      
+      // Additional final validation
+      if (items.length === 0) {
+        newErrors['cart'] = 'Your cart is empty';
+      }
     }
     
     setErrors(newErrors);
@@ -136,8 +199,7 @@ const Checkout = () => {
   };
 
   const handlePaymentProcessing = async () => {
-    if (!validateStep(2)) return;
-    
+    // No need to validate step 2 again since handlePlaceOrder already validates step 3
     const orderData = {
       items: items.map(item => ({
         product: item.product._id,
@@ -171,20 +233,27 @@ const Checkout = () => {
         await handleNetBankingPayment(orderData);
       }
     } catch (error) {
-      toast.error(error || 'Payment processing failed');
+      console.error('Payment processing error:', error);
+      toast.error(error.message || error || 'Payment processing failed');
     }
   };
 
   const handleDirectOrderCreation = async (orderData) => {
-    const result = await dispatch(createOrder(orderData)).unwrap();
-    await dispatch(clearCart());
-    setOrderPlaced(true);
-    toast.success('Order placed successfully!');
-    
-    // Redirect to order confirmation after 3 seconds
-    setTimeout(() => {
-      navigate(`/orders/${result.order._id}`);
-    }, 3000);
+    try {
+      const result = await dispatch(createOrder(orderData)).unwrap();
+      await dispatch(clearCart());
+      setOrderPlaced(true);
+      toast.success('Order placed successfully!');
+      
+      // Redirect to order confirmation after 3 seconds
+      setTimeout(() => {
+        navigate(`/orders/${result.order._id}`);
+      }, 3000);
+    } catch (error) {
+      console.error('Order creation error:', error);
+      toast.error(error.message || error || 'Failed to place order. Please try again.');
+      throw error; // Re-throw to be caught by handlePaymentProcessing
+    }
   };
 
   const handleCardPayment = async (orderData) => {
@@ -354,7 +423,18 @@ const Checkout = () => {
   };
 
   const handlePlaceOrder = async () => {
-    if (!validateStep(3)) return;
+    console.log('Place Order button clicked');
+    console.log('Current step:', currentStep);
+    console.log('Form data:', formData);
+    console.log('Items:', items);
+    
+    if (!validateStep(3)) {
+      console.log('Validation failed for step 3');
+      console.log('Errors:', errors);
+      return;
+    }
+    
+    console.log('Validation passed, proceeding with payment processing');
     await handlePaymentProcessing();
   };
 
@@ -888,6 +968,17 @@ const Checkout = () => {
                 {/* Step 3: Review Order */}
                 {currentStep === 3 && (
                   <div className="space-y-6">
+                    {/* Display validation errors for step 3 */}
+                    {(errors['general'] || errors['payment'] || errors['cart']) && (
+                      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <div className="text-red-800">
+                          {errors['general'] && <p className="text-sm">{errors['general']}</p>}
+                          {errors['payment'] && <p className="text-sm">{errors['payment']}</p>}
+                          {errors['cart'] && <p className="text-sm">{errors['cart']}</p>}
+                        </div>
+                      </div>
+                    )}
+                    
                     {/* Shipping Address Review */}
                     <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
                       <h3 className="text-lg font-medium text-gray-900 mb-4">Shipping Address</h3>

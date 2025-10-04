@@ -25,13 +25,33 @@ const initialState = {
     sortBy: 'createdAt',
     sortOrder: 'desc',
   },
+  // Add caching
+  cache: {
+    products: null,
+    featuredProducts: null,
+    categories: null,
+    brands: null,
+    lastFetch: null,
+    cacheExpiry: 5 * 60 * 1000, // 5 minutes
+  },
 };
 
 // Async thunks
 export const getProducts = createAsyncThunk(
   'products/getProducts',
-  async (params = {}, { rejectWithValue }) => {
+  async (params = {}, { rejectWithValue, getState }) => {
     try {
+      const state = getState();
+      const { cache } = state.products;
+      const currentTime = Date.now();
+      
+      // Check if we have cached data and it's still valid
+      if (cache.products && cache.lastFetch && 
+          (currentTime - cache.lastFetch) < cache.cacheExpiry &&
+          Object.keys(params).length === 0) {
+        return cache.products;
+      }
+      
       const response = await productService.getProducts(params);
       return response.data;
     } catch (error) {
@@ -181,6 +201,9 @@ const productSlice = createSlice({
           total: action.payload.total,
           pages: action.payload.pages,
         };
+        // Update cache
+        state.cache.products = action.payload;
+        state.cache.lastFetch = Date.now();
         state.error = null;
       })
       .addCase(getProducts.rejected, (state, action) => {
