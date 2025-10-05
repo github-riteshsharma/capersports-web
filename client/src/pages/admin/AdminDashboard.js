@@ -270,7 +270,7 @@ const AdminDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard
             title="Total Products"
-            value={(dashboardData.totalProducts || 0).toLocaleString()}
+            value={(data.totalProducts || 0).toLocaleString()}
             icon={FiShoppingBag}
             change="+12%"
             changeType="increase"
@@ -278,7 +278,7 @@ const AdminDashboard = () => {
           />
           <StatCard
             title="Total Users"
-            value={(dashboardData.totalUsers || 0).toLocaleString()}
+            value={(data.totalUsers || 0).toLocaleString()}
             icon={FiUsers}
             change="+8%"
             changeType="increase"
@@ -286,7 +286,7 @@ const AdminDashboard = () => {
           />
           <StatCard
             title="Total Orders"
-            value={(dashboardData.totalOrders || 0).toLocaleString()}
+            value={(data.totalOrders || 0).toLocaleString()}
             icon={FiShoppingCart}
             change="+15%"
             changeType="increase"
@@ -294,7 +294,7 @@ const AdminDashboard = () => {
           />
           <StatCard
             title="Total Revenue"
-            value={`₹${(dashboardData.totalRevenue || 0).toLocaleString()}`}
+            value={`₹${(data.monthlyRevenue || 0).toLocaleString()}`}
             icon={FiDollarSign}
             change="+23%"
             changeType="increase"
@@ -339,7 +339,7 @@ const AdminDashboard = () => {
 
             {/* Orders List */}
             <div className="divide-y divide-gray-100">
-              {(dashboardData.recentOrders || []).map((order) => (
+              {(data.recentOrders || []).map((order) => (
                 <OrderRow key={order.id} order={order} />
               ))}
             </div>

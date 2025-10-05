@@ -1,71 +1,68 @@
-# Dependencies
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-package-lock.json
-yarn.lock
+# ============================================================================
+# CAPER SPORTS - COMPREHENSIVE .GITIGNORE
+# ============================================================================
 
-# Environment Variables
+# ============================================================================
+# ENVIRONMENT & SECRETS
+# ============================================================================
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 .env.production
-client/.env
-client/.env.local
-client/.env.development.local
-client/.env.test.local
-client/.env.production.local
-client/.env.production
-server/.env
-server/.env.local
-server/.env.development.local
-server/.env.test.local
-server/.env.production.local
+.env.staging
+.env.azure
+.env.backup
+.env.*
+*.env
 
-# Production Build
-build/
-dist/
-client/build/
-client/dist/
+# Azure specific secrets
+azure-credentials.json
+azure-config.json
+.azure/
+.azureauth
 
-# Testing
-coverage/
-.nyc_output/
-*.lcov
-
-# IDE and Editor
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-*.sublime-project
-*.sublime-workspace
-
-# Logs
-logs/
-*.log
+# ============================================================================
+# NODE.JS & NPM
+# ============================================================================
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-pids/
+.pnpm-debug.log*
+
+# Runtime data
+pids
 *.pid
 *.seed
 *.pid.lock
 
-# Runtime data
-lib-cov/
-.grunt/
-.lock-wscript/
-.npm/
-.eslintcache
-.node_repl_history
-.yarn-integrity
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Grunt intermediate storage
+.grunt
+
+# Bower dependency directory
+bower_components
+
+# node-waf configuration
+.lock-wscript
+
+# Compiled binary addons
+build/Release
+
+# Dependency directories
+jspm_packages/
+
+# TypeScript cache
+*.tsbuildinfo
 
 # Optional npm cache directory
 .npm
@@ -73,17 +70,23 @@ lib-cov/
 # Optional eslint cache
 .eslintcache
 
+# Optional stylelint cache
+.stylelintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
 # Optional REPL history
 .node_repl_history
 
 # Output of 'npm pack'
 *.tgz
 
-# dotenv environment variable files
-.env*
-!.env.example
-!.env.template
-!.env.azure.template
+# Yarn Integrity file
+.yarn-integrity
 
 # parcel-bundler cache
 .cache
@@ -91,7 +94,6 @@ lib-cov/
 
 # Next.js build output
 .next
-out
 
 # Nuxt.js build / generate output
 .nuxt
@@ -99,63 +101,332 @@ dist
 
 # Gatsby files
 .cache/
-# public  # Commented out to allow client/public/images to be tracked
+public
 
-# vuepress build output
-.vuepress/dist
-
-# Serverless directories
-.serverless/
-
-# FuseBox cache
-.fusebox/
-
-# DynamoDB Local files
-.dynamodb/
-
-# TernJS port file
-.tern-port
-
-# Stores VSCode versions used for testing VSCode extensions
-.vscode-test
+# Storybook build outputs
+.out
+.storybook-out
 
 # Temporary folders
 tmp/
 temp/
 
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
+# ============================================================================
+# REACT / CLIENT SPECIFIC
+# ============================================================================
+client/build/
+client/dist/
+client/.env
+client/.env.local
+client/.env.development.local
+client/.env.test.local
+client/.env.production.local
 
-# Azure
-.azure/
-azure-pipelines.yml
+# React build artifacts
+client/build/static/js/*.map
+client/build/static/css/*.map
 
-# Deployment
-deploy.sh
-.deployment
+# Create React App
+client/npm-debug.log*
+client/yarn-debug.log*
+client/yarn-error.log*
 
-# Database
+# ============================================================================
+# SERVER SPECIFIC
+# ============================================================================
+server/.env
+server/.env.*
+server/dist/
+server/build/
+server/uploads/
+server/logs/
+server/temp/
+server/tmp/
+
+# Database dumps
+server/dumps/
+server/backups/
+*.sql
+*.dump
+
+# ============================================================================
+# MONGODB & DATABASE
+# ============================================================================
+*.db
 *.sqlite
 *.sqlite3
-*.db
+data/
+db/
+mongodb/
+mongo-data/
 
-# Uploads
-uploads/
-public/uploads/
+# ============================================================================
+# AZURE SPECIFIC
+# ============================================================================
+# Azure Functions
+.azure/
+.vscode/
+local.settings.json
+bin/
+obj/
 
-# Certificate files
+# Azure Static Web Apps
+.vscode/settings.json
+staticwebapp.config.json.backup
+
+# Azure deployment
+.deployment
+deploy.cmd
+deploy.sh.backup
+azure-pipelines.yml.backup
+
+# Azure Blob Storage local emulator
+__azurite_db_blob__.json
+__azurite_db_blob_extent__.json
+__azurite_db_queue__.json
+__azurite_db_table__.json
+
+# ============================================================================
+# LOGS & MONITORING
+# ============================================================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Runtime logs
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Diagnostic reports
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# ============================================================================
+# OPERATING SYSTEM
+# ============================================================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ============================================================================
+# IDEs & EDITORS
+# ============================================================================
+# VSCode
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# Sublime Text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project
+
+# Atom
+.atom/
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# Eclipse
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# ============================================================================
+# TESTING
+# ============================================================================
+# Jest
+coverage/
+*.lcov
+.nyc_output
+
+# Cypress
+cypress/videos/
+cypress/screenshots/
+cypress/fixtures/downloads/
+
+# ============================================================================
+# BUILD & DEPLOYMENT
+# ============================================================================
+build/
+dist/
+out/
+target/
+
+# Webpack
+.webpack/
+
+# Rollup
+.rollup.cache/
+
+# Parcel
+.parcel-cache/
+
+# ============================================================================
+# MISCELLANEOUS
+# ============================================================================
+# Backup files
+*.backup
+*.bak
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+
+# Archive files
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Certificate files (keep secure)
 *.pem
 *.key
-*.cert
 *.crt
+*.csr
+*.p12
+*.pfx
 
-# Backup files
-*.bak
-*.backup
-*.old
+# Local configuration files
+config.local.js
+config.local.json
+
+# Documentation build
+docs/build/
+docs/dist/
+
+# ============================================================================
+# PROJECT SPECIFIC
+# ============================================================================
+# Custom uploads directory
+uploads/
+public/uploads/
+client/public/uploads/
+
+# Generated files
+generated/
+auto-generated/
+
+# Scripts that shouldn't be committed
+scripts/local/
+scripts/temp/
+scripts/*.local.*
+
+# Local development files
+dev-server.js
+local-config.js
+
+# Test data
+test-data/
+mock-data/
+sample-data/
+
+# ============================================================================
+# SECURITY & CREDENTIALS
+# ============================================================================
+# API Keys and secrets
+api-keys.json
+secrets.json
+credentials.json
+service-account.json
+
+# SSH keys
+id_rsa
+id_rsa.pub
+*.pem
+*.key
+
+# GPG keys
+*.gpg
+*.asc
+
+# JWT secrets
+jwt-secret.txt
+private-key.pem
+public-key.pem
+
+# Database connection strings
+connection-strings.json
+db-config.json
+
+# ============================================================================
+# PERFORMANCE & PROFILING
+# ============================================================================
+# Profiling data
+*.prof
+*.cpuprofile
+*.heapprofile
+*.heapsnapshot
+
+# Performance monitoring
+newrelic_agent.log
+newrelic.js
+
+# ============================================================================
+# END OF .GITIGNORE
+# ============================================================================

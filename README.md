@@ -40,6 +40,156 @@ capersports-web/
 └── README.md                     # This file
 ```
 
+## 🔄 Azure Migration: MongoDB → Cosmos DB + Blob Storage
+
+### Why Migrate to Azure?
+
+**Cost Savings**: 20-40% reduction in monthly costs
+- MongoDB Atlas + Cloudinary: ~$50-100/month
+- Azure Cosmos DB + Blob Storage: ~$30-65/month
+
+**Benefits**:
+- Unified Azure ecosystem
+- Better integration with Azure services
+- Global distribution with Cosmos DB
+- CDN integration for blob storage
+- Single billing and management
+
+### Automated Azure Setup
+
+**Quick Setup (Recommended)**:
+```bash
+# Run the automated setup script
+./setup-azure.sh
+
+# This will create:
+# - Azure Resource Group
+# - Cosmos DB with MongoDB API
+# - Blob Storage with containers
+# - Environment configuration
+```
+
+**Manual Setup**:
+```bash
+# 1. Create Resource Group
+az group create --name caper-sports-rg --location eastus
+
+# 2. Create Cosmos DB (MongoDB API)
+az cosmosdb create \
+  --resource-group caper-sports-rg \
+  --name caper-sports-cosmos \
+  --kind MongoDB \
+  --server-version 4.2
+
+# 3. Create Storage Account
+az storage account create \
+  --name capersportsstorage \
+  --resource-group caper-sports-rg \
+  --location eastus \
+  --sku Standard_LRS
+
+# 4. Create Blob Containers
+az storage container create --name product-images --account-name capersportsstorage --public-access blob
+az storage container create --name user-avatars --account-name capersportsstorage --public-access blob
+az storage container create --name general-assets --account-name capersportsstorage --public-access blob
+```
+
+### Migration Process
+
+**1. Install Azure Dependencies**:
+```bash
+cd server
+npm install @azure/storage-blob @azure/cosmos uuid
+```
+
+**2. Configure Environment**:
+```bash
+# Copy the generated Azure configuration
+cp .env.azure .env
+
+# Or manually add to your .env:
+AZURE_COSMOS_CONNECTION_STRING=mongodb://your-cosmos-account:key@your-cosmos-account.mongo.cosmos.azure.com:10255/...
+AZURE_COSMOS_DATABASE_NAME=capersports
+AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=https;AccountName=...
+AZURE_STORAGE_ACCOUNT_NAME=capersportsstorage
+AZURE_STORAGE_ACCOUNT_KEY=your-key
+```
+
+**3. Run Migration**:
+```bash
+# Migrate existing data from MongoDB to Cosmos DB
+npm run migrate:azure
+
+# Start server with Azure services
+npm run dev:azure
+```
+
+**4. Update Routes (Optional)**:
+The server automatically detects Azure configuration and uses appropriate services. No code changes needed!
+
+### Azure Services Architecture
+
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   React Client  │    │  Express Server  │    │  Azure Cosmos   │
+│                 │────│                  │────│  DB (MongoDB)   │
+│  (Static Web    │    │  (App Service)   │    │                 │
+│   Apps)         │    │                  │    └─────────────────┘
+└─────────────────┘    │                  │    
+                       │                  │    ┌─────────────────┐
+                       │                  │────│  Azure Blob     │
+                       │                  │    │  Storage        │
+                       └──────────────────┘    │  (Images)       │
+                                               └─────────────────┘
+```
+
+### Environment Configuration
+
+**Azure Services (.env)**:
+```env
+# Azure Cosmos DB (MongoDB API)
+AZURE_COSMOS_CONNECTION_STRING=mongodb://...
+AZURE_COSMOS_DATABASE_NAME=capersports
+
+# Azure Blob Storage
+AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=https;...
+AZURE_STORAGE_ACCOUNT_NAME=capersportsstorage
+AZURE_STORAGE_ACCOUNT_KEY=...
+
+# Container names
+AZURE_BLOB_CONTAINER_PRODUCTS=product-images
+AZURE_BLOB_CONTAINER_USERS=user-avatars
+AZURE_BLOB_CONTAINER_ASSETS=general-assets
+```
+
+**Fallback (MongoDB + Cloudinary)**:
+```env
+# MongoDB
+MONGODB_URI=mongodb+srv://...
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=...
+CLOUDINARY_API_KEY=...
+CLOUDINARY_API_SECRET=...
+   ```
+
+### Available Scripts
+
+**Azure-specific scripts**:
+```bash
+npm run dev:azure              # Development with Azure services
+npm run start:azure            # Production with Azure services
+npm run migrate:azure          # Migrate from MongoDB to Azure
+```
+
+**Traditional scripts**:
+```bash
+npm run dev                    # Development with MongoDB/Cloudinary
+npm run start                  # Production with MongoDB/Cloudinary
+```
+
+The server automatically detects which services are configured and uses them accordingly.
+
 ## 🚀 Quick Start - Azure Deployment (10 Steps)
 
 ### Prerequisites
