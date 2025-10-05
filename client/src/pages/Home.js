@@ -250,32 +250,52 @@ const Home = () => {
               initial="hidden"
               animate="visible"
             >
-              <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl sm:shadow-2xl w-full max-w-sm sm:max-w-md lg:max-w-none mx-auto">
-                <img
-                  src="/images/hero.png"
-                  alt="Caper Sports Athletes in Action"
-                  className="w-full h-auto object-contain max-h-48 sm:max-h-64 md:max-h-80 lg:max-h-[400px] xl:max-h-[500px] 2xl:max-h-[600px]"
-                  onError={(e) => {
-                    // Fallback to gradient if image fails
-                    e.target.style.display = 'none';
-                    const fallback = e.target.nextSibling;
-                    if (fallback) {
-                      fallback.style.display = 'flex';
-                    }
+              <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl sm:shadow-2xl w-full">
+                {/* Hero Image Container with Smart Responsive Aspect Ratio */}
+                <div 
+                  className="relative w-full bg-gray-100"
+                  style={{ 
+                    aspectRatio: '4/3',
+                    minHeight: '250px'
                   }}
-                />
-                {/* Fallback */}
-                <div className="hidden w-full h-48 sm:h-64 md:h-80 lg:h-[400px] xl:h-[500px] 2xl:h-[600px] bg-gradient-to-br from-red-500 via-orange-500 to-blue-600 items-center justify-center">
-                  <div className="text-white text-center p-4">
-                    <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 sm:mb-4">CAPER SPORTS</div>
-                    <div className="text-sm sm:text-lg lg:text-xl opacity-80">Premium Athletic Gear</div>
+                >
+                  <img
+                    src="/images/hero.png"
+                    alt="Caper Sports Athletes in Action"
+                    className="absolute inset-0 w-full h-full object-cover sm:object-contain md:object-cover lg:object-contain xl:object-cover transition-all duration-300"
+                    style={{
+                      objectPosition: 'center center'
+                    }}
+                    onError={(e) => {
+                      // Fallback to gradient if image fails
+                      e.target.style.display = 'none';
+                      const fallback = e.target.nextSibling;
+                      if (fallback) {
+                        fallback.style.display = 'flex';
+                      }
+                    }}
+                  />
+                  {/* Fallback */}
+                  <div className="hidden absolute inset-0 w-full h-full bg-gradient-to-br from-red-500 via-orange-500 to-blue-600 items-center justify-center">
+                    <div className="text-white text-center p-4">
+                      <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 sm:mb-4">CAPER SPORTS</div>
+                      <div className="text-sm sm:text-lg lg:text-xl opacity-80">Premium Athletic Gear</div>
+                    </div>
                   </div>
-                </div>
-                {/* Overlay for better text readability */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
-                {/* Badge */}
-                <div className="absolute top-3 sm:top-6 left-3 sm:left-6 bg-white/90 backdrop-blur-sm rounded-full px-3 sm:px-4 py-1.5 sm:py-2">
-                  <span className="text-xs sm:text-sm font-medium text-gray-900">Premium Quality</span>
+                  
+                  {/* Subtle overlay for better badge visibility */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent pointer-events-none"></div>
+                  
+                  {/* Premium Quality Badge */}
+                  <div className="absolute top-3 sm:top-6 left-3 sm:left-6 bg-white/90 backdrop-blur-sm rounded-full px-3 sm:px-4 py-1.5 sm:py-2 shadow-lg border border-white/20">
+                    <span className="text-xs sm:text-sm font-medium text-gray-900">Premium Quality</span>
+                  </div>
+                  
+                  {/* Mobile-specific enhancement: Subtle vignette effect */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-black/5 pointer-events-none sm:hidden"></div>
+                  
+                  {/* Corner decoration for premium feel */}
+                  <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-white/10 to-transparent pointer-events-none"></div>
                 </div>
               </div>
             </motion.div>
