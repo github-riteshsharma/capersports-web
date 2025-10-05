@@ -197,7 +197,7 @@ const Products = () => {
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-20">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
           {/* Header Section */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -271,6 +271,17 @@ const Products = () => {
             </div>
           </motion.div>
 
+          {/* Mobile Filter Backdrop */}
+          {showFilters && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+              onClick={() => setShowFilters(false)}
+            />
+          )}
+
           {/* Main Content Layout - Responsive */}
           <div className="flex gap-8">
             {/* Filter Sidebar - Always Visible on Same Page */}
@@ -281,7 +292,7 @@ const Products = () => {
                   animate={{ x: 0, opacity: 1 }}
                   exit={{ x: -300, opacity: 0 }}
                   transition={{ duration: 0.4, ease: "easeInOut" }}
-                  className="w-80 flex-shrink-0 bg-white rounded-2xl shadow-lg border border-gray-200 h-fit sticky top-24"
+                  className="fixed inset-0 lg:relative lg:inset-auto z-50 lg:z-auto lg:w-80 flex-shrink-0 bg-white lg:rounded-2xl lg:shadow-lg lg:border lg:border-gray-200 h-full lg:h-fit lg:sticky lg:top-24"
                 >
                   {/* Premium Header */}
                   <div className="bg-gradient-to-r from-red-600 to-red-700 p-6 text-white rounded-t-2xl">
@@ -584,12 +595,12 @@ const Products = () => {
                     </div>
                   </motion.div>
 
-                  {/* Products Grid - Super Responsive */}
+                  {/* Products Grid - Mobile Optimized */}
                   <motion.div
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8"
+                    className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 xs:gap-4 sm:gap-4 md:gap-6 lg:gap-6 xl:gap-8"
                   >
                     {products.map((product, index) => (
                       <motion.div

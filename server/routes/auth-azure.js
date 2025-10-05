@@ -2,8 +2,33 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
+const multer = require('multer');
+const AzureBlobService = require('../services/azureBlobService');
 
 const router = express.Router();
+
+// Configure multer for file uploads
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'), false);
+    }
+  },
+});
+
+// Initialize Azure Blob Service
+let azureBlobService;
+try {
+  azureBlobService = new AzureBlobService();
+} catch (error) {
+  console.warn('Azure Blob Service not initialized:', error.message);
+}
 
 // Generate JWT Token
 const generateToken = (id) => {
@@ -67,7 +92,7 @@ router.post('/register', [
       isActive: true,
       isEmailVerified: false,
       permissions: ['view_products', 'manage_profile', 'place_orders'],
-      profilePicture: null,
+      avatar: null,
       phone: null,
       address: {
         street: '',
@@ -280,6 +305,118 @@ router.get('/me', async (req, res) => {
       success: false,
       message: 'Server error while fetching user',
       error: error.message
+    });
+  }
+});
+
+// @route   POST /api/auth/upload-profile-picture
+// @desc    Upload profile picture - Azure version
+// @access  Private
+router.post('/upload-profile-picture', upload.single('profilePicture'), async (req, res) => {
+  try {
+    // Extract token from Authorization header
+    const authHeader = req.header('Authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({
+        success: false,
+        message: 'No token, authorization denied'
+      });
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+    
+    // Verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'No file uploaded',
+      });
+    }
+
+    if (!azureBlobService) {
+      return res.status(500).json({
+        success: false,
+        message: 'Azure Blob Service not available',
+      });
+    }
+
+    // Get Azure Cosmos service
+    const azureCosmosService = req.app.locals.azureCosmosService;
+    if (!azureCosmosService) {
+      return res.status(500).json({
+        success: false,
+        message: 'Database service not available'
+      });
+    }
+
+    const usersCollection = await azureCosmosService.getCollection('users');
+    const { ObjectId } = require('mongodb');
+
+    // Get user
+    const user = await usersCollection.findOne({ _id: new ObjectId(decoded.id) });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    // Upload to Azure Blob Storage
+    const blobUrl = await azureBlobService.uploadFile(
+      req.file.buffer,
+      req.file.originalname,
+      'users', // container type
+      'profile-pictures' // folder
+    );
+
+    // Delete old profile picture from Azure if it exists
+    if (user.avatar && user.avatar.includes('blob.core.windows.net')) {
+      try {
+        await azureBlobService.deleteFile(user.avatar);
+      } catch (deleteError) {
+        console.warn('Failed to delete old profile picture:', deleteError);
+      }
+    }
+
+    // Update user profile picture
+    await usersCollection.updateOne(
+      { _id: new ObjectId(decoded.id) },
+      { 
+        $set: { 
+          avatar: blobUrl,
+          updatedAt: new Date()
+        }
+      }
+    );
+
+    res.json({
+      success: true,
+      message: 'Profile picture uploaded successfully',
+      avatarUrl: blobUrl,
+    });
+
+  } catch (error) {
+    console.error('Profile picture upload error:', error);
+    
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid token'
+      });
+    }
+    
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({
+        success: false,
+        message: 'Token expired'
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: 'Failed to upload profile picture',
     });
   }
 });

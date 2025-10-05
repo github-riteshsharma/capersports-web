@@ -31,6 +31,7 @@ import { addToWishlist, removeFromWishlist } from '../store/slices/wishlistSlice
 
 // Components
 import CaperSportsLoader from '../components/common/CaperSportsLoader';
+import ContextualLoader from '../components/common/ContextualLoader';
 import Button from '../components/common/Button';
 import ProductCard from '../components/products/ProductCard';
 
@@ -585,6 +586,14 @@ const ProductDetail = () => {
         <title>{product.name} - Caper Sports</title>
         <meta name="description" content={product.description} />
       </Helmet>
+
+      {/* Contextual Loading Overlay */}
+      <ContextualLoader 
+        isVisible={isSubmittingReview || isAddingToCart}
+        context={isSubmittingReview ? 'review' : isAddingToCart ? 'cart' : 'default'}
+        fullScreen={false}
+        blur={true}
+      />
 
       <div className="min-h-screen bg-gray-50 pt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

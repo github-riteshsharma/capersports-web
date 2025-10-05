@@ -833,4 +833,228 @@ router.delete('/users/:id', async (req, res) => {
   }
 });
 
+// @route   PUT /api/admin/users/:id/role
+// @desc    Update user role - Azure version
+// @access  Private/Admin
+router.put('/users/:id/role', async (req, res) => {
+  try {
+    const { role } = req.body;
+    
+    if (!role) {
+      return res.status(400).json({
+        success: false,
+        message: 'Role is required'
+      });
+    }
+
+    // Get Azure Cosmos service
+    const azureCosmosService = req.app.locals.azureCosmosService;
+    if (!azureCosmosService) {
+      return res.status(500).json({
+        success: false,
+        message: 'Database service not available'
+      });
+    }
+
+    const usersCollection = await azureCosmosService.getCollection('users');
+    const { ObjectId } = require('mongodb');
+
+    // Convert string ID to ObjectId
+    let userId;
+    try {
+      userId = new ObjectId(req.params.id);
+    } catch (error) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid user ID format'
+      });
+    }
+
+    // Update user role
+    const result = await usersCollection.updateOne(
+      { _id: userId },
+      { 
+        $set: { 
+          role: role,
+          updatedAt: new Date()
+        }
+      }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Get the updated user (exclude password)
+    const updatedUser = await usersCollection.findOne(
+      { _id: userId },
+      { projection: { password: 0 } }
+    );
+
+    res.json({
+      success: true,
+      message: 'User role updated successfully',
+      user: updatedUser
+    });
+
+  } catch (error) {
+    console.error('Update user role error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while updating user role',
+      error: error.message
+    });
+  }
+});
+
+// @route   PUT /api/admin/users/:id/deactivate
+// @desc    Deactivate user - Azure version
+// @access  Private/Admin
+router.put('/users/:id/deactivate', async (req, res) => {
+  try {
+    // Get Azure Cosmos service
+    const azureCosmosService = req.app.locals.azureCosmosService;
+    if (!azureCosmosService) {
+      return res.status(500).json({
+        success: false,
+        message: 'Database service not available'
+      });
+    }
+
+    const usersCollection = await azureCosmosService.getCollection('users');
+    const { ObjectId } = require('mongodb');
+
+    // Convert string ID to ObjectId
+    let userId;
+    try {
+      userId = new ObjectId(req.params.id);
+    } catch (error) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid user ID format'
+      });
+    }
+
+    // Check if user exists and is not admin
+    const user = await usersCollection.findOne({ _id: userId });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    if (user.role === 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Cannot deactivate admin users'
+      });
+    }
+
+    // Deactivate user
+    const result = await usersCollection.updateOne(
+      { _id: userId },
+      { 
+        $set: { 
+          isActive: false,
+          updatedAt: new Date()
+        }
+      }
+    );
+
+    // Get the updated user (exclude password)
+    const updatedUser = await usersCollection.findOne(
+      { _id: userId },
+      { projection: { password: 0 } }
+    );
+
+    res.json({
+      success: true,
+      message: 'User deactivated successfully',
+      user: updatedUser
+    });
+
+  } catch (error) {
+    console.error('Deactivate user error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while deactivating user',
+      error: error.message
+    });
+  }
+});
+
+// @route   PUT /api/admin/users/:id/activate
+// @desc    Activate user - Azure version
+// @access  Private/Admin
+router.put('/users/:id/activate', async (req, res) => {
+  try {
+    // Get Azure Cosmos service
+    const azureCosmosService = req.app.locals.azureCosmosService;
+    if (!azureCosmosService) {
+      return res.status(500).json({
+        success: false,
+        message: 'Database service not available'
+      });
+    }
+
+    const usersCollection = await azureCosmosService.getCollection('users');
+    const { ObjectId } = require('mongodb');
+
+    // Convert string ID to ObjectId
+    let userId;
+    try {
+      userId = new ObjectId(req.params.id);
+    } catch (error) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid user ID format'
+      });
+    }
+
+    // Check if user exists
+    const user = await usersCollection.findOne({ _id: userId });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Activate user
+    const result = await usersCollection.updateOne(
+      { _id: userId },
+      { 
+        $set: { 
+          isActive: true,
+          updatedAt: new Date()
+        }
+      }
+    );
+
+    // Get the updated user (exclude password)
+    const updatedUser = await usersCollection.findOne(
+      { _id: userId },
+      { projection: { password: 0 } }
+    );
+
+    res.json({
+      success: true,
+      message: 'User activated successfully',
+      user: updatedUser
+    });
+
+  } catch (error) {
+    console.error('Activate user error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while activating user',
+      error: error.message
+    });
+  }
+});
+
 module.exports = router;

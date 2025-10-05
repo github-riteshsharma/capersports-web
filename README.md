@@ -1,20 +1,3 @@
-AZURE_COSMOS_CONNECTION_STRING=
-AZURE_COSMOS_DATABASE_NAME=capersports
-AZURE_STORAGE_CONNECTION_STRING=
-AZURE_STORAGE_ACCOUNT_NAME=capersportsstorage
-AZURE_STORAGE_ACCOUNT_KEY=
-AZURE_BLOB_CONTAINER_PRODUCTS=product-images
-AZURE_BLOB_CONTAINER_USERS=user-avatars
-AZURE_BLOB_CONTAINER_ASSETS=general-assets
-NODE_ENV=development
-PORT=5001
-FRONTEND_URL=http://localhost:3000
-JWT_SECRET=caper-sports-super-secret-jwt-key-make-it-long-and-random
-JWT_EXPIRE=7d
-CORS_ORIGIN=http://localhost:3000
-RATE_LIMIT_WINDOW_MS=900000
-RATE_LIMIT_MAX_REQUESTS=1000
-
 # Caper Sports - Premium Athletic Wear E-commerce Platform
 
 A full-stack MERN e-commerce platform for premium sports clothing, featuring modern UI/UX, admin dashboard, payment processing, and cloud deployment ready for Azure.

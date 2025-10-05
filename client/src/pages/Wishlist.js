@@ -23,6 +23,9 @@ import {
   fetchWishlist 
 } from '../store/slices/wishlistSlice';
 import { addToCart } from '../store/slices/cartSlice';
+import ProductCard from '../components/products/ProductCard';
+import CaperSportsLoader from '../components/common/CaperSportsLoader';
+import ContextualLoader from '../components/common/ContextualLoader';
 
 const Wishlist = () => {
   const dispatch = useDispatch();
@@ -352,10 +355,42 @@ const Wishlist = () => {
         <meta name="description" content="Your saved items and wishlist" />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Contextual Loading Overlay */}
+      <ContextualLoader 
+        isVisible={loading}
+        context="wishlist"
+        fullScreen={false}
+        blur={true}
+      />
+
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-pink-50/30 pt-20">
+        {/* Header Section */}
+        <div className="bg-gradient-to-r from-red-600 via-red-700 to-blue-700 text-white -mt-20 pt-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div className="text-center">
+              <motion.h1 
+                className="text-4xl sm:text-5xl font-bold mb-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                My Wishlist
+              </motion.h1>
+              <motion.p 
+                className="text-xl text-white/90 max-w-2xl mx-auto"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                Your favorite products saved for later
+              </motion.p>
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 -mt-8">
           {/* Header */}
-          <div className="mb-8">
+          <div className="mt-16 mb-8">
             <motion.h1
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -374,62 +409,78 @@ const Wishlist = () => {
           ) : (
             <>
               {/* Filters and Controls */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-6">
-                <div className="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center">
+              <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 mb-6 border border-gray-100">
+                <div className="flex flex-col gap-4">
                   {/* Search */}
-                  <div className="relative flex-1 max-w-md">
-                    <FiSearch size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <div className="relative">
+                    <FiSearch size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     <input
                       type="text"
                       placeholder="Search wishlist..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-300"
                     />
                   </div>
 
-                  {/* Filters */}
-                  <div className="flex flex-wrap gap-3 items-center">
-                    {/* Category Filter */}
-                    {categories.length > 0 && (
-                      <select
-                        value={filterCategory}
-                        onChange={(e) => setFilterCategory(e.target.value)}
-                        className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                      >
-                        <option value="all">All Categories</option>
-                        {categories.map(category => (
-                          <option key={category} value={category}>{category}</option>
-                        ))}
-                      </select>
-                    )}
+                  {/* Filters Row */}
+                  <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      {/* Category Filter */}
+                      {categories.length > 0 && (
+                        <div className="relative">
+                          <select
+                            value={filterCategory}
+                            onChange={(e) => setFilterCategory(e.target.value)}
+                            className="appearance-none px-4 py-3 pr-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-white transition-all duration-300 min-w-[140px] text-sm"
+                          >
+                            <option value="all">All Categories</option>
+                            {categories.map(category => (
+                              <option key={category} value={category}>{category}</option>
+                            ))}
+                          </select>
+                          <FiFilter className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+                        </div>
+                      )}
 
-                    {/* Sort By */}
-                    <select
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value)}
-                      className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                    >
-                      <option value="dateAdded">Date Added</option>
-                      <option value="name">Name A-Z</option>
-                      <option value="price">Price Low-High</option>
-                      <option value="priceDesc">Price High-Low</option>
-                      <option value="brand">Brand</option>
-                    </select>
+                      {/* Sort By */}
+                      <div className="relative">
+                        <select
+                          value={sortBy}
+                          onChange={(e) => setSortBy(e.target.value)}
+                          className="appearance-none px-4 py-3 pr-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-white transition-all duration-300 min-w-[140px] text-sm"
+                        >
+                          <option value="dateAdded">Date Added</option>
+                          <option value="name">Name A-Z</option>
+                          <option value="price">Price Low-High</option>
+                          <option value="priceDesc">Price High-Low</option>
+                          <option value="brand">Brand</option>
+                        </select>
+                        <FiList className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+                      </div>
+                    </div>
 
-                    {/* View Mode Toggle */}
-                    <div className="flex border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                    {/* View Toggle */}
+                    <div className="flex items-center gap-2 bg-gray-100 rounded-xl p-1">
                       <button
                         onClick={() => setViewMode('grid')}
-                        className={`p-2 ${viewMode === 'grid' ? 'bg-primary-600 text-white' : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
+                        className={`p-2 rounded-lg transition-all duration-200 ${
+                          viewMode === 'grid' 
+                            ? 'bg-white text-red-600 shadow-sm' 
+                            : 'text-gray-500 hover:text-gray-700'
+                        }`}
                       >
-                        <FiGrid size={20} />
+                        <FiGrid size={18} />
                       </button>
                       <button
                         onClick={() => setViewMode('list')}
-                        className={`p-2 ${viewMode === 'list' ? 'bg-primary-600 text-white' : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
+                        className={`p-2 rounded-lg transition-all duration-200 ${
+                          viewMode === 'list' 
+                            ? 'bg-white text-red-600 shadow-sm' 
+                            : 'text-gray-500 hover:text-gray-700'
+                        }`}
                       >
-                        <FiList size={20} />
+                        <FiList size={18} />
                       </button>
                     </div>
                   </div>
@@ -480,14 +531,14 @@ const Wishlist = () => {
                 </div>
               ) : (
                 <div className={`${viewMode === 'grid' 
-                  ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' 
+                  ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' 
                   : 'space-y-4'
                 }`}>
                   {filteredItems.map((product) => (
-                    <WishlistItem 
+                    <ProductCard 
                       key={product._id} 
-                      product={product} 
-                      isGridView={viewMode === 'grid'}
+                      product={product}
+                      className={viewMode === 'list' ? 'flex-row' : ''}
                     />
                   ))}
                 </div>

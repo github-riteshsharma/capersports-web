@@ -40,7 +40,7 @@ if (isAzureConfigured) {
 const authRoutes = require('./routes/auth-azure'); // Use Azure-compatible auth routes
 const productRoutes = require('./routes/products-azure'); // Use Azure-compatible routes
 const orderRoutes = require('./routes/orders');
-const userRoutes = require('./routes/users');
+const userRoutes = require('./routes/users-azure'); // Use Azure-compatible user routes
 const adminRoutes = require('./routes/admin-azure'); // Use Azure-compatible admin routes
 const invoiceRoutes = require('./routes/invoices');
 

@@ -325,82 +325,69 @@ const Navbar = () => {
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.95, y: -10 }}
                       transition={{ duration: 0.2, ease: "easeOut" }}
-                      className="absolute right-0 mt-3 w-72 bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-200/50 py-3 overflow-hidden"
+                      className="absolute right-0 mt-3 w-72 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50"
                     >
-                      {/* Premium header */}
-                      <div className="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100/50 border-b border-gray-100/50">
+                      {/* Clean Header */}
+                      <div className="px-6 py-4 bg-gray-50 border-b border-gray-100">
                         <div className="flex items-center space-x-3">
-                          <div className="w-12 h-12 bg-gradient-to-br from-red-500 via-red-600 to-blue-600 rounded-2xl flex items-center justify-center overflow-hidden shadow-lg ring-2 ring-white">
+                          <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-blue-600 rounded-xl flex items-center justify-center overflow-hidden shadow-md">
                             {user?.avatar ? (
                               <img
                                 src={user.avatar}
                                 alt={`${user.firstName} ${user.lastName}`}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-contain"
                               />
                             ) : (
-                              <span className="text-white text-lg font-bold">
+                              <span className="text-white text-lg font-semibold">
                                 {user?.firstName?.charAt(0) || 'U'}
                               </span>
                             )}
                           </div>
-                          <div className="flex-1">
-                            <p className="text-base font-bold text-gray-900">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-gray-900 truncate">
                               {user?.firstName} {user?.lastName}
                             </p>
-                            <p className="text-sm text-gray-500">{user?.email}</p>
-                            <div className="flex items-center space-x-1 mt-1">
-                              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                              <span className="text-xs text-green-600 font-medium">Online</span>
-                            </div>
+                            <p className="text-xs text-gray-500 truncate">{user?.email}</p>
                           </div>
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                         </div>
                       </div>
                       
-                      {/* Navigation items */}
+                      {/* Clean Navigation */}
                       <div className="py-2">
                         {userNavigation.map((item) => (
                           <Link
                             key={item.name}
                             to={item.href}
-                            className="flex items-center px-6 py-3 text-sm text-gray-700 hover:bg-gray-50/80 hover:text-gray-900 transition-all duration-200 group"
+                            className="flex items-center px-6 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
                           >
-                            <div className="w-10 h-10 bg-gray-100 rounded-2xl flex items-center justify-center mr-3 group-hover:bg-gray-200 transition-colors duration-200">
-                              <item.icon className="text-gray-500 group-hover:text-gray-700" size={18} />
-                            </div>
-                            <div className="flex-1">
-                              <span className="font-medium">{item.name}</span>
-                            </div>
+                            <item.icon className="w-5 h-5 text-gray-400 mr-3" />
+                            <span className="font-medium">{item.name}</span>
                           </Link>
                         ))}
                         
                         {user?.role === 'admin' && (
                           <Link
                             to="/admin"
-                            className="flex items-center px-6 py-3 text-sm text-gray-700 hover:bg-gray-50/80 hover:text-gray-900 transition-all duration-200 group"
+                            className="flex items-center px-6 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
                           >
-                            <div className="w-10 h-10 bg-gray-100 rounded-2xl flex items-center justify-center mr-3 group-hover:bg-gray-200 transition-colors duration-200">
-                              <FiSettings className="text-gray-500 group-hover:text-gray-700" size={18} />
-                            </div>
-                            <div className="flex-1">
-                              <span className="font-medium">Admin Dashboard</span>
-                            </div>
+                            <FiSettings className="w-5 h-5 text-gray-400 mr-3" />
+                            <span className="font-medium">Admin Dashboard</span>
                           </Link>
                         )}
                       </div>
                       
-                      <hr className="my-2 border-gray-100/50" />
+                      {/* Clean Divider */}
+                      <div className="border-t border-gray-100"></div>
                       
-                      <div className="px-3 py-2">
+                      {/* Clean Logout */}
+                      <div className="p-2">
                         <button
                           onClick={handleLogout}
-                          className="flex items-center w-full px-3 py-3 text-sm text-red-600 hover:bg-red-50/80 transition-all duration-200 group rounded-2xl"
+                          className="flex items-center w-full px-4 py-3 text-sm text-red-600 hover:bg-red-50 rounded-xl transition-colors duration-200"
                         >
-                          <div className="w-10 h-10 bg-red-50 rounded-2xl flex items-center justify-center mr-3 group-hover:bg-red-100 transition-colors duration-200">
-                            <FiLogOut className="text-red-500 group-hover:text-red-600" size={18} />
-                          </div>
-                          <div className="flex-1">
-                            <span className="font-medium">Sign Out</span>
-                          </div>
+                          <FiLogOut className="w-5 h-5 mr-3" />
+                          <span className="font-medium">Sign Out</span>
                         </button>
                       </div>
                     </motion.div>

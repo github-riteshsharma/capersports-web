@@ -19,6 +19,7 @@ import {
 // Components
 import Button from '../components/common/Button';
 import CaperSportsLoader from '../components/common/CaperSportsLoader';
+import ContextualLoader from '../components/common/ContextualLoader';
 
 // Store
 import { 
@@ -257,6 +258,14 @@ const Cart = () => {
         <title>{`Shopping Cart (${totalItems || 0}) - Caper Sports`}</title>
         <meta name="description" content="Review your selected items and proceed to checkout" />
       </Helmet>
+
+      {/* Contextual Loading Overlay */}
+      <ContextualLoader 
+        isVisible={applyCouponLoading || Object.values(updateLoading).some(Boolean)}
+        context={applyCouponLoading ? 'payment' : 'cart'}
+        fullScreen={false}
+        blur={true}
+      />
 
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

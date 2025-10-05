@@ -42,6 +42,7 @@ import { setTheme, toggleTheme } from '../store/slices/uiSlice';
 // Components
 import Button from '../components/common/Button';
 import CaperSportsLoader from '../components/common/CaperSportsLoader';
+import ContextualLoader from '../components/common/ContextualLoader';
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -488,42 +489,64 @@ const Profile = () => {
         <meta name="description" content="Manage your profile and account settings" />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Contextual Loading Overlay */}
+      <ContextualLoader 
+        isVisible={uploadingProfilePicture || loading}
+        context={uploadingProfilePicture ? 'profile' : 'default'}
+        fullScreen={false}
+        blur={true}
+      />
+
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-pink-50/30 pt-20">
+        {/* Header Section */}
+        <div className="bg-gradient-to-r from-red-600 via-red-700 to-blue-700 text-white -mt-20 pt-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div className="text-center">
+              <motion.h1 
+                className="text-4xl sm:text-5xl font-bold mb-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                My Profile
+              </motion.h1>
+              <motion.p 
+                className="text-xl text-white/90 max-w-2xl mx-auto"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                Manage your account settings and preferences
+              </motion.p>
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 -mt-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            {/* Header */}
-            <div className="mb-8">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h1 className="text-3xl font-bold text-gray-900">
-                    Profile & Settings
-                  </h1>
-                  <p className="text-gray-600 mt-2">
-                    Manage your account information and preferences
-                  </p>
-                </div>
-                
-                {/* Profile Picture */}
+            {/* Profile Picture Section */}
+            <div className="bg-white rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-2xl p-4 sm:p-6 lg:p-8 mt-8 sm:mt-12 lg:mt-16 mb-6 sm:mb-8 border border-gray-100">
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
                 <div className="relative">
-                  <div className="w-20 h-20 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full flex items-center justify-center">
+                  <div className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 bg-gradient-to-r from-red-600 via-red-700 to-blue-700 rounded-2xl sm:rounded-3xl flex items-center justify-center shadow-lg sm:shadow-2xl">
                     {profilePicturePreview ? (
                       <img
                         src={profilePicturePreview}
                         alt="Profile preview"
-                        className="w-full h-full rounded-full object-cover"
+                        className="w-full h-full rounded-2xl sm:rounded-3xl object-cover"
                       />
                     ) : user?.avatar ? (
                       <img
                         src={user.avatar}
                         alt={`${user.firstName} ${user.lastName}`}
-                        className="w-full h-full rounded-full object-cover"
+                        className="w-full h-full rounded-2xl sm:rounded-3xl object-cover"
                       />
                     ) : (
-                      <span className="text-2xl font-bold text-white">
+                      <span className="text-2xl sm:text-3xl font-bold text-white">
                         {user?.firstName?.[0]}{user?.lastName?.[0]}
                       </span>
                     )}
@@ -542,60 +565,72 @@ const Profile = () => {
                   <button 
                     onClick={() => document.getElementById('profilePictureInput').click()}
                     disabled={uploadingProfilePicture}
-                    className="absolute -bottom-1 -right-1 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg border-2 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg border-2 border-gray-200 hover:bg-gray-50 transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {uploadingProfilePicture ? (
-                      <div className="w-3 h-3 border-2 border-gray-600 border-t-transparent rounded-full animate-spin" />
+                      <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
                     ) : (
-                      <FiCamera size={14} className="text-gray-600" />
+                      <FiCamera size={16} className="sm:w-5 sm:h-5 text-red-600" />
                     )}
                   </button>
                   
                   {/* Upload/Cancel buttons when file is selected */}
                   {profilePictureFile && (
-                    <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                    <div className="absolute -bottom-12 sm:-bottom-16 left-1/2 transform -translate-x-1/2 flex space-x-2">
                       <Button
-                        variant="primary"
-                        size="sm"
                         onClick={handleProfilePictureUpload}
                         disabled={uploadingProfilePicture}
-                        className="px-3 py-1 text-xs"
+                        className="bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-red-700 hover:to-blue-800 rounded-xl sm:rounded-2xl px-3 sm:px-4 py-2 text-xs sm:text-sm"
                       >
                         {uploadingProfilePicture ? 'Uploading...' : 'Upload'}
                       </Button>
                       <Button
-                        variant="secondary"
-                        size="sm"
+                        variant="outline"
                         onClick={handleProfilePictureCancel}
                         disabled={uploadingProfilePicture}
-                        className="px-3 py-1 text-xs"
+                        className="rounded-xl sm:rounded-2xl px-3 sm:px-4 py-2 text-xs sm:text-sm border-2 border-gray-300 hover:border-gray-400"
                       >
                         Cancel
                       </Button>
                     </div>
                   )}
                 </div>
+
+                <div className="flex-1 text-center sm:text-left">
+                  <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-red-600 via-red-700 to-blue-700 bg-clip-text text-transparent mb-2">
+                    {user?.firstName} {user?.lastName}
+                  </h2>
+                  <p className="text-gray-600 text-base sm:text-lg mb-3 sm:mb-4 break-all sm:break-normal">{user?.email}</p>
+                  <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+                    <span className="px-2 sm:px-3 py-1 bg-gradient-to-r from-red-100 to-blue-100 text-red-700 rounded-full text-xs sm:text-sm font-medium">
+                      Member since {new Date(user?.createdAt).getFullYear()}
+                    </span>
+                    <span className="px-2 sm:px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs sm:text-sm font-medium">
+                      Active
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
             
             {/* Tabs */}
-            <div className="mb-8">
-              <div className="border-b border-gray-200 dark:border-gray-700">
-                <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+            <div className="mb-6 sm:mb-8">
+              <div className="bg-white rounded-2xl sm:rounded-3xl shadow-lg border border-gray-100 p-1 sm:p-2">
+                <nav className="flex flex-col sm:flex-row gap-1 sm:gap-2" aria-label="Tabs">
                   {tabs.map((tab) => {
                     const Icon = tab.icon;
                     return (
                       <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`group inline-flex items-center px-1 py-4 border-b-2 font-medium text-sm transition-colors ${
+                        className={`flex-1 flex items-center justify-center sm:justify-center px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium rounded-xl sm:rounded-2xl transition-all duration-300 ${
                           activeTab === tab.id
-                            ? 'border-primary-500 text-primary-600 dark:text-primary-400'
-                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                            ? 'bg-gradient-to-r from-red-600 via-red-700 to-blue-700 text-white shadow-lg'
+                            : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
                         }`}
                       >
-                        <Icon className="mr-2 w-5 h-5" />
-                        {tab.label}
+                        <Icon className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+                        <span className="text-xs sm:text-sm">{tab.label}</span>
                       </button>
                     );
                   })}
