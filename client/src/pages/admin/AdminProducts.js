@@ -22,7 +22,7 @@ import {
 
 // Store
 import { getAdminProducts, deleteProduct, createProduct, updateProduct } from '../../store/slices/adminSlice';
-import LoadingSpinner from '../../components/common/LoadingSpinner';
+import AdminLoader from '../../components/admin/AdminLoader';
 import Button from '../../components/common/Button';
 import AdminLayout from '../../components/admin/AdminLayout';
 
@@ -88,6 +88,24 @@ const AdminProducts = () => {
   const [showProductModal, setShowProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [selectedImages, setSelectedImages] = useState([]);
+  
+  // Color management states
+  const [selectedColor, setSelectedColor] = useState('');
+  const [colorImages, setColorImages] = useState({}); // Store images for each color
+  const [availableColors] = useState([
+    { name: 'Black', hex: '#000000' },
+    { name: 'White', hex: '#FFFFFF' },
+    { name: 'Red', hex: '#FF0000' },
+    { name: 'Blue', hex: '#0000FF' },
+    { name: 'Green', hex: '#00FF00' },
+    { name: 'Yellow', hex: '#FFFF00' },
+    { name: 'Navy Blue', hex: '#000080' },
+    { name: 'Gray', hex: '#808080' },
+    { name: 'Pink', hex: '#FFC0CB' },
+    { name: 'Purple', hex: '#800080' },
+    { name: 'Orange', hex: '#FFA500' },
+    { name: 'Brown', hex: '#A52A2A' }
+  ]);
   const [productForm, setProductForm] = useState({
     name: '',
     sku: '',
@@ -273,6 +291,57 @@ const AdminProducts = () => {
     }));
   };
 
+  // Handle color selection for image management
+  const handleColorSelect = (colorName) => {
+    setSelectedColor(colorName);
+    // Initialize color images if not exists
+    if (!colorImages[colorName]) {
+      setColorImages(prev => ({
+        ...prev,
+        [colorName]: []
+      }));
+    }
+  };
+
+  // Handle color-specific image upload
+  const handleColorImageUpload = (e) => {
+    const files = Array.from(e.target.files);
+    if (!selectedColor) {
+      toast.error('Please select a color first');
+      return;
+    }
+
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const imageData = {
+          file: file,
+          preview: reader.result,
+          name: file.name
+        };
+        
+        setColorImages(prev => ({
+          ...prev,
+          [selectedColor]: [...(prev[selectedColor] || []), imageData]
+        }));
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // Remove color-specific image
+  const removeColorImage = (colorName, imageIndex) => {
+    setColorImages(prev => ({
+      ...prev,
+      [colorName]: prev[colorName].filter((_, index) => index !== imageIndex)
+    }));
+  };
+
+  // Get current color images for display
+  const getCurrentColorImages = () => {
+    return selectedColor ? (colorImages[selectedColor] || []) : [];
+  };
+
   const handleSizeChange = (size, checked) => {
     setProductForm(prev => ({
       ...prev,
@@ -302,6 +371,8 @@ const AdminProducts = () => {
       sizes: []
     });
     setSelectedImages([]);
+    setSelectedColor('');
+    setColorImages({});
   };
 
   const handleSubmit = async (e) => {
@@ -313,9 +384,14 @@ const AdminProducts = () => {
       return;
     }
     
-    // Validate images
-    if (!selectedImages || selectedImages.length === 0) {
-      toast.error('Please select at least one image');
+    // Validate images (either general images or color-specific images)
+    const hasGeneralImages = selectedImages && selectedImages.length > 0;
+    const hasColorImages = Object.keys(colorImages).some(color => 
+      colorImages[color] && colorImages[color].length > 0
+    );
+    
+    if (!hasGeneralImages && !hasColorImages) {
+      toast.error('Please select at least one image (general or color-specific)');
       return;
     }
     
@@ -346,7 +422,14 @@ const AdminProducts = () => {
         salePrice: productForm.salePrice ? parseFloat(productForm.salePrice) : null,
         totalStock: parseInt(productForm.stock) || 0,
         weight: 0, // Default weight to 0
-        colors: [], // Default colors to empty array
+        colors: Object.keys(colorImages).map(colorName => {
+          const colorInfo = availableColors.find(c => c.name === colorName);
+          return {
+            name: colorName,
+            hex: colorInfo?.hex || '#000000',
+            images: colorImages[colorName]?.map(img => img.preview) || []
+          };
+        }),
         images: selectedImages.map(img => img.preview),
         // Transform sizes from array of strings to array of objects  
         sizes: productForm.sizes.map((sizeName, index) => {
@@ -537,9 +620,11 @@ const AdminProducts = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-20 flex items-center justify-center">
-        <LoadingSpinner size="lg" text="Loading products..." />
-      </div>
+      <AdminLayout>
+        <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
+          <AdminLoader size="xl" showText context="products" />
+        </div>
+      </AdminLayout>
     );
   }
 
@@ -1016,15 +1101,15 @@ const AdminProducts = () => {
                       />
                     </div>
 
-                    {/* Images */}
+                    {/* Images Section */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Product Images *
+                        General Product Images
                       </label>
                       <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center">
                         <FiUpload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                         <p className="text-gray-600 mb-2">
-                          Drag & drop images here, or click to select
+                          Drag & drop general images here, or click to select
                         </p>
                         <p className="text-sm text-gray-500 dark:text-gray-500">
                           PNG, JPG, JPEG up to 5MB each
@@ -1041,15 +1126,15 @@ const AdminProducts = () => {
                           htmlFor="product-images"
                           className="inline-block mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer transition-colors"
                         >
-                          Select Images
+                          Select General Images
                         </label>
                       </div>
                       
-                      {/* Image Previews */}
+                      {/* General Image Previews */}
                       {selectedImages.length > 0 && (
                         <div className="mt-4">
                           <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Selected Images ({selectedImages.length})
+                            General Images ({selectedImages.length})
                           </h4>
                           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                             {selectedImages.map((image, index) => (
@@ -1070,6 +1155,118 @@ const AdminProducts = () => {
                                   {image.name}
                                 </div>
                               </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Color-Specific Images Section */}
+                    <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
+                        Color-Specific Images
+                      </label>
+                      
+                      {/* Color Selection */}
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Select Color to Manage Images
+                        </label>
+                        <select
+                          value={selectedColor}
+                          onChange={(e) => handleColorSelect(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                        >
+                          <option value="">Select a color...</option>
+                          {availableColors.map((color) => (
+                            <option key={color.name} value={color.name}>
+                              {color.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Color Image Upload */}
+                      {selectedColor && (
+                        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                          <div className="flex items-center space-x-3 mb-4">
+                            <div
+                              className="w-6 h-6 rounded-full border border-gray-300"
+                              style={{ backgroundColor: availableColors.find(c => c.name === selectedColor)?.hex }}
+                            ></div>
+                            <h4 className="text-lg font-medium text-gray-900 dark:text-white">
+                              {selectedColor} Images
+                            </h4>
+                          </div>
+                          
+                          <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 text-center mb-4">
+                            <input
+                              type="file"
+                              multiple
+                              accept="image/*"
+                              className="hidden"
+                              id={`color-images-${selectedColor}`}
+                              onChange={handleColorImageUpload}
+                            />
+                            <label
+                              htmlFor={`color-images-${selectedColor}`}
+                              className="inline-block px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 cursor-pointer transition-colors"
+                            >
+                              Upload {selectedColor} Images
+                            </label>
+                            <p className="text-xs text-gray-500 mt-2">
+                              Upload images showing the product in {selectedColor}
+                            </p>
+                          </div>
+
+                          {/* Color-Specific Image Previews */}
+                          {getCurrentColorImages().length > 0 && (
+                            <div>
+                              <h5 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                {selectedColor} Images ({getCurrentColorImages().length})
+                              </h5>
+                              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                {getCurrentColorImages().map((image, index) => (
+                                  <div key={index} className="relative group">
+                                    <img
+                                      src={image.preview}
+                                      alt={`${selectedColor} ${index + 1}`}
+                                      className="w-full h-20 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
+                                    />
+                                    <button
+                                      type="button"
+                                      onClick={() => removeColorImage(selectedColor, index)}
+                                      className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
+                                    >
+                                      <FiX className="w-3 h-3" />
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Summary of All Color Images */}
+                      {Object.keys(colorImages).length > 0 && (
+                        <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                          <h4 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">
+                            Color Images Summary
+                          </h4>
+                          <div className="flex flex-wrap gap-2">
+                            {Object.entries(colorImages).map(([colorName, images]) => (
+                              images.length > 0 && (
+                                <div key={colorName} className="flex items-center space-x-2 bg-white dark:bg-gray-700 px-3 py-1 rounded-full">
+                                  <div
+                                    className="w-4 h-4 rounded-full border border-gray-300"
+                                    style={{ backgroundColor: availableColors.find(c => c.name === colorName)?.hex }}
+                                  ></div>
+                                  <span className="text-sm text-gray-700 dark:text-gray-300">
+                                    {colorName}: {images.length} image{images.length !== 1 ? 's' : ''}
+                                  </span>
+                                </div>
+                              )
                             ))}
                           </div>
                         </div>

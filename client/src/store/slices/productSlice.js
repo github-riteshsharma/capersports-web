@@ -228,6 +228,8 @@ const productSlice = createSlice({
       .addCase(getProductById.pending, (state) => {
         state.loading = true;
         state.error = null;
+        // Don't clear currentProduct here to prevent flash of "not found"
+        // state.currentProduct = null;
       })
       .addCase(getProductById.fulfilled, (state, action) => {
         state.loading = false;
@@ -236,6 +238,7 @@ const productSlice = createSlice({
       })
       .addCase(getProductById.rejected, (state, action) => {
         state.loading = false;
+        state.currentProduct = null; // Clear product on error
         state.error = action.payload;
       })
       // Get categories

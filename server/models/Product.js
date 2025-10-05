@@ -17,6 +17,10 @@ const productSchema = new mongoose.Schema({
     required: [true, 'Product price is required'],
     min: [0, 'Price cannot be negative'],
   },
+  salePrice: {
+    type: Number,
+    min: [0, 'Sale price cannot be negative'],
+  },
   originalPrice: {
     type: Number,
     min: [0, 'Original price cannot be negative'],
@@ -120,6 +124,17 @@ const productSchema = new mongoose.Schema({
       default: 0,
     },
   },
+  // Backward compatibility fields
+  rating: {
+    type: Number,
+    default: 0,
+    min: [0, 'Rating cannot be negative'],
+    max: [5, 'Rating cannot exceed 5'],
+  },
+  numReviews: {
+    type: Number,
+    default: 0,
+  },
   reviews: [{
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -140,6 +155,10 @@ const productSchema = new mongoose.Schema({
     title: {
       type: String,
       maxlength: [100, 'Review title cannot exceed 100 characters'],
+    },
+    adminResponse: {
+      type: String,
+      maxlength: [1000, 'Admin response cannot exceed 1000 characters'],
     },
     createdAt: {
       type: Date,

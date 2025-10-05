@@ -48,6 +48,21 @@ router.get('/', async (req, res) => {
       matchStage.ageGroup = req.query.ageGroup;
     }
 
+    // Filter by sub category
+    if (req.query.subCategory) {
+      matchStage.subCategory = req.query.subCategory;
+    }
+
+    // Filter by size
+    if (req.query.size) {
+      matchStage['sizes.size'] = req.query.size;
+    }
+
+    // Filter by color
+    if (req.query.color) {
+      matchStage['colors.name'] = new RegExp(req.query.color, 'i');
+    }
+
     // Filter by price range
     if (req.query.minPrice || req.query.maxPrice) {
       const priceFilter = {};
@@ -76,31 +91,42 @@ router.get('/', async (req, res) => {
       matchStage.isOnSale = true;
     }
 
+    // Filter by creation date (for new arrivals)
+    if (req.query.createdAfter) {
+      matchStage.createdAt = { $gte: new Date(req.query.createdAfter) };
+    }
+
     pipeline.push({ $match: matchStage });
 
     // Sort options
     let sortOption = {};
-    switch (req.query.sort) {
+    switch (req.query.sortBy || req.query.sort) {
+      case 'price':
       case 'price_low':
         sortOption = { price: 1 };
         break;
+      case '-price':
       case 'price_high':
         sortOption = { price: -1 };
         break;
       case 'rating':
         sortOption = { 'ratings.average': -1 };
         break;
-      case 'newest':
-        sortOption = { createdAt: -1 };
-        break;
-      case 'oldest':
-        sortOption = { createdAt: 1 };
-        break;
+      case 'name':
       case 'name_asc':
         sortOption = { name: 1 };
         break;
+      case '-name':
       case 'name_desc':
         sortOption = { name: -1 };
+        break;
+      case 'createdAt':
+      case 'newest':
+        sortOption = { createdAt: -1 };
+        break;
+      case '-createdAt':
+      case 'oldest':
+        sortOption = { createdAt: 1 };
         break;
       default:
         sortOption = { createdAt: -1 };
@@ -310,9 +336,24 @@ router.post('/:id/reviews', protect, [
       comment,
       title,
       createdAt: new Date(),
+      adminResponse: `Thank you for your ${rating}-star review! We truly appreciate you taking the time to share your experience with this product. Your feedback helps us continue to deliver quality athletic wear that meets our customers' expectations. If you have any questions or concerns, please don't hesitate to reach out to our customer service team. - Caper Sports Team 🏃‍♂️`,
     };
 
     product.reviews.push(review);
+    
+    // Recalculate product rating
+    const ratings = product.reviews.map(r => r.rating);
+    const averageRating = ratings.length > 0 ? ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length : 0;
+    
+    product.ratings = {
+      average: Math.round(averageRating * 10) / 10, // Round to 1 decimal place
+      count: ratings.length
+    };
+    
+    // Also set the rating field for backward compatibility
+    product.rating = product.ratings.average;
+    product.numReviews = ratings.length;
+    
     await product.save();
 
     // Populate the new review

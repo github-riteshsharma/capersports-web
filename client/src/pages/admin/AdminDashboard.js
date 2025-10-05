@@ -36,7 +36,7 @@ import {
 
 // Store
 import { getDashboardData } from '../../store/slices/adminSlice';
-import ModernLoader, { CardLoader } from '../../components/common/ModernLoader';
+import AdminLoader from '../../components/admin/AdminLoader';
 import AdminLayout from '../../components/admin/AdminLayout';
 
 const AdminDashboard = () => {
@@ -199,31 +199,8 @@ const AdminDashboard = () => {
   if (loading) {
     return (
       <AdminLayout>
-        <div className="space-y-6">
-          {/* Page Header Skeleton */}
-          <div className="bg-white/90 backdrop-blur-sm border border-gray-200/60 rounded-2xl px-6 py-4 shadow-sm animate-pulse">
-            <div className="h-4 bg-gray-200 rounded w-32 mb-3"></div>
-            <div className="h-8 bg-gray-200 rounded w-48 mb-2"></div>
-            <div className="h-4 bg-gray-200 rounded w-96"></div>
-          </div>
-
-          {/* Welcome Header Skeleton */}
-          <div className="bg-gray-200 rounded-2xl p-6 animate-pulse">
-            <div className="h-6 bg-gray-300 rounded w-64 mb-2"></div>
-            <div className="h-4 bg-gray-300 rounded w-96"></div>
-          </div>
-
-          {/* Stats Cards Skeleton */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[1, 2, 3, 4].map((i) => (
-              <CardLoader key={i} />
-            ))}
-          </div>
-
-          {/* Loading Center */}
-          <div className="flex items-center justify-center py-12">
-            <ModernLoader size="large" text="Loading dashboard data..." />
-          </div>
+        <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
+          <AdminLoader size="xl" showText context="dashboard" />
         </div>
       </AdminLayout>
     );

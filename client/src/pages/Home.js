@@ -202,10 +202,10 @@ const Home = () => {
 
       <div className="min-h-screen bg-gray-50">
         {/* Hero Section - Full Viewport Height */}
-        <section className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 w-full py-16 sm:py-20">
+        <section className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-12 xl:px-16 2xl:px-20 w-full pt-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 w-full max-w-[90rem] py-8 sm:py-12 lg:py-16">
             <motion.div
-              className="space-y-6 sm:space-y-8 flex flex-col justify-center text-center lg:text-left"
+              className="space-y-6 sm:space-y-8 flex flex-col justify-center text-center lg:text-left order-last lg:order-first"
               variants={fadeInUp}
               initial="hidden"
               animate="visible"
@@ -250,11 +250,11 @@ const Home = () => {
               initial="hidden"
               animate="visible"
             >
-              <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl sm:shadow-2xl max-w-sm sm:max-w-md lg:max-w-none mx-auto w-full">
+              <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl sm:shadow-2xl w-full max-w-sm sm:max-w-md lg:max-w-none mx-auto">
                 <img
                   src="/images/hero.png"
                   alt="Caper Sports Athletes in Action"
-                  className="w-full h-48 sm:h-64 md:h-80 lg:h-[400px] xl:h-[500px] object-cover"
+                  className="w-full h-auto object-contain max-h-48 sm:max-h-64 md:max-h-80 lg:max-h-[400px] xl:max-h-[500px] 2xl:max-h-[600px]"
                   onError={(e) => {
                     // Fallback to gradient if image fails
                     e.target.style.display = 'none';
@@ -265,14 +265,14 @@ const Home = () => {
                   }}
                 />
                 {/* Fallback */}
-                <div className="hidden w-full h-48 sm:h-64 md:h-80 lg:h-[400px] xl:h-[500px] bg-gradient-to-br from-red-500 via-orange-500 to-blue-600 items-center justify-center">
+                <div className="hidden w-full h-48 sm:h-64 md:h-80 lg:h-[400px] xl:h-[500px] 2xl:h-[600px] bg-gradient-to-br from-red-500 via-orange-500 to-blue-600 items-center justify-center">
                   <div className="text-white text-center p-4">
                     <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 sm:mb-4">CAPER SPORTS</div>
                     <div className="text-sm sm:text-lg lg:text-xl opacity-80">Premium Athletic Gear</div>
                   </div>
                 </div>
                 {/* Overlay for better text readability */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
                 {/* Badge */}
                 <div className="absolute top-3 sm:top-6 left-3 sm:left-6 bg-white/90 backdrop-blur-sm rounded-full px-3 sm:px-4 py-1.5 sm:py-2">
                   <span className="text-xs sm:text-sm font-medium text-gray-900">Premium Quality</span>
@@ -283,7 +283,8 @@ const Home = () => {
         </section>
             
         {/* Featured Products Section */}
-        <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-12 xl:px-16 2xl:px-20 w-full">
+          <div className="max-w-[90rem] mx-auto">
             <motion.div
               className="text-center mb-12 sm:mb-16"
               variants={fadeInUp}
@@ -309,7 +310,7 @@ const Home = () => {
               <CaperSportsLoader size="lg" />
             </div>
             ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {featuredProducts.map((product, index) => (
             <motion.div
                   key={product._id}
@@ -348,10 +349,12 @@ const Home = () => {
               </Link>
           </div>
           </motion.div>
+          </div>
         </section>
             
         {/* Design Showcase Gallery */}
-        <section className="py-20 px-6 lg:px-8 max-w-7xl mx-auto">
+        <section className="py-20 px-4 sm:px-6 lg:px-12 xl:px-16 2xl:px-20 w-full">
+          <div className="max-w-[90rem] mx-auto">
             <motion.div
             className="text-center mb-16"
               variants={fadeInUp}
@@ -372,9 +375,9 @@ const Home = () => {
               </div>
             </motion.div>
             
-          {/* Clean Showcase Grid - 4 Cards in Single Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {showcaseProducts.slice(0, 4).map((product, index) => (
+          {/* Clean Showcase Grid - 5 Cards in Single Row on Large Screens */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+            {showcaseProducts.slice(0, 5).map((product, index) => (
             <motion.div 
                 key={product.id}
                 className="group h-full"
@@ -489,10 +492,12 @@ const Home = () => {
               </div>
             </div>
             </motion.div>
+            </div>
         </section>
 
         {/* Customer Testimonials Section */}
-        <section className="py-20 px-6 lg:px-8 max-w-7xl mx-auto">
+        <section className="py-20 px-4 sm:px-6 lg:px-12 xl:px-16 2xl:px-20 w-full">
+          <div className="max-w-[90rem] mx-auto">
             <motion.div
               className="text-center mb-16"
               variants={fadeInUp}
@@ -656,10 +661,12 @@ const Home = () => {
               </Link>
                 </div>
               </motion.div>
+              </div>
         </section>
 
         {/* Interactive Order Process Section */}
-        <section className="py-20 px-6 lg:px-8 max-w-7xl mx-auto">
+        <section className="py-20 px-4 sm:px-6 lg:px-12 xl:px-16 2xl:px-20 w-full">
+          <div className="max-w-[90rem] mx-auto">
               <motion.div
             className="text-center mb-16"
               variants={fadeInUp}
@@ -955,8 +962,10 @@ const Home = () => {
               <FiArrowRight className="w-5 h-5" />
             </Link>
             </motion.div>
+            </div>
         </section>
-        <section className="py-20 px-6 lg:px-8 max-w-7xl mx-auto">
+        <section className="py-20 px-4 sm:px-6 lg:px-12 xl:px-16 2xl:px-20 w-full">
+          <div className="max-w-[90rem] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             {/* Sublimated Polo T-Shirts */}
             <motion.div
@@ -1020,162 +1029,292 @@ const Home = () => {
                 </div>
             </motion.div>
           </div>
+          </div>
         </section>
 
 
-        {/* Instagram Feed Section */}
-        <section className="py-16 px-6 lg:px-8 max-w-[90rem] mx-auto">
+        {/* Instagram Feed Section - Premium Design */}
+        <section className="py-24 px-4 sm:px-6 lg:px-12 xl:px-16 2xl:px-20 w-full bg-gradient-to-br from-gray-50 via-white to-pink-50/30">
+          <div className="max-w-7xl mx-auto">
+            {/* Premium Header - Simplified */}
             <motion.div
-              className="text-center mb-12"
+              className="text-center mb-20"
               variants={fadeInUp}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
             >
-            <div className="flex items-center justify-center space-x-3 mb-6">
-              <FiInstagram className="w-8 h-8 text-pink-600" />
-              <h2 className="text-4xl lg:text-5xl font-bold text-gray-900">
-                Follow Our <span className="bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">Journey</span>
-              </h2>
-            </div>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Stay connected with the latest from Caper Sports - behind the scenes, champion moments, and community highlights
-            </p>
-            <p className="text-sm text-gray-500 mt-2">@caper_sports9</p>
-            </motion.div>
-
-          {/* Instagram Posts Grid */}
-          {instagramLoading ? (
-            <div className="flex justify-center items-center py-20">
-              <CaperSportsLoader size="lg" />
-              <span className="ml-4 text-gray-600">Loading latest posts from @caper_sports9...</span>
-              </div>
-            ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {instagramPosts.slice(0, 4).map((post, index) => (
-              <motion.div
-                  key={post.id}
-                  className="group cursor-pointer"
-              variants={fadeInUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  onClick={() => window.open(post.permalink, '_blank')}
-                >
-                  <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 h-full flex flex-col">
-                    {/* Post Image - 60% */}
-                    <div className="relative h-[60%] min-h-[200px] overflow-hidden">
-                      <img
-                        src={post.image}
-                        alt="Caper Sports Instagram Post"
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                        onError={(e) => {
-                          // Fallback to placeholder if image fails
-                          e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDQwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMDAgMTAwQzE0NC43NzIgMTAwIDEwMCAxNDQuNzcyIDEwMCAyMDBTMTQ0Ljc3MiAzMDAgMjAwIDMwMFMyMDAgMjU1LjIyOCAyMDAgMjAwUzI1NS4yMjggMTAwIDIwMCAxMDBaIiBmaWxsPSIjOUI5QjlCIi8+CjwvZz4KPC9zdmc+';
-                        }}
-                      />
-                      {/* Hover Overlay */}
-                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                        <div className="flex items-center space-x-6 text-white">
-                          <div className="flex items-center space-x-2">
-                            <FiHeart className="w-6 h-6" />
-                            <span className="font-semibold">{post.likes}</span>
-          </div>
-                          <div className="flex items-center space-x-2">
-                            <FiMessageCircle className="w-6 h-6" />
-                            <span className="font-semibold">{post.comments?.length || 0}</span>
-                          </div>
-                        </div>
+              {/* Main Title Section */}
+              <div className="relative mb-12">
+                {/* Background Decorative Elements */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-96 h-96 bg-gradient-to-r from-red-50/30 to-blue-50/30 rounded-full blur-3xl"></div>
+                </div>
+                
+                <div className="relative z-10">
+                  {/* Main Heading - Single Line */}
+                  <div className="space-y-6">
+                    <h2 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
+                      <span className="bg-gradient-to-r from-red-600 via-red-700 to-blue-700 bg-clip-text text-transparent">
+                        Follow Our Journey
+                      </span>
+                    </h2>
+                    
+                    {/* Subtitle with Brand Colors */}
+                    <div className="flex items-center justify-center space-x-3">
+                      <div className="h-px bg-gradient-to-r from-transparent via-red-300 to-transparent flex-1 max-w-24"></div>
+                      <div className="bg-gradient-to-r from-red-600 to-blue-700 text-white px-6 py-2 rounded-full shadow-lg">
+                        <span className="text-sm font-semibold tracking-wide">@caper_sports9</span>
                       </div>
-                    </div>
-
-                    {/* Post Content - 40% */}
-                    <div className="p-4 flex flex-col justify-between h-[40%]">
-                      {/* Header */}
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
-                            <span className="text-white font-bold text-sm">CS</span>
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <p className="font-semibold text-gray-900 text-sm leading-tight">caper_sports9</p>
-                            <p className="text-xs text-gray-500 leading-tight">{post.timeAgo}</p>
-                          </div>
-                        </div>
-                        <FiMoreHorizontal className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                      </div>
-
-                      {/* Caption */}
-                      <div className="flex-1 mb-3">
-                        <p className="text-sm text-gray-700 leading-relaxed line-clamp-2">
-                          {post.caption}
-                        </p>
-                      </div>
-
-                      {/* Latest Comments */}
-                      {post.comments && post.comments.length > 0 && (
-                        <div className="mb-3">
-                          {post.comments.slice(0, 1).map((comment, commentIndex) => (
-                            <div key={commentIndex} className="flex items-start space-x-2">
-                              <span className="font-semibold text-gray-900 text-xs flex-shrink-0 leading-4">{comment.username}</span>
-                              <span className="text-gray-700 text-xs leading-4 flex-1">{comment.text}</span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Engagement */}
-                      <div className="flex items-center justify-between text-xs text-gray-500 pt-2 border-t border-gray-100">
-                        <div className="flex items-center space-x-4">
-                          <div className="flex items-center space-x-1">
-                            <FiHeart className="w-3 h-3" />
-                            <span>{post.likes} likes</span>
-                          </div>
-                          <div className="flex items-center space-x-1">
-                            <FiMessageCircle className="w-3 h-3" />
-                            <span>{post.comments?.length || 0} comments</span>
-                          </div>
-                        </div>
-                        <span className="text-gray-400">{post.timeAgo}</span>
-                      </div>
+                      <div className="h-px bg-gradient-to-r from-transparent via-blue-300 to-transparent flex-1 max-w-24"></div>
                     </div>
                   </div>
-                </motion.div>
-              ))}
-            </div>
-          )}
+                </div>
+              </div>
+              
+              {/* Enhanced Description - Consistent Typography */}
+              <div className="max-w-4xl mx-auto">
+                <p className="text-xl text-gray-600 leading-relaxed mb-8">
+                  Join our community of <span className="font-semibold text-red-600">champions</span> and witness the 
+                  <span className="font-semibold text-blue-600"> craftsmanship</span> behind every victory.
+                </p>
+                
+                {/* Stats Row - Brand Colors */}
+                <div className="flex items-center justify-center space-x-8 lg:space-x-12">
+                  <div className="text-center">
+                    <div className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-red-600 to-red-700 bg-clip-text text-transparent">
+                      2.4k+
+                    </div>
+                    <div className="text-sm text-gray-500 font-medium uppercase tracking-wide">Followers</div>
+                  </div>
+                  <div className="w-px h-12 bg-gradient-to-b from-transparent via-gray-300 to-transparent"></div>
+                  <div className="text-center">
+                    <div className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-red-700 to-blue-600 bg-clip-text text-transparent">
+                      150+
+                    </div>
+                    <div className="text-sm text-gray-500 font-medium uppercase tracking-wide">Posts</div>
+                  </div>
+                  <div className="w-px h-12 bg-gradient-to-b from-transparent via-gray-300 to-transparent"></div>
+                  <div className="text-center">
+                    <div className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
+                      12k+
+                    </div>
+                    <div className="text-sm text-gray-500 font-medium uppercase tracking-wide">Likes</div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
 
-          {/* Follow CTA */}
+            {/* Premium Instagram Posts */}
+            {instagramLoading ? (
+              <div className="flex flex-col items-center justify-center py-24 bg-white/50 backdrop-blur-sm rounded-3xl border border-gray-100">
+                <CaperSportsLoader size="lg" />
+                <p className="mt-6 text-gray-600 font-medium">Curating our latest moments...</p>
+              </div>
+            ) : (
+              <div className="space-y-8">
+                {/* Main Featured Post - Using 2nd Post */}
+                {instagramPosts.length > 1 && (
+                  <motion.div
+                    className="relative overflow-hidden rounded-3xl bg-white shadow-2xl border border-gray-100 hover:shadow-3xl transition-all duration-700"
+                    variants={fadeInUp}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                  >
+                    <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[600px]">
+                      {/* Enhanced Featured Image */}
+                      <div className="relative overflow-hidden bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
+                        <img
+                          src={instagramPosts[1].image}
+                          alt="Featured Instagram Post"
+                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-1000"
+                          onError={(e) => {
+                            e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDQwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMDAgMTAwQzE0NC43NzIgMTAwIDEwMCAxNDQuNzcyIDEwMCAyMDBTMTQ0Ljc3MiAzMDAgMjAwIDMwMFMyMDAgMjU1LjIyOCAyMDAgMjAwUzI1NS4yMjggMTAwIDIwMCAxMDBaIiBmaWxsPSIjOUI5QjlCIi8+PC9zdmc+';
+                          }}
+                        />
+                        {/* Enhanced Overlays */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
+                        <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 via-transparent to-purple-500/10"></div>
+                        
+                        {/* Premium Featured Badge */}
+                        <div className="absolute top-6 left-6">
+                          <div className="bg-gradient-to-r from-red-600 to-blue-700 text-white rounded-2xl px-6 py-3 shadow-xl backdrop-blur-sm border border-white/20">
+                            <div className="flex items-center space-x-2">
+                              <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                              <span className="text-sm font-bold tracking-wide">FEATURED POST</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Instagram Badge */}
+                        <div className="absolute top-6 right-6">
+                          <div className="w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300">
+                            <FiInstagram className="w-6 h-6 text-red-600" />
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Featured Content */}
+                      <div className="p-8 lg:p-12 flex flex-col justify-center bg-gradient-to-br from-white to-gray-50">
+                        <div className="space-y-6">
+                          <div className="flex items-center space-x-4">
+                            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-gray-100 p-1">
+                              <img
+                                src="/images/logo.png"
+                                alt="Caper Sports"
+                                className="w-full h-full object-contain"
+                                onError={(e) => {
+                                  e.target.src = "/images/capersports-logo.png";
+                                  e.target.onerror = (err) => {
+                                    err.target.style.display = 'none';
+                                    const fallback = err.target.parentElement.querySelector('.logo-fallback');
+                                    if (fallback) {
+                                      fallback.style.display = 'flex';
+                                    }
+                                  };
+                                }}
+                              />
+                              {/* Fallback Logo */}
+                              <div className="logo-fallback hidden w-full h-full bg-gradient-to-br from-red-600 to-blue-600 rounded-xl items-center justify-center">
+                                <span className="text-white font-bold text-lg">CS</span>
+                              </div>
+                            </div>
+                            <div>
+                              <h3 className="text-xl font-bold text-gray-900">caper_sports9</h3>
+                              <p className="text-red-600 font-semibold">Champion Creators</p>
+                            </div>
+                          </div>
+                          
+                          <blockquote className="text-lg text-gray-700 leading-relaxed italic">
+                            "{instagramPosts[1].caption || 'Crafting excellence, one design at a time. Every piece tells a story of dedication and championship spirit.'}"
+                          </blockquote>
+                          
+                          <div className="flex items-center justify-between pt-6 border-t border-gray-200">
+                            <div className="flex items-center space-x-6">
+                              <div className="flex items-center space-x-2 text-red-600">
+                                <FiHeart className="w-5 h-5" />
+                                <span className="font-semibold">{instagramPosts[1].likes || '2.4k'}</span>
+                              </div>
+                              <div className="flex items-center space-x-2 text-blue-600">
+                                <FiMessageCircle className="w-5 h-5" />
+                                <span className="font-semibold">{instagramPosts[1].comments?.length || 89}</span>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => window.open(instagramPosts[1].permalink, '_blank')}
+                              className="bg-gradient-to-r from-red-600 to-blue-700 hover:from-red-700 hover:to-blue-800 text-white px-6 py-3 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                            >
+                              View on Instagram
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Grid of Additional Posts - First post and posts 3-5 */}
+                {instagramPosts.length > 1 && (
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+                    {[instagramPosts[0], ...instagramPosts.slice(2, 5)].filter(Boolean).map((post, index) => (
+                      <motion.div
+                        key={post.id}
+                        className="group relative overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer"
+                        variants={fadeInUp}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        transition={{ delay: (index + 1) * 0.1 }}
+                        onClick={() => window.open(post.permalink, '_blank')}
+                      >
+                        <div className="aspect-square relative overflow-hidden">
+                          <img
+                            src={post.image}
+                            alt={`Instagram Post ${index + 1}`}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                            onError={(e) => {
+                              e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDQwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMDAgMTAwQzE0NC43NzIgMTAwIDEwMCAxNDQuNzcyIDEwMCAyMDBTMTQ0Ljc3MiAzMDAgMjAwIDMwMFMyMDAgMjU1LjIyOCAyMDAgMjAwUzI1NS4yMjggMTAwIDIwMCAxMDBaIiBmaWxsPSIjOUI5QjlCIi8+PC9zdmc+';
+                            }}
+                          />
+                          
+                          {/* Hover Overlay */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div className="absolute bottom-4 left-4 right-4">
+                              <div className="flex items-center justify-between text-white">
+                                <div className="flex items-center space-x-3">
+                                  <div className="flex items-center space-x-1">
+                                    <FiHeart className="w-4 h-4" />
+                                    <span className="text-sm font-medium">{post.likes || Math.floor(Math.random() * 500) + 100}</span>
+                                  </div>
+                                  <div className="flex items-center space-x-1">
+                                    <FiMessageCircle className="w-4 h-4" />
+                                    <span className="text-sm font-medium">{post.comments?.length || Math.floor(Math.random() * 50) + 10}</span>
+                                  </div>
+                                </div>
+                                <FiInstagram className="w-5 h-5" />
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {/* Corner Gradient */}
+                          <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-pink-500/20 to-transparent"></div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Premium CTA */}
             <motion.div
-            className="text-center mt-16"
+              className="mt-20 text-center"
               variants={fadeInUp}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
             >
-            <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-3xl p-8 border border-pink-100">
-              <div className="flex items-center justify-center space-x-3 mb-4">
-                <FiInstagram className="w-8 h-8 text-pink-600" />
-                <h3 className="text-2xl font-bold text-gray-900">
-                  Follow Us on Instagram
-                </h3>
+              <div className="relative overflow-hidden bg-gradient-to-r from-pink-600 to-purple-600 rounded-3xl p-12 shadow-2xl">
+                <div className="absolute inset-0 bg-black/10"></div>
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent"></div>
+                <div className="relative z-10 max-w-2xl mx-auto text-white">
+                  <div className="flex items-center justify-center space-x-3 mb-6">
+                    <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                      <FiInstagram className="w-8 h-8 text-white" />
+                    </div>
+                    <div className="text-left">
+                      <h3 className="text-3xl font-bold leading-tight">Join the Champions</h3>
+                      <p className="text-pink-100">@caper_sports9</p>
+                    </div>
+                  </div>
+                  <p className="text-xl leading-relaxed mb-8 text-pink-50">
+                    Be part of our journey. Follow us for exclusive behind-the-scenes content, 
+                    champion stories, and the latest from our premium collection.
+                  </p>
+                  <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+                    <a
+                      href="https://instagram.com/caper_sports9"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center space-x-3 bg-white text-pink-600 px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:scale-105 hover:bg-pink-50"
+                    >
+                      <FiInstagram className="w-6 h-6" />
+                      <span>Follow @caper_sports9</span>
+                    </a>
+                    <div className="flex items-center space-x-2 text-pink-100">
+                      <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                      <span className="text-sm font-medium">2.4k+ Champions Following</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Decorative Elements */}
+                <div className="absolute -top-4 -right-4 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
+                <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-purple-300/20 rounded-full blur-xl"></div>
               </div>
-              <p className="text-gray-600 mb-6 max-w-xl mx-auto">
-                Join our community of champions and stay updated with the latest gear, 
-                behind-the-scenes content, and success stories.
-              </p>
-              <a
-                href="https://instagram.com/caper_sports9"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center space-x-2 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-              >
-                <FiInstagram className="w-5 h-5" />
-                <span>Follow @caper_sports9</span>
-              </a>
+            </motion.div>
           </div>
-          </motion.div>
         </section>
       </div>
     </>

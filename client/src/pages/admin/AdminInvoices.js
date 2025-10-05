@@ -20,7 +20,7 @@ import {
   FiX
 } from 'react-icons/fi';
 import AdminLayout from '../../components/admin/AdminLayout';
-import LoadingSpinner from '../../components/common/LoadingSpinner';
+import AdminLoader from '../../components/admin/AdminLoader';
 
 const AdminInvoices = () => {
   const dispatch = useDispatch();

@@ -104,8 +104,36 @@ export const removeCoupon = createAsyncThunk(
 
 // Helper function to calculate cart totals
 const calculateCartTotals = (items) => {
-  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+  // Filter out items with invalid products to prevent errors
+  const validItems = items.filter(item => {
+    // Check if item exists
+    if (!item) return false;
+    
+    // Check if product exists and is an object
+    if (!item.product || typeof item.product !== 'object') return false;
+    
+    // Check if quantity is valid
+    if (typeof item.quantity !== 'number' || item.quantity <= 0) return false;
+    
+    // Check if product has valid pricing
+    const hasPrice = item.product.price !== null && item.product.price !== undefined && typeof item.product.price === 'number';
+    const hasSalePrice = item.product.salePrice !== null && item.product.salePrice !== undefined && typeof item.product.salePrice === 'number';
+    
+    return hasPrice || hasSalePrice;
+  });
+
+  const totalItems = validItems.reduce((sum, item) => sum + item.quantity, 0);
+  const totalPrice = validItems.reduce((sum, item) => {
+    // Use salePrice if available and valid, otherwise use price, fallback to 0
+    let price = 0;
+    if (item.product.salePrice !== null && item.product.salePrice !== undefined && typeof item.product.salePrice === 'number') {
+      price = item.product.salePrice;
+    } else if (item.product.price !== null && item.product.price !== undefined && typeof item.product.price === 'number') {
+      price = item.product.price;
+    }
+    return sum + (price * item.quantity);
+  }, 0);
+  
   const shipping = totalPrice >= 1000 ? 0 : 100; // Free shipping for orders above ₹1000
   const tax = totalPrice * 0.18; // 18% GST
   const grandTotal = totalPrice + shipping + tax;
@@ -130,8 +158,24 @@ const cartSlice = createSlice({
     // Local cart management (for guest users)
     addToLocalCart: (state, action) => {
       const { product, quantity, size, color } = action.payload;
+      
+      // Validate product data with improved null checking
+      if (!product || !product._id) {
+        console.error('Invalid product data for cart - missing product or ID:', product);
+        return;
+      }
+      
+      // Check if product has valid pricing
+      const hasPrice = product.price !== null && product.price !== undefined && typeof product.price === 'number';
+      const hasSalePrice = product.salePrice !== null && product.salePrice !== undefined && typeof product.salePrice === 'number';
+      
+      if (!hasPrice && !hasSalePrice) {
+        console.error('Invalid product data for cart - no valid pricing:', product);
+        return;
+      }
+      
       const existingItem = state.items.find(
-        item => item.product._id === product._id && item.size === size && item.color === color
+        item => item.product && item.product._id === product._id && item.size === size && item.color === color
       );
       
       if (existingItem) {
@@ -190,8 +234,24 @@ const cartSlice = createSlice({
     // Optimistic update for immediate UI feedback
     addToCartOptimistic: (state, action) => {
       const { productId, quantity, size, color, product } = action.payload;
+      
+      // Validate product data with improved null checking
+      if (!product) {
+        console.error('Invalid product data for optimistic cart update - missing product:', product);
+        return;
+      }
+      
+      // Check if product has valid pricing
+      const hasPrice = product.price !== null && product.price !== undefined && typeof product.price === 'number';
+      const hasSalePrice = product.salePrice !== null && product.salePrice !== undefined && typeof product.salePrice === 'number';
+      
+      if (!hasPrice && !hasSalePrice) {
+        console.error('Invalid product data for optimistic cart update - no valid pricing:', product);
+        return;
+      }
+      
       const existingItem = state.items.find(
-        item => item.product._id === productId && item.size === size && item.color === color
+        item => item.product && item.product._id === productId && item.size === size && item.color === color
       );
       
       if (existingItem) {
@@ -199,7 +259,7 @@ const cartSlice = createSlice({
       } else {
         state.items.push({
           _id: `temp_${Date.now()}`,
-          product: product || { _id: productId },
+          product: product || { _id: productId, price: 0 },
           quantity,
           size,
           color,
@@ -220,7 +280,22 @@ const cartSlice = createSlice({
       })
       .addCase(getCart.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = action.payload.cart || [];
+        // Ensure we have valid cart data
+        const cartItems = action.payload.cart || [];
+        // Filter out any invalid items with better null checking
+        state.items = cartItems.filter(item => {
+          // Check if item exists
+          if (!item) return false;
+          
+          // Check if product exists and is an object
+          if (!item.product || typeof item.product !== 'object') return false;
+          
+          // Check if product has valid pricing
+          const hasPrice = item.product.price !== null && item.product.price !== undefined && typeof item.product.price === 'number';
+          const hasSalePrice = item.product.salePrice !== null && item.product.salePrice !== undefined && typeof item.product.salePrice === 'number';
+          
+          return hasPrice || hasSalePrice;
+        });
         const totals = calculateCartTotals(state.items);
         Object.assign(state, totals);
         state.error = null;
@@ -248,12 +323,29 @@ const cartSlice = createSlice({
         // Sync with server response if available, otherwise keep optimistic state
         if (action.payload.cart && action.payload.cart.length > 0) {
           console.log('Using server cart data:', action.payload.cart.length, 'items');
-          state.items = action.payload.cart;
+          // Filter out invalid items from server response with better null checking
+          const validCartItems = action.payload.cart.filter(item => {
+            // Check if item exists
+            if (!item) return false;
+            
+            // Check if product exists and is an object
+            if (!item.product || typeof item.product !== 'object') return false;
+            
+            // Check if product has valid pricing
+            const hasPrice = item.product.price !== null && item.product.price !== undefined && typeof item.product.price === 'number';
+            const hasSalePrice = item.product.salePrice !== null && item.product.salePrice !== undefined && typeof item.product.salePrice === 'number';
+            
+            return hasPrice || hasSalePrice;
+          });
+          state.items = validCartItems;
           const totals = calculateCartTotals(state.items);
           console.log('Calculated totals:', totals);
           Object.assign(state, totals);
         } else {
           console.log('No server cart data, keeping optimistic state');
+          // Recalculate totals for current state to ensure consistency
+          const totals = calculateCartTotals(state.items);
+          Object.assign(state, totals);
         }
         
         console.log('Final state items:', state.items.length);

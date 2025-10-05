@@ -243,11 +243,9 @@ const Cart = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-20">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
-          <div className="flex flex-col items-center justify-center py-32">
-            <CaperSportsLoader size="xl" showText />
-          </div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-20 flex items-center justify-center">
+        <div className="w-full max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-center">
+          <CaperSportsLoader size="xl" showText />
         </div>
       </div>
     );

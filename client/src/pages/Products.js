@@ -14,12 +14,9 @@ import { getProducts, getCategories, getBrands } from '../store/slices/productSl
 // Loading Component
 const PremiumProductLoader = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-20">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
-        {/* Loading Animation */}
-        <div className="flex flex-col items-center justify-center py-32">
-          <CaperSportsLoader size="xl" showText />
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-20 flex items-center justify-center">
+      <div className="w-full max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-center">
+        <CaperSportsLoader size="xl" showText />
       </div>
     </div>
   );
@@ -120,12 +117,25 @@ const Products = () => {
       maxPrice: priceRange[1],
       sortBy: sortBy,
     };
+
+    // Apply active filter tab logic
+    if (activeFilter === 'Men') {
+      filters.gender = 'Men';
+    } else if (activeFilter === 'Women') {
+      filters.gender = 'Women';
+    } else if (activeFilter === 'New Arrivals') {
+      // For new arrivals, we'll sort by newest and limit to recent products
+      filters.sortBy = 'createdAt';
+      const weekAgo = new Date();
+      weekAgo.setDate(weekAgo.getDate() - 30); // 30 days for more results
+      filters.createdAfter = weekAgo.toISOString();
+    }
     
     dispatch(getProducts(filters));
     }, 300); // Debounce API calls
 
     return () => clearTimeout(timeoutId);
-  }, [dispatch, searchQuery, selectedCategory, selectedSubCategory, selectedSize, selectedColor, priceRange, sortBy, initialLoading]);
+  }, [dispatch, searchQuery, selectedCategory, selectedSubCategory, selectedSize, selectedColor, priceRange, sortBy, activeFilter, initialLoading]);
 
   const handleSearch = (e) => {
     e.preventDefault();

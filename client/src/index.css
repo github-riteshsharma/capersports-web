@@ -13,6 +13,7 @@
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
   }
   
   body {
@@ -49,68 +50,118 @@
   a:hover {
     color: theme('colors.primary.700');
   }
-  
-  /* Shimmer animation for skeleton loading */
-  @keyframes shimmer {
-    0% {
-      background-position: -200% 0;
-    }
-    100% {
-      background-position: 200% 0;
-    }
+}
+
+/* Performance optimizations for smooth animations */
+@layer utilities {
+  .will-change-transform {
+    will-change: transform;
   }
   
-  .dark a {
-    color: theme('colors.primary.400');
+  .will-change-auto {
+    will-change: auto;
   }
   
-  .dark a:hover {
-    color: theme('colors.primary.300');
+  /* Custom scrollbar styles */
+  .scrollbar-thin {
+    scrollbar-width: thin;
   }
   
-  input, textarea, select {
-    font-family: inherit;
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
   }
   
-  button {
-    font-family: inherit;
-    cursor: pointer;
+  .scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
+    background-color: rgb(209 213 219);
+    border-radius: 3px;
   }
   
-  img {
-    max-width: 100%;
-    height: auto;
+  .scrollbar-thumb-gray-300::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(156 163 175);
   }
   
-  /* Scrollbar styling */
-  ::-webkit-scrollbar {
-    width: 8px;
+  .scrollbar-track-gray-100::-webkit-scrollbar-track {
+    background-color: rgb(243 244 246);
+    border-radius: 3px;
   }
-  
-  ::-webkit-scrollbar-track {
-    background: theme('colors.gray.100');
+}
+
+/* Shimmer animation for skeleton loading */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
   }
-  
-  .dark ::-webkit-scrollbar-track {
-    background: theme('colors.gray.800');
+  100% {
+    background-position: 200% 0;
   }
-  
-  ::-webkit-scrollbar-thumb {
-    background: theme('colors.gray.300');
-    border-radius: 4px;
+}
+
+/* Gradient animation for text */
+@keyframes gradient {
+  0%, 100% { 
+    background-position: 0% 50%; 
   }
-  
-  .dark ::-webkit-scrollbar-thumb {
-    background: theme('colors.gray.600');
+  50% { 
+    background-position: 100% 50%; 
   }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    background: theme('colors.gray.400');
-  }
-  
-  .dark ::-webkit-scrollbar-thumb:hover {
-    background: theme('colors.gray.500');
-  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 3s ease-in-out infinite;
+}
+
+.dark a {
+  color: theme('colors.primary.400');
+}
+
+.dark a:hover {
+  color: theme('colors.primary.300');
+}
+
+input, textarea, select {
+  font-family: inherit;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: theme('colors.gray.100');
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: theme('colors.gray.800');
+}
+
+::-webkit-scrollbar-thumb {
+  background: theme('colors.gray.300');
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: theme('colors.gray.600');
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: theme('colors.gray.400');
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: theme('colors.gray.500');
 }
 
 /* Custom component styles */

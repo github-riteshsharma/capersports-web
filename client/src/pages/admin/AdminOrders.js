@@ -20,7 +20,7 @@ import {
 
 // Store
 import { getAdminOrders, updateOrderStatus } from '../../store/slices/adminSlice';
-import LoadingSpinner from '../../components/common/LoadingSpinner';
+import AdminLoader from '../../components/admin/AdminLoader';
 import AdminLayout from '../../components/admin/AdminLayout';
 import Button from '../../components/common/Button';
 
@@ -258,9 +258,11 @@ const AdminOrders = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-20 flex items-center justify-center">
-        <LoadingSpinner size="lg" text="Loading orders..." />
-      </div>
+      <AdminLayout>
+        <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
+          <AdminLoader size="xl" showText context="orders" />
+        </div>
+      </AdminLayout>
     );
   }
 

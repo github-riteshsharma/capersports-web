@@ -187,7 +187,7 @@ const ProductCard = ({ product, className = '' }) => {
             <img
               src={product.images?.[currentImageIndex] || product.images?.[0] || '/images/placeholder-product.jpg'}
               alt={product.name}
-              className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500 ease-out"
+              className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 ease-out"
               onError={(e) => {
                 e.target.style.display = 'none';
                 const fallback = e.target.nextSibling;
@@ -273,14 +273,16 @@ const ProductCard = ({ product, className = '' }) => {
         {/* Rating - Always Show */}
         <div className="flex items-center space-x-1 mb-2 sm:mb-3">
           <div className="flex items-center">
-            {product.rating ? renderStars(product.rating) : renderStars(0)}
+            {/* Use ratings.average first, then fallback to rating */}
+            {(product.ratings?.average || product.rating) ? renderStars(product.ratings?.average || product.rating) : renderStars(0)}
           </div>
           <span className="text-xs sm:text-sm text-gray-500 ml-1">
-            {product.rating ? `${product.rating.toFixed(1)}/5` : '0.0/5'}
+            {(product.ratings?.average || product.rating) ? `${(product.ratings?.average || product.rating).toFixed(1)}/5` : '0.0/5'}
           </span>
-          {product.numReviews > 0 && (
+          {/* Use ratings.count first, then fallback to numReviews */}
+          {(product.ratings?.count || product.numReviews) > 0 && (
             <span className="text-xs sm:text-sm text-gray-400">
-              ({product.numReviews})
+              ({product.ratings?.count || product.numReviews})
             </span>
           )}
         </div>
@@ -288,15 +290,15 @@ const ProductCard = ({ product, className = '' }) => {
         {/* Price Section */}
         <div className="flex flex-wrap items-center gap-1 sm:gap-2 mt-auto">
           <span className="text-base sm:text-lg lg:text-xl font-bold text-gray-900">
-            ₹{product.price?.toLocaleString()}
+            ₹{(product.salePrice || product.price)?.toLocaleString()}
           </span>
-          {product.originalPrice && product.originalPrice > product.price && (
+          {product.salePrice && product.price > product.salePrice && (
             <>
               <span className="text-sm sm:text-base text-gray-400 line-through">
-                ₹{product.originalPrice?.toLocaleString()}
+                ₹{product.price?.toLocaleString()}
               </span>
               <div className="bg-red-100 text-red-600 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md text-xs font-bold">
-                -{discountPercentage}% OFF
+                -{Math.round(((product.price - product.salePrice) / product.price) * 100)}% OFF
               </div>
             </>
           )}

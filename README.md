@@ -1,342 +1,271 @@
-<<<<<<< HEAD
-=======
+# Caper Sports - Premium Athletic Wear E-commerce Platform
 
+A full-stack MERN e-commerce platform for premium sports clothing, featuring modern UI/UX, admin dashboard, payment processing, and cloud deployment ready for Azure.
 
-Cleaning up temp folders from previous zip deployments and extracting pushed zip file C:\local\Temp\zipdeploy\zvu4hjma.zip (10.97 MB) to C:\local\Temp\zipdeploy\extracted
-
-P***ck***ge deployment using ZIP Deploy initi***ted.
-Fetching ch***nges.
-Cle***ning up temp folders from previous zip deployments ***nd extr***cting pushed zip file C:\loc***l\Temp\zipdeploy\qyxcvsd2.zip (9.48 MB) to C:\loc***l\Temp\zipdeploy\extr***cted
-Error: F***iled to deploy web p***ck***ge to App Service.
-Error: Deployment F***iled, P***ck***ge deployment using ZIP Deploy f***iled. Refer logs for more det***ils.
-
->>>>>>> parent of 56485b0 (clean: remove unnecessary deployment files and clean project structure)
-# Caper Sports - MERN Stack E-commerce Platform
-
-A full-stack e-commerce platform for premium sports clothing built with React, Node.js, Express, and MongoDB. **Ready for Azure deployment!**
+![Caper Sports](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)
+![Node.js](https://img.shields.io/badge/Node.js-18.x-green)
+![React](https://img.shields.io/badge/React-18.x-blue)
+![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green)
+![Azure](https://img.shields.io/badge/Deploy-Azure-blue)
 
 ## 🏗️ Project Structure
 
 ```
-capersports/
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-├── client/                           # React Frontend
-│   ├── src/
-│   ├── public/
-│   ├── package.json
-│   └── .env.azure.template          # Frontend Azure env template
-├── .github/workflows/               # GitHub Actions for CI/CD
-│   └── azure-deploy.yml            # Azure deployment workflow
-├── server.js                       # Express Backend Entry Point
-├── package.json                    # Backend Dependencies
-├── routes/                         # API Routes
-├── models/                         # MongoDB Models
-├── middleware/                     # Express Middleware
-├── uploads/                        # File Uploads
-├── web.config                      # IIS configuration for Azure
-├── staticwebapp.config.json        # Azure Static Web Apps config
-├── .env                           # Backend Environment Variables
-├── .env.azure.template            # Backend Azure env template
-└── README.md                      # This file
-=======
-=======
->>>>>>> parent of dc8a83f (clean: update to Node.js 22, remove unnecessary files, add simple deployment guide)
-=======
->>>>>>> parent of dc8a83f (clean: update to Node.js 22, remove unnecessary files, add simple deployment guide)
-=======
->>>>>>> parent of dc8a83f (clean: update to Node.js 22, remove unnecessary files, add simple deployment guide)
+capersports-web/
 ├── client/                         # React Frontend
-│   ├── src/                       # React source code
-│   ├── public/                    # Static assets
-│   ├── package.json              # Frontend dependencies
-│   └── .env.azure.template       # Frontend environment template
-├── .github/workflows/             # GitHub Actions for CI/CD
-│   └── azure-deploy.yml          # Azure deployment workflow
-├── routes/                        # Express API Routes
-├── models/                        # MongoDB Models
-├── middleware/                    # Express Middleware
-├── uploads/                       # File upload directory
-├── server.js                     # Express Backend Entry Point
-├── package.json                  # Backend Dependencies
-├── web.config                    # IIS configuration for Azure
-├── staticwebapp.config.json      # Azure Static Web Apps config
-├── .env                         # Backend Environment Variables
-├── .env.azure.template          # Backend environment template
-├── seedData.js                  # Database seeding script
-└── README.md                    # This documentation
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> parent of dc8a83f (clean: update to Node.js 22, remove unnecessary files, add simple deployment guide)
-=======
->>>>>>> parent of dc8a83f (clean: update to Node.js 22, remove unnecessary files, add simple deployment guide)
-=======
->>>>>>> parent of dc8a83f (clean: update to Node.js 22, remove unnecessary files, add simple deployment guide)
-=======
->>>>>>> parent of dc8a83f (clean: update to Node.js 22, remove unnecessary files, add simple deployment guide)
+│   ├── src/
+│   │   ├── components/            # Reusable UI components
+│   │   │   ├── admin/            # Admin dashboard components
+│   │   │   ├── auth/             # Authentication components
+│   │   │   ├── common/           # Shared components (loaders, buttons)
+│   │   │   ├── layout/           # Layout components (navbar, footer)
+│   │   │   └── products/         # Product-related components
+│   │   ├── pages/                # Page components
+│   │   │   ├── admin/           # Admin dashboard pages
+│   │   │   └── auth/            # Authentication pages
+│   │   ├── services/            # API services
+│   │   ├── store/               # Redux store and slices
+│   │   └── utils/               # Utility functions
+│   ├── public/
+│   │   └── images/              # Static assets
+│   └── package.json
+├── server/                         # Node.js/Express Backend
+│   ├── middleware/               # Express middleware
+│   ├── models/                  # MongoDB models
+│   ├── routes/                  # API routes
+│   ├── scripts/                 # Database scripts
+│   ├── server.js               # Server entry point
+│   └── package.json
+├── .github/workflows/             # GitHub Actions CI/CD
+└── README.md                     # This file
 ```
 
-## ☁️ Azure Deployment Guide
+## 🚀 Quick Start - Azure Deployment (10 Steps)
 
 ### Prerequisites
+- [ ] Azure account with active subscription
+- [ ] MongoDB Atlas account (or use Azure Cosmos DB)
+- [ ] GitHub account
+- [ ] Cloudinary account (for image storage)
+- [ ] Stripe account (for payments)
 
-- **Azure Account** with active subscription
-- **GitHub Account** for source code and CI/CD
-- **MongoDB Atlas** database
-- **Node.js 18+** installed locally
+### 1. Prepare Your Database
 
-### 🎯 Deployment Architecture
+**MongoDB Atlas (Recommended)**
+1. Go to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+2. Create a free cluster
+3. Create database user
+4. Whitelist all IPs (0.0.0.0/0) for Azure
+5. Get connection string: `mongodb+srv://username:password@cluster.mongodb.net/capersports`
 
-- **Frontend**: Azure Static Web Apps
-- **Backend**: Azure App Service (Node.js)
-- **Database**: MongoDB Atlas
-- **CI/CD**: GitHub Actions
-
----
-
-## 📋 Step-by-Step Azure Deployment
-
-### 1. Prepare Your Environment
-
-1. **Fork/Clone this repository** to your GitHub account
-
-2. **Set up MongoDB Atlas**:
-   - Create a MongoDB Atlas account
-   - Create a new cluster
-   - Get your connection string
-   - Add your IP to the whitelist
-
-3. **Get required API keys**:
-   - Cloudinary account (for image uploads)
-   - Stripe account (for payments)
-   - Email service credentials
-
-### 2. Deploy Backend to Azure App Service
-
-#### Option A: Using Azure Portal (Recommended)
-
-1. **Create App Service**:
-   - Go to Azure Portal → Create Resource → Web App
-   - Choose **Node.js 18 LTS** runtime
-   - Select your resource group and region
-   - Choose a unique name (e.g., `capersports-backend`)
-
-2. **Configure Deployment**:
-   - Go to **Deployment Center** → **GitHub**
-   - Connect your repository
-   - Select **GitHub Actions** as build provider
-   - Choose your repository and `main` branch
-
-3. **Set Environment Variables**:
-   Go to **Configuration** → **Application Settings** and add:
-   ```
-   NODE_ENV=production
-   PORT=80
-   WEBSITE_PORT=80
-   MONGODB_URI=your_mongodb_atlas_connection_string
-   JWT_SECRET=your_super_secure_jwt_secret
-   JWT_EXPIRE=30d
-   CLOUDINARY_CLOUD_NAME=your_cloudinary_name
-   CLOUDINARY_API_KEY=your_cloudinary_key
-   CLOUDINARY_API_SECRET=your_cloudinary_secret
-   STRIPE_SECRET_KEY=your_stripe_secret_key
-   STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
-   SMTP_HOST=smtp.gmail.com
-   SMTP_PORT=587
-   SMTP_EMAIL=your_email@gmail.com
-   SMTP_PASSWORD=your_email_app_password
-   FRONTEND_URL=https://your-frontend-app.azurestaticapps.net
-   WEBSITES_ENABLE_APP_SERVICE_STORAGE=false
-   WEBSITE_NODE_DEFAULT_VERSION=18.17.0
-   RATE_LIMIT_WINDOW_MS=900000
-   RATE_LIMIT_MAX_REQUESTS=100
-   ```
-
-#### Option B: Using Azure CLI
+### 2. Push Code to GitHub
 
 ```bash
-# Create App Service
-az webapp create \
-  --resource-group your-resource-group \
-  --plan your-app-service-plan \
-  --name capersports-backend \
-  --runtime "NODE|18-lts"
-
-# Configure deployment from GitHub
-az webapp deployment source config \
-  --name capersports-backend \
-  --resource-group your-resource-group \
-  --repo-url https://github.com/yourusername/capersports \
-  --branch main \
-  --manual-integration
+git clone https://github.com/yourusername/capersports-web.git
+cd capersports-web
+git add .
+git commit -m "Initial commit for Azure deployment"
+git push origin main
 ```
 
-### 3. Deploy Frontend to Azure Static Web Apps
+### 3. Create Azure Resource Group
 
-#### Option A: Using Azure Portal (Recommended)
+1. Login to [Azure Portal](https://portal.azure.com)
+2. Click "Resource groups" → "Create"
+3. Name: `capersports-rg`
+4. Region: Choose closest to you
+5. Click "Review + create" → "Create"
 
-1. **Create Static Web App**:
-   - Go to Azure Portal → Create Resource → Static Web App
-   - Connect to your **GitHub repository**
-   - **Build Details**:
-     - App location: `/client`
-     - API location: `` (leave empty)
-     - Output location: `build`
+### 4. Deploy Backend (App Service)
 
-2. **Configure Environment Variables**:
-   Go to **Configuration** and add:
-   ```
-   REACT_APP_API_URL=https://your-backend-app.azurewebsites.net/api
-   REACT_APP_NAME=Caper Sports
-   REACT_APP_VERSION=1.0.0
-   REACT_APP_ENV=production
-   REACT_APP_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
-   ```
+1. Click "Create a resource" → Search "Web App"
+2. Configure:
+   - **Resource group**: `capersports-rg`
+   - **Name**: `capersports-api-YOUR_NAME` (must be unique)
+   - **Runtime**: Node 18 LTS
+   - **OS**: Linux
+   - **Plan**: B1 Basic
+3. Go to "Configuration" → "Application settings" and add:
 
-#### Option B: Using Azure CLI
+```env
+NODE_ENV=production
+PORT=8080
+MONGODB_URI=<your-mongodb-connection-string>
+JWT_SECRET=<generate-random-64-character-string>
+JWT_EXPIRE=30d
+CLOUDINARY_CLOUD_NAME=<your-cloudinary-name>
+CLOUDINARY_API_KEY=<your-cloudinary-key>
+CLOUDINARY_API_SECRET=<your-cloudinary-secret>
+STRIPE_SECRET_KEY=<your-stripe-secret>
+FRONTEND_URL=https://capersports-web-YOUR_NAME.azurestaticapps.net
+CORS_ORIGIN=https://capersports-web-YOUR_NAME.azurestaticapps.net
+```
+
+4. Configure Deployment Center → GitHub → Connect repository
+5. Set Startup Command: `cd server && npm install && node server.js`
+
+### 5. Deploy Frontend (Static Web App)
+
+1. Click "Create a resource" → Search "Static Web App"
+2. Configure:
+   - **Resource group**: `capersports-rg`
+   - **Name**: `capersports-web-YOUR_NAME`
+   - **Source**: GitHub
+   - **Build Presets**: React
+   - **App location**: `/client`
+   - **Output location**: `build`
+3. Add environment variables in Configuration:
+
+```env
+REACT_APP_API_URL=https://capersports-api-YOUR_NAME.azurewebsites.net/api
+REACT_APP_STRIPE_PUBLISHABLE_KEY=<your-stripe-publishable-key>
+REACT_APP_NAME=CaperSports
+REACT_APP_ENV=production
+GENERATE_SOURCEMAP=false
+```
+
+### 6. Verify Deployment
+
+**Test Backend:**
+```bash
+curl https://capersports-api-YOUR_NAME.azurewebsites.net/api/health
+```
+
+**Test Frontend:**
+Open: `https://capersports-web-YOUR_NAME.azurestaticapps.net`
+
+## 🛠️ Local Development
+
+### Installation
 
 ```bash
-az staticwebapp create \
-  --name capersports-frontend \
-  --resource-group your-resource-group \
-  --source https://github.com/yourusername/capersports \
-  --location "Central US" \
-  --branch main \
-  --app-location "/client" \
-  --output-location "build"
+# Clone repository
+git clone https://github.com/yourusername/capersports-web.git
+cd capersports-web
+
+# Install backend dependencies
+cd server
+npm install
+
+# Install frontend dependencies
+cd ../client
+npm install
 ```
 
-### 4. Set up GitHub Actions (Automated)
+### Environment Setup
 
-The repository includes a pre-configured GitHub Actions workflow. You need to add these **GitHub Secrets**:
+**Backend (.env in server folder):**
+```env
+NODE_ENV=development
+PORT=5000
+MONGODB_URI=mongodb://localhost:27017/capersports
+JWT_SECRET=your-super-secure-jwt-secret
+JWT_EXPIRE=30d
+CLOUDINARY_CLOUD_NAME=your-cloudinary-name
+CLOUDINARY_API_KEY=your-cloudinary-key
+CLOUDINARY_API_SECRET=your-cloudinary-secret
+STRIPE_SECRET_KEY=your-stripe-secret-key
+FRONTEND_URL=http://localhost:3000
+CORS_ORIGIN=http://localhost:3000
+```
 
-Go to your GitHub repository → **Settings** → **Secrets and variables** → **Actions**:
+**Frontend (.env in client folder):**
+```env
+REACT_APP_API_URL=http://localhost:5000/api
+REACT_APP_STRIPE_PUBLISHABLE_KEY=your-stripe-publishable-key
+REACT_APP_NAME=CaperSports
+REACT_APP_ENV=development
+```
 
-**Required Secrets:**
-- `AZURE_BACKEND_APP_NAME` - Your App Service name
-- `AZURE_BACKEND_PUBLISH_PROFILE` - Download from Azure Portal → App Service → Get publish profile
-- `AZURE_STATIC_WEB_APPS_API_TOKEN` - Found in Static Web App → Manage deployment token
-- `REACT_APP_API_URL` - Your backend URL (https://your-backend.azurewebsites.net/api)
-- `REACT_APP_STRIPE_PUBLISHABLE_KEY` - Your Stripe publishable key
+### Running the Application
 
-### 5. Update URLs
+```bash
+# Start backend (from server folder)
+cd server
+npm run dev
 
-After deployment, update the URLs in your Azure configuration:
+# Start frontend (from client folder)
+cd client
+npm start
+```
 
-1. **Backend Environment Variables**:
-   - Update `FRONTEND_URL` to your Static Web App URL
+## 🎨 Features
 
-2. **Frontend Environment Variables**:
-   - Update `REACT_APP_API_URL` to your App Service URL
-
----
-
-## 🚀 Local Development
-
-### Quick Start
-
-1. **Clone and install**:
-   ```bash
-   git clone https://github.com/yourusername/capersports.git
-   cd capersports
-   npm run install-all
-   ```
-
-2. **Environment Setup**:
-   ```bash
-   # Copy and configure backend environment
-   cp .env.azure.template .env
-   # Edit .env with your local/development values
-   
-   # Copy and configure frontend environment
-   cp client/.env.azure.template client/.env
-   # Edit client/.env with your values
-   ```
-
-3. **Run the application**:
-   ```bash
-   npm run dev:full
-   ```
-
-### Available Scripts
-
-#### Backend Scripts
-- `npm start` - Start production server
-- `npm run dev` - Start development server with nodemon
-- `npm run seed` - Seed database with sample data
-- `npm run deploy:azure` - Build and start for Azure
-
-#### Frontend Scripts
-- `npm run client` - Start React development server
-- `npm run client:build` - Build React app for production
-- `npm run client:install` - Install client dependencies
-
-#### Full Stack Scripts
-- `npm run install-all` - Install all dependencies
-- `npm run dev:full` - Run both backend and frontend
-- `npm run build:production` - Build frontend and copy to backend
-
----
-
-## 🔧 Features
-
-- **User Authentication** - JWT-based authentication
-- **Product Management** - CRUD operations for products
-- **Shopping Cart** - Add, remove, update cart items
-- **Order Management** - Place and track orders
+### Frontend Features
+- **Modern UI/UX** - Tailwind CSS with Framer Motion animations
+- **Responsive Design** - Mobile-first approach
+- **Premium Navigation** - Animated navigation with smooth transitions
+- **Product Catalog** - Advanced filtering and search
+- **Shopping Cart** - Real-time cart management
+- **User Authentication** - JWT-based auth with protected routes
+- **Admin Dashboard** - Comprehensive admin panel
 - **Payment Integration** - Stripe payment processing
-- **Image Upload** - Cloudinary integration
-- **Email Notifications** - Order confirmations and updates
-- **Admin Dashboard** - Manage products, orders, and users
-- **Responsive Design** - Mobile-friendly UI
+- **Instagram Integration** - Dynamic Instagram feed
+- **Image Management** - Cloudinary integration with fallbacks
+
+### Backend Features
+- **RESTful API** - Express.js with proper error handling
+- **Authentication** - JWT tokens with refresh mechanism
+- **Database** - MongoDB with Mongoose ODM
+- **File Upload** - Cloudinary integration
+- **Email Service** - Nodemailer for notifications
+- **Security** - Helmet, CORS, rate limiting
+- **Admin Features** - User management, product CRUD, order tracking
+
+### Admin Dashboard
+- **Collapsible Sidebar** - Space-efficient navigation
+- **Dashboard Analytics** - Sales, orders, and user metrics
+- **Product Management** - CRUD operations with image upload
+- **Order Management** - Order tracking and status updates
+- **User Management** - Customer data and admin controls
+- **Responsive Design** - Works on all devices
 
 ## 📦 Tech Stack
 
 ### Frontend
-- React 18
-- Redux Toolkit
-- React Router
-- Tailwind CSS
-- Framer Motion
-- Axios
+- **React 18** - Latest React with hooks
+- **Redux Toolkit** - State management
+- **React Router** - Client-side routing
+- **Tailwind CSS** - Utility-first CSS framework
+- **Framer Motion** - Animation library
+- **Axios** - HTTP client
 
 ### Backend
-- Node.js
-- Express.js
-- MongoDB with Mongoose
-- JWT Authentication
-- Cloudinary
-- Stripe
-- Nodemailer
+- **Node.js** - JavaScript runtime
+- **Express.js** - Web framework
+- **MongoDB** - NoSQL database
+- **Mongoose** - MongoDB ODM
+- **JWT** - Authentication tokens
+- **Cloudinary** - Image management
+- **Stripe** - Payment processing
+- **Nodemailer** - Email service
 
-### Azure Services
-- Azure App Service (Backend)
-- Azure Static Web Apps (Frontend)
-- GitHub Actions (CI/CD)
-
----
+### DevOps & Deployment
+- **Azure App Service** - Backend hosting
+- **Azure Static Web Apps** - Frontend hosting
+- **GitHub Actions** - CI/CD pipeline
+- **MongoDB Atlas** - Cloud database
 
 ## 🔐 Security Features
 
-- JWT token authentication
-- Password hashing with bcrypt
-- Rate limiting
-- CORS protection (Azure domains included)
-- Security headers with Helmet
-- Input validation and sanitization
+- **JWT Authentication** - Secure token-based auth
+- **Password Hashing** - bcrypt encryption
+- **Rate Limiting** - API request throttling
+- **CORS Protection** - Cross-origin request security
+- **Input Validation** - Mongoose schema validation
+- **Security Headers** - Helmet.js implementation
+- **Environment Variables** - Secure configuration management
 
 ## 📱 API Endpoints
 
 ### Authentication
-- `POST /api/auth/register` - Register new user
+- `POST /api/auth/register` - User registration
 - `POST /api/auth/login` - User login
 - `GET /api/auth/profile` - Get user profile
+- `PUT /api/auth/profile` - Update user profile
 
 ### Products
-- `GET /api/products` - Get all products
+- `GET /api/products` - Get all products (with filters)
 - `GET /api/products/:id` - Get single product
 - `POST /api/products` - Create product (admin)
 - `PUT /api/products/:id` - Update product (admin)
@@ -346,84 +275,172 @@ After deployment, update the URLs in your Azure configuration:
 - `GET /api/orders` - Get user orders
 - `POST /api/orders` - Create new order
 - `GET /api/orders/:id` - Get single order
+- `PUT /api/orders/:id` - Update order status (admin)
 
----
+### Admin
+- `GET /api/admin/dashboard` - Dashboard statistics
+- `GET /api/admin/users` - Get all users
+- `GET /api/admin/orders` - Get all orders
 
 ## 🚨 Troubleshooting
 
 ### Common Issues
 
-1. **CORS Errors**:
-   - Ensure `FRONTEND_URL` in backend matches your Static Web App URL
-   - Check CORS configuration in `server.js`
+**Backend Not Starting:**
+- Check MongoDB connection string
+- Verify all environment variables are set
+- Check server logs in Azure App Service
 
-2. **Build Failures**:
-   - Verify Node.js version is 18.x in Azure
-   - Check all dependencies are listed in `package.json`
+**CORS Errors:**
+- Ensure `FRONTEND_URL` matches your Static Web App URL
+- Verify CORS configuration in server.js
+- Check both HTTP and HTTPS protocols
 
-3. **Database Connection**:
-   - Verify MongoDB Atlas connection string
-   - Check network access settings in MongoDB Atlas
-   - Ensure IP whitelist includes Azure IPs
+**Build Failures:**
+- Verify Node.js version (18.x)
+- Check all dependencies in package.json
+- Review GitHub Actions logs
 
-4. **Environment Variables**:
-   - Double-check all required variables are set in Azure
-   - Ensure no typos in variable names
+**Database Connection:**
+- Whitelist Azure IPs in MongoDB Atlas
+- Test connection string format
+- Check network access settings
 
 ### Debug Commands
 
 ```bash
 # Check Azure App Service logs
-az webapp log tail --name your-app-name --resource-group your-rg
+az webapp log tail --name capersports-api --resource-group capersports-rg
 
 # Test API health
 curl https://your-backend.azurewebsites.net/api/health
 
-# Check Static Web App
-curl https://your-frontend.azurestaticapps.net
+# Local development debug
+npm run dev # Backend with nodemon
+npm start   # Frontend with hot reload
 ```
 
----
+## 🎯 Instagram Integration
 
-## 📝 Post-Deployment Checklist
+The website includes a dynamic Instagram feed that fetches the latest posts from `@caper_sports9`.
 
-- [ ] Backend API health check responds
-- [ ] Frontend loads correctly
-- [ ] User registration works
-- [ ] User login works
-- [ ] Product listings load
-- [ ] Shopping cart functions
-- [ ] Order placement works
-- [ ] Payment processing works (Stripe)
-- [ ] Email notifications send
-- [ ] Admin dashboard accessible
-- [ ] Image uploads work (Cloudinary)
-- [ ] All environment variables configured
-- [ ] CORS properly configured
-- [ ] SSL certificates active
+### Setup Instagram API (Optional)
 
----
+1. Create Facebook Developer App
+2. Add Instagram Basic Display product
+3. Generate long-lived access token
+4. Add to environment variables:
+   ```env
+   REACT_APP_INSTAGRAM_ACCESS_TOKEN=your_token_here
+   ```
 
-## 🎉 Your App is Live!
+### Fallback System
+When Instagram API is not configured, the system uses curated fallback posts that match your brand style.
 
-After successful deployment:
+## 📊 Performance Optimizations
 
-- **Frontend**: `https://your-frontend-app.azurestaticapps.net`
-- **Backend API**: `https://your-backend-app.azurewebsites.net/api`
-- **Health Check**: `https://your-backend-app.azurewebsites.net/api/health`
+### Frontend
+- **Code Splitting** - Lazy loading of components
+- **Image Optimization** - Cloudinary transformations
+- **Caching** - Redux persist for state
+- **Bundle Analysis** - Webpack bundle optimization
+
+### Backend
+- **Database Indexing** - MongoDB indexes for queries
+- **Compression** - Gzip compression enabled
+- **Caching** - Response caching for static data
+- **Connection Pooling** - MongoDB connection optimization
+
+## 🔄 CI/CD Pipeline
+
+### GitHub Actions Workflow
+- **Automated Testing** - Run tests on push
+- **Build Process** - Compile and optimize code
+- **Deployment** - Deploy to Azure on successful build
+- **Environment Management** - Separate staging and production
+
+### Deployment Triggers
+- **Backend** - Deploys on changes to `/server` folder
+- **Frontend** - Deploys on changes to `/client` folder
+- **Manual Deploy** - Can be triggered manually from GitHub
+
+## 💰 Cost Estimation
+
+### Development/Testing
+- **Static Web App**: Free (100GB bandwidth/month)
+- **App Service**: ~$13/month (B1 Basic)
+- **MongoDB Atlas**: Free (512MB storage)
+- **Total**: ~$13/month
+
+### Production
+- **Static Web App**: Free
+- **App Service**: ~$55/month (S1 Standard)
+- **Azure Cosmos DB**: ~$24/month (Serverless)
+- **Total**: ~$79/month
+
+## 📈 Monitoring & Analytics
+
+### Application Insights
+- **Performance Monitoring** - Response times and throughput
+- **Error Tracking** - Exception logging and alerts
+- **User Analytics** - Page views and user behavior
+- **Custom Events** - Business metric tracking
+
+### Alerts Configuration
+- **CPU Usage** - Alert when >80% for 5 minutes
+- **Memory Usage** - Alert when >85% for 5 minutes
+- **Response Time** - Alert when >2 seconds
+- **Error Rate** - Alert when >5% error rate
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
+
+### Development Guidelines
+- Follow ESLint configuration
+- Write unit tests for new features
+- Update documentation for API changes
+- Use conventional commit messages
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+### Documentation
+- **Detailed Deployment Guide** - Step-by-step Azure deployment
+- **API Documentation** - Complete endpoint reference
+- **Component Library** - Frontend component documentation
+
+### Community Support
+- **GitHub Issues** - Bug reports and feature requests
+- **Stack Overflow** - Tag questions with `capersports`
+- **Azure Support** - Azure-specific deployment issues
+
+### Professional Support
+For enterprise support and custom development:
+- Email: support@capersports.com
+- Website: https://capersports.com
 
 ---
 
-**🚀 Built with ❤️ using React, Node.js, Express, MongoDB and deployed on Microsoft Azure**
+## 🎉 Acknowledgments
+
+Built with ❤️ using:
+- **React** - Facebook's UI library
+- **Node.js** - JavaScript runtime
+- **MongoDB** - Modern database
+- **Azure** - Microsoft's cloud platform
+- **Stripe** - Payment processing
+- **Cloudinary** - Image management
+
+**Status**: 🚀 Production Ready | ⚡ High Performance | 🔒 Secure | 📱 Mobile First
+
+---
+
+**© 2024 Caper Sports. All rights reserved.**

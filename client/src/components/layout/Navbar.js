@@ -98,10 +98,10 @@ const Navbar = () => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-2xl border-b border-gray-100/50">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 2xl:px-20">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <div className="flex items-center">
+          <div className="flex items-center min-w-0 flex-shrink-0">
             <Link to="/" className="flex items-center space-x-4 group">
               <motion.div
                 className="flex items-center space-x-4"
@@ -147,33 +147,107 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Navigation - Centered */}
-          <div className="hidden lg:flex items-center space-x-8">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`relative text-sm font-medium transition-all duration-200 group ${
-                  location.pathname === item.href
-                    ? 'text-gray-900'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <span className="relative z-10">{item.name}</span>
-                {location.pathname === item.href && (
+          <div className="hidden lg:flex items-center space-x-12 flex-1 justify-center">
+            {navigation.map((item) => {
+              const isActive = location.pathname === item.href;
+              return (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className="relative group"
+                >
                   <motion.div
-                    layoutId="activeTab"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-900 rounded-full"
-                    initial={false}
-                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                  />
-                )}
-              </Link>
-            ))}
+                    className={`relative px-4 py-2 text-sm font-semibold transition-all duration-300 ${
+                      isActive
+                        ? 'text-white'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                    whileHover={{ y: -2 }}
+                    whileTap={{ y: 0 }}
+                  >
+                    {/* Premium Background for Active State */}
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeNavBg"
+                        className="absolute inset-0 bg-gradient-to-r from-red-600 via-red-700 to-blue-700 rounded-2xl shadow-lg"
+                        initial={false}
+                        transition={{ 
+                          type: "spring", 
+                          stiffness: 400, 
+                          damping: 30,
+                          duration: 0.3
+                        }}
+                      />
+                    )}
+                    
+                    {/* Hover Background */}
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      initial={false}
+                    />
+                    
+                    {/* Text */}
+                    <span className="relative z-10 tracking-wide">
+                      {item.name}
+                    </span>
+                    
+                    {/* Premium Glow Effect for Active */}
+                    {isActive && (
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-r from-red-600 via-red-700 to-blue-700 rounded-2xl blur-lg opacity-30"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 0.3 }}
+                        transition={{ duration: 0.5 }}
+                      />
+                    )}
+                    
+                    {/* Hover Indicator Line */}
+                    {!isActive && (
+                      <motion.div
+                        className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-red-600 to-blue-700 rounded-full group-hover:w-full group-hover:left-0 transition-all duration-300"
+                        initial={false}
+                      />
+                    )}
+                    
+                    {/* Premium Sparkle Effect for Active */}
+                    {isActive && (
+                      <>
+                        <motion.div
+                          className="absolute top-1 right-1 w-1 h-1 bg-white rounded-full"
+                          animate={{
+                            scale: [1, 1.5, 1],
+                            opacity: [0.5, 1, 0.5]
+                          }}
+                          transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                          }}
+                        />
+                        <motion.div
+                          className="absolute bottom-1 left-1 w-0.5 h-0.5 bg-white rounded-full"
+                          animate={{
+                            scale: [1, 2, 1],
+                            opacity: [0.3, 0.8, 0.3]
+                          }}
+                          transition={{
+                            duration: 3,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                            delay: 0.5
+                          }}
+                        />
+                      </>
+                    )}
+                  </motion.div>
+                </Link>
+              );
+            })}
           </div>
 
           {/* Right Side Actions */}
-          <div className="flex items-center space-x-4">
-            {/* Search */}
+          <div className="flex items-center space-x-4 min-w-0 flex-shrink-0">
+            {/* Search - Expanded */}
             <div className="hidden md:flex items-center">
               <form onSubmit={handleSearch} className="relative group">
                 <motion.div 
@@ -193,9 +267,9 @@ const Navbar = () => {
                     placeholder="Search products..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-80 pl-12 pr-6 py-3 text-sm bg-transparent border-0 rounded-full focus:outline-none placeholder-gray-400 text-gray-900 font-medium focus:placeholder-gray-300 transition-all duration-300"
+                    className="w-96 xl:w-[28rem] pl-12 pr-6 py-3 text-sm bg-transparent border-0 rounded-full focus:outline-none placeholder-gray-400 text-gray-900 font-medium focus:placeholder-gray-300 transition-all duration-300"
                     whileFocus={{ 
-                      width: "22rem"
+                      width: "30rem"
                     }}
                     transition={{ type: "spring", stiffness: 300, damping: 25 }}
                   />
@@ -370,7 +444,7 @@ const Navbar = () => {
             exit={{ opacity: 0, height: 0 }}
             className="lg:hidden bg-white/95 backdrop-blur-xl border-t border-gray-100/50"
           >
-            <div className="px-6 py-6 space-y-4">
+            <div className="px-4 sm:px-6 lg:px-12 xl:px-16 2xl:px-20 py-6 space-y-4">
               {/* Mobile Search */}
               <form onSubmit={handleSearch} className="relative group">
                 <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
@@ -390,19 +464,52 @@ const Navbar = () => {
               </form>
 
               {/* Mobile Navigation */}
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`block py-3 text-base font-medium transition-colors duration-200 ${
-                    location.pathname === item.href
-                      ? 'text-gray-900'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  {item.name}
-                </Link>
-              ))}
+              <div className="space-y-2">
+                {navigation.map((item) => {
+                  const isActive = location.pathname === item.href;
+                  return (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className="relative block group"
+                    >
+                      <motion.div
+                        className={`relative px-4 py-3 text-base font-semibold rounded-2xl transition-all duration-300 ${
+                          isActive
+                            ? 'text-white bg-gradient-to-r from-red-600 via-red-700 to-blue-700 shadow-lg'
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                        }`}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        {/* Text */}
+                        <span className="relative z-10 tracking-wide">
+                          {item.name}
+                        </span>
+                        
+                        {/* Premium Glow Effect for Active */}
+                        {isActive && (
+                          <motion.div
+                            className="absolute inset-0 bg-gradient-to-r from-red-600 via-red-700 to-blue-700 rounded-2xl blur-lg opacity-20"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 0.2 }}
+                            transition={{ duration: 0.5 }}
+                          />
+                        )}
+                        
+                        {/* Active Indicator */}
+                        {isActive && (
+                          <motion.div
+                            className="absolute left-2 top-1/2 transform -translate-y-1/2 w-1 h-6 bg-white rounded-full"
+                            initial={{ scaleY: 0 }}
+                            animate={{ scaleY: 1 }}
+                            transition={{ duration: 0.3 }}
+                          />
+                        )}
+                      </motion.div>
+                    </Link>
+                  );
+                })}
+              </div>
               
               {!isAuthenticated && (
                 <div className="pt-4 border-t border-gray-200 space-y-3">
