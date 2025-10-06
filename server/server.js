@@ -144,6 +144,51 @@ app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/admin/invoices', invoiceRoutes);
 
+// Health check endpoint with detailed diagnostics
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    azure: {
+      configured: isAzureConfigured,
+      cosmosConnected: azureCosmosService ? 'initialized' : 'not initialized',
+      blobConnected: azureBlobService ? 'initialized' : 'not initialized',
+      environmentVariables: {
+        hasCosmosConnectionString: !!process.env.AZURE_COSMOS_CONNECTION_STRING,
+        hasStorageConnectionString: !!process.env.AZURE_STORAGE_CONNECTION_STRING,
+        hasDatabaseName: !!process.env.AZURE_COSMOS_DATABASE_NAME
+      }
+    },
+    mongodb: {
+      configured: !isAzureConfigured,
+      connected: mongoose.connection.readyState === 1 ? 'connected' : 'not connected'
+    }
+  });
+});
+
+// Diagnostic endpoint for debugging
+app.get('/api/debug', (req, res) => {
+  res.status(200).json({
+    server: 'server.js (Azure-compatible)',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    isAzureConfigured,
+    services: {
+      azureCosmosService: !!azureCosmosService,
+      azureBlobService: !!azureBlobService,
+      cloudinary: !!cloudinary
+    },
+    environmentVariables: {
+      PORT: process.env.PORT,
+      NODE_ENV: process.env.NODE_ENV,
+      AZURE_COSMOS_CONNECTION_STRING: process.env.AZURE_COSMOS_CONNECTION_STRING ? 'SET' : 'NOT SET',
+      AZURE_STORAGE_CONNECTION_STRING: process.env.AZURE_STORAGE_CONNECTION_STRING ? 'SET' : 'NOT SET',
+      AZURE_COSMOS_DATABASE_NAME: process.env.AZURE_COSMOS_DATABASE_NAME || 'NOT SET'
+    }
+  });
+});
+
 // Health check endpoint
 app.get('/api/health', async (req, res) => {
   try {
