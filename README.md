@@ -42,16 +42,32 @@ capersports-web/
 └── README.md                     # This file
 ```
 
-## 🚨 Azure Deployment Issue? Start Here!
+## 🚨 Azure Deployment Issues? Start Here!
 
-**Error: "URI must include hostname, domain name, and tld"?**
+### Issue 1: "Failed to deploy web package" (OneDeploy Error)
 
-This means your Azure Cosmos DB connection string is not properly configured in Azure App Service.
+**Fixed!** The GitHub Actions workflow has been updated with the correct deployment structure.
 
-### Quick Fix (Automated)
-
+**What to do**:
 ```bash
-# Run the automated fix script
+# Commit and push the fixes
+git add .
+git commit -m "Fix Azure deployment structure"
+git push origin main
+```
+
+GitHub Actions will automatically deploy with the correct structure.
+
+📖 **Details**: See [AZURE_DEPLOYMENT_FIX.md](./AZURE_DEPLOYMENT_FIX.md)
+
+---
+
+### Issue 2: "URI must include hostname, domain name, and tld"
+
+This means your Azure Cosmos DB connection string is not properly configured.
+
+**Quick Fix (Automated)**:
+```bash
 ./fix-azure-env.sh
 ```
 
@@ -61,15 +77,17 @@ This script will:
 3. ✅ Restart your application
 4. ✅ Verify the configuration
 
-### Manual Fix
-
+**Manual Fix**:
 1. **Get Connection String**: Azure Portal → Cosmos DB → Connection strings → Copy "Primary Connection String"
 2. **Set in App Service**: Azure Portal → App Service → Configuration → New application setting
    - Name: `AZURE_COSMOS_CONNECTION_STRING`
    - Value: (paste the connection string)
 3. **Save and Restart**: Click Save → Restart
 
-📖 **Full troubleshooting guide**: See [AZURE_DEPLOYMENT_TROUBLESHOOTING.md](./AZURE_DEPLOYMENT_TROUBLESHOOTING.md)
+📖 **Full guides**:
+- [AZURE_DEPLOYMENT_FIX.md](./AZURE_DEPLOYMENT_FIX.md) - Deployment issues
+- [AZURE_DEPLOYMENT_TROUBLESHOOTING.md](./AZURE_DEPLOYMENT_TROUBLESHOOTING.md) - Connection issues
+- [AZURE_PORTAL_FIX.md](./AZURE_PORTAL_FIX.md) - Quick portal fix
 
 ---
 
