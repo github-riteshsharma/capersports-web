@@ -1,3 +1,30 @@
+2025-10-06T04:33:11.2824186Z ❌ Error connecting to Azure Cosmos DB: MongoAPIError: URI must include hostname, domain name, and tld
+2025-10-06T04:33:11.2826819Z     at resolveSRVRecord (/home/site/wwwroot/server/node_modules/mongodb/lib/connection_string.js:37:15)
+2025-10-06T04:33:11.2826921Z     at MongoClient._connect (/home/site/wwwroot/server/node_modules/mongodb/lib/mongo_client.js:143:74)
+2025-10-06T04:33:11.2826953Z     at MongoClient.connect (/home/site/wwwroot/server/node_modules/mongodb/lib/mongo_client.js:122:40)
+2025-10-06T04:33:11.2826977Z     at AzureCosmosService.connect (/home/site/wwwroot/server/services/azureCosmosService.js:36:25)
+2025-10-06T04:33:11.2827Z     at initializeDatabase (/home/site/wwwroot/server/server.js:112:32)
+2025-10-06T04:33:11.2827026Z     at startServer (/home/site/wwwroot/server/server.js:321:11)
+2025-10-06T04:33:11.2827052Z     at Object.<anonymous> (/home/site/wwwroot/server/server.js:337:1)
+2025-10-06T04:33:11.2827186Z     at Module._compile (node:internal/modules/cjs/loader:1529:14)
+2025-10-06T04:33:11.2827211Z     at Module._extensions..js (node:internal/modules/cjs/loader:1613:10)
+2025-10-06T04:33:11.2827235Z     at Module.load (node:internal/modules/cjs/loader:1275:32) {
+2025-10-06T04:33:11.2827259Z   [Symbol(errorLabels)]: Set(0) {}
+2025-10-06T04:33:11.2827282Z }
+2025-10-06T04:33:11.2827471Z ❌ Azure initialization error: MongoAPIError: URI must include hostname, domain name, and tld
+2025-10-06T04:33:11.2827511Z     at resolveSRVRecord (/home/site/wwwroot/server/node_modules/mongodb/lib/connection_string.js:37:15)
+2025-10-06T04:33:11.2827538Z     at MongoClient._connect (/home/site/wwwroot/server/node_modules/mongodb/lib/mongo_client.js:143:74)
+2025-10-06T04:33:11.2827566Z     at MongoClient.connect (/home/site/wwwroot/server/node_modules/mongodb/lib/mongo_client.js:122:40)
+2025-10-06T04:33:11.282759Z     at AzureCosmosService.connect (/home/site/wwwroot/server/services/azureCosmosService.js:36:25)
+2025-10-06T04:33:11.2827679Z     at initializeDatabase (/home/site/wwwroot/server/server.js:112:32)
+2025-10-06T04:33:11.2827698Z     at startServer (/home/site/wwwroot/server/server.js:321:11)
+2025-10-06T04:33:11.2827716Z     at Object.<anonymous> (/home/site/wwwroot/server/server.js:337:1)
+2025-10-06T04:33:11.2827732Z     at Module._compile (node:internal/modules/cjs/loader:1529:14)
+2025-10-06T04:33:11.2827749Z     at Module._extensions..js (node:internal/modules/cjs/loader:1613:10)
+2025-10-06T04:33:11.2827765Z     at Module.load (node:internal/modules/cjs/loader:1275:32) {
+2025-10-06T04:33:11.2827782Z   [Symbol(errorLabels)]: Set(0) {}
+2025-10-06T04:33:11.2827797Z }
+
 # Caper Sports - Premium Athletic Wear E-commerce Platform
 
 A full-stack MERN e-commerce platform for premium sports clothing, featuring modern UI/UX, admin dashboard, payment processing, and cloud deployment ready for Azure.
