@@ -6,11 +6,63 @@ class AzureCosmosService {
     this.databaseName = process.env.AZURE_COSMOS_DATABASE_NAME || 'capersports';
     
     if (!this.connectionString) {
-      throw new Error('Azure Cosmos DB connection string is required');
+      throw new Error('Azure Cosmos DB connection string is required. Please set AZURE_COSMOS_CONNECTION_STRING environment variable.');
     }
+    
+    // Validate connection string format
+    this.validateConnectionString();
     
     this.client = null;
     this.db = null;
+  }
+
+  /**
+   * Validate connection string format
+   */
+  validateConnectionString() {
+    const connStr = this.connectionString;
+    
+    // Check if it's empty or just whitespace
+    if (!connStr || connStr.trim() === '') {
+      throw new Error('Azure Cosmos DB connection string is empty');
+    }
+    
+    // Check if it starts with valid MongoDB URI schemes
+    const validSchemes = ['mongodb://', 'mongodb+srv://'];
+    const hasValidScheme = validSchemes.some(scheme => connStr.startsWith(scheme));
+    
+    if (!hasValidScheme) {
+      throw new Error(
+        `Invalid connection string format. Must start with 'mongodb://' or 'mongodb+srv://'. ` +
+        `Current value starts with: '${connStr.substring(0, 20)}...'`
+      );
+    }
+    
+    // Check for hostname (basic validation)
+    // Format: mongodb://[username:password@]host[:port][/database][?options]
+    // or mongodb+srv://[username:password@]host[/database][?options]
+    const uriPattern = /^mongodb(\+srv)?:\/\/([^:@]+:[^@]+@)?([a-zA-Z0-9.-]+)/;
+    const match = connStr.match(uriPattern);
+    
+    if (!match || !match[3]) {
+      throw new Error(
+        'Connection string is missing hostname/domain. ' +
+        'Expected format: mongodb://username:password@hostname.domain.com:port/... ' +
+        'or mongodb+srv://username:password@hostname.domain.com/...'
+      );
+    }
+    
+    const hostname = match[3];
+    
+    // Check if hostname contains at least one dot (domain.tld)
+    if (!hostname.includes('.')) {
+      throw new Error(
+        `Connection string hostname '${hostname}' is invalid. ` +
+        'It must include domain name and TLD (e.g., example.cosmos.azure.com)'
+      );
+    }
+    
+    console.log(`✅ Connection string validation passed for host: ${hostname}`);
   }
 
   /**

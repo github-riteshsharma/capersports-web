@@ -109,6 +109,11 @@ async function initializeDatabase() {
     // Initialize Azure Cosmos DB
     try {
       console.log('🔵 Connecting to Azure Cosmos DB...');
+      console.log('🔍 Environment check:');
+      console.log(`   - AZURE_COSMOS_CONNECTION_STRING: ${process.env.AZURE_COSMOS_CONNECTION_STRING ? 'SET (length: ' + process.env.AZURE_COSMOS_CONNECTION_STRING.length + ')' : 'NOT SET'}`);
+      console.log(`   - AZURE_COSMOS_DATABASE_NAME: ${process.env.AZURE_COSMOS_DATABASE_NAME || 'NOT SET (using default: capersports)'}`);
+      console.log(`   - AZURE_STORAGE_CONNECTION_STRING: ${process.env.AZURE_STORAGE_CONNECTION_STRING ? 'SET' : 'NOT SET'}`);
+      
       await azureCosmosService.connect();
       
       // Initialize blob storage containers
@@ -118,6 +123,11 @@ async function initializeDatabase() {
       console.log('✅ Azure services initialized successfully');
     } catch (error) {
       console.error('❌ Azure initialization error:', error);
+      console.error('💡 Troubleshooting tips:');
+      console.error('   1. Check that AZURE_COSMOS_CONNECTION_STRING is set in Azure App Service Configuration');
+      console.error('   2. Verify the connection string format: mongodb://... or mongodb+srv://...');
+      console.error('   3. Ensure the connection string includes: username:password@hostname.domain.com');
+      console.error('   4. Get the correct connection string from: Azure Portal → Cosmos DB → Connection strings');
       process.exit(1);
     }
   } else {
