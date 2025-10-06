@@ -90,20 +90,20 @@ const ProductCard = ({ product, className = '' }) => {
 
     for (let i = 0; i < fullStars; i++) {
       stars.push(
-        <FiStar key={i} className="text-yellow-400 fill-current" size={14} />
+        <FiStar key={i} className="text-yellow-500 fill-yellow-500" size={16} />
       );
     }
 
     if (hasHalfStar) {
       stars.push(
-        <FiStar key="half" className="text-yellow-400 fill-current opacity-50" size={14} />
+        <FiStar key="half" className="text-yellow-500 fill-yellow-500 opacity-50" size={16} />
       );
     }
 
     const emptyStars = 5 - Math.ceil(rating);
     for (let i = 0; i < emptyStars; i++) {
       stars.push(
-        <FiStar key={`empty-${i}`} className="text-gray-300" size={14} />
+        <FiStar key={`empty-${i}`} className="text-gray-300" size={16} />
       );
     }
 
@@ -220,16 +220,19 @@ const ProductCard = ({ product, className = '' }) => {
             />
           </div>
           
-          {/* Sale Indicator - Top Left */}
-          {discountPercentage > 0 && (
-            <div className="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 rounded-md text-xs font-bold">
-              SALE
+          {/* Rating Badge - Top Right Corner on Image */}
+          {(product.ratings?.average || product.rating) > 0 && (
+            <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-white/95 backdrop-blur-md rounded-full pl-2.5 pr-3 py-1.5 shadow-lg border border-white/50">
+              <FiStar className="w-4 h-4 text-amber-500 fill-amber-500" strokeWidth={2} />
+              <span className="text-sm font-semibold text-gray-900">
+                {(product.ratings?.average || product.rating).toFixed(1)}
+              </span>
             </div>
           )}
           
-          {/* Discount Badge - Top Right */}
+          {/* Discount Badge - Top Left */}
           {discountPercentage > 0 && (
-            <div className="absolute top-3 right-3 bg-red-500 text-white px-2 py-1 rounded-md text-xs font-semibold">
+            <div className="absolute top-3 left-3 bg-red-500 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold shadow-lg">
               -{discountPercentage}%
             </div>
           )}
@@ -260,61 +263,55 @@ const ProductCard = ({ product, className = '' }) => {
         </div>
       </div>
 
-            {/* Product Info - Transparent Background */}
-            <div className={`${isListView ? 'flex-1 p-4 sm:p-6 flex flex-col justify-between' : 'p-3 sm:p-4 flex-1 flex flex-col'} bg-transparent`}>
+            {/* Product Info - Apple-Style Minimalist Design */}
+            <div className={`${isListView ? 'flex-1 p-5 sm:p-6 flex flex-col justify-between' : 'p-5 sm:p-6 flex-1 flex flex-col'} bg-transparent`}>
         
-        {/* Product Name */}
+        {/* Product Name - Bold & Clean */}
         <Link to={`/products/${product._id}`} className="block group/link mb-2">
-          <h3 className="text-sm sm:text-base lg:text-lg font-semibold text-gray-900 leading-tight group-hover/link:text-gray-700 transition-colors duration-200 line-clamp-2">
+          <h3 className="text-[15px] sm:text-base font-medium text-gray-900 leading-tight group-hover/link:text-gray-600 transition-colors duration-200 line-clamp-2 tracking-tight">
             {product.name}
           </h3>
         </Link>
         
-        {/* Rating - Always Show */}
-        <div className="flex items-center space-x-1 mb-2 sm:mb-3">
-          <div className="flex items-center">
-            {/* Use ratings.average first, then fallback to rating */}
-            {(product.ratings?.average || product.rating) ? renderStars(product.ratings?.average || product.rating) : renderStars(0)}
-          </div>
-          <span className="text-xs sm:text-sm text-gray-500 ml-1">
-            {(product.ratings?.average || product.rating) ? `${(product.ratings?.average || product.rating).toFixed(1)}/5` : '0.0/5'}
-          </span>
-          {/* Use ratings.count first, then fallback to numReviews */}
-          {(product.ratings?.count || product.numReviews) > 0 && (
-            <span className="text-xs sm:text-sm text-gray-400">
-              ({product.ratings?.count || product.numReviews})
-            </span>
-          )}
-        </div>
-        
-        {/* Price Section */}
-        <div className="flex flex-wrap items-center gap-1 sm:gap-2 mt-auto">
-          <span className="text-base sm:text-lg lg:text-xl font-bold text-gray-900">
-            ₹{(product.salePrice || product.price)?.toLocaleString()}
-          </span>
-          {product.salePrice && product.price > product.salePrice && (
-            <>
-              <span className="text-sm sm:text-base text-gray-400 line-through">
-                ₹{product.price?.toLocaleString()}
-              </span>
-              <div className="bg-red-100 text-red-600 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md text-xs font-bold">
-                -{Math.round(((product.price - product.salePrice) / product.price) * 100)}% OFF
-              </div>
-            </>
-          )}
-        </div>
-        
-        {/* Sale Price Indicator */}
-        {product.originalPrice && product.originalPrice > product.price && (
-          <div className="mt-1 sm:mt-2 text-xs sm:text-sm">
-            <span className="text-red-600 font-semibold">
-              You save ₹{(product.originalPrice - product.price).toLocaleString()}
-            </span>
-            <span className="text-gray-500 ml-1">
-              ({discountPercentage}% off)
-            </span>
-          </div>
+        {/* Category - Subtle Text */}
+        {product.category && (
+          <p className="text-xs text-gray-500 mb-4 tracking-wide">
+            {product.category}
+          </p>
         )}
+        
+        {/* Price Section - Apple Typography */}
+        <div className="mt-auto space-y-1">
+          {/* Current Price */}
+          <div className="flex items-baseline gap-2">
+            <span className="text-lg sm:text-xl font-semibold text-gray-900 tracking-tight">
+              ₹{(product.salePrice || product.price)?.toLocaleString()}
+            </span>
+            
+            {/* Original Price & Discount Badge */}
+            {product.salePrice && product.price > product.salePrice && (
+              <>
+                <span className="text-sm text-gray-400 line-through font-normal">
+                  ₹{product.price?.toLocaleString()}
+                </span>
+              </>
+            )}
+          </div>
+          
+          {/* Discount Percentage - Eye-catching */}
+          {product.salePrice && product.price > product.salePrice && (
+            <p className="text-xs text-red-600 font-medium">
+              {Math.round(((product.price - product.salePrice) / product.price) * 100)}% off
+            </p>
+          )}
+          
+          {/* Original Price Savings */}
+          {product.originalPrice && product.originalPrice > product.price && !product.salePrice && (
+            <p className="text-xs text-red-600 font-medium">
+              Save ₹{(product.originalPrice - product.price).toLocaleString()}
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Hover Actions */}
@@ -325,7 +322,7 @@ const ProductCard = ({ product, className = '' }) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
             transition={{ duration: 0.2 }}
-                   className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-200 p-3 sm:p-4 rounded-b-2xl"
+                   className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md p-3 sm:p-4 rounded-b-2xl shadow-lg"
           >
             {/* Size Selection */}
             {product.sizes && product.sizes.length > 0 && (

@@ -177,7 +177,8 @@ const AdminProducts = () => {
       isOnSale: product.isOnSale || false,
       sizes: product.sizes?.map(s => s.size || s) || []
     });
-    // Set existing images if any
+    
+    // Set existing general images if any
     if (product.images && product.images.length > 0) {
       const existingImages = product.images.map((imageUrl, index) => ({
         preview: imageUrl,
@@ -186,7 +187,28 @@ const AdminProducts = () => {
         existing: true
       }));
       setSelectedImages(existingImages);
+    } else {
+      setSelectedImages([]);
     }
+    
+    // Set existing color-specific images if any
+    if (product.colors && product.colors.length > 0) {
+      const existingColorImages = {};
+      product.colors.forEach(color => {
+        if (color.images && color.images.length > 0) {
+          existingColorImages[color.name] = color.images.map((imageUrl, index) => ({
+            preview: imageUrl,
+            name: `existing-color-image-${color.name}-${index}`,
+            size: 0,
+            existing: true
+          }));
+        }
+      });
+      setColorImages(existingColorImages);
+    } else {
+      setColorImages({});
+    }
+    
     setShowProductModal(true);
   };
 
@@ -385,13 +407,21 @@ const AdminProducts = () => {
     }
     
     // Validate images (either general images or color-specific images)
+    // For new products, images are required; for updates, existing images are allowed
     const hasGeneralImages = selectedImages && selectedImages.length > 0;
     const hasColorImages = Object.keys(colorImages).some(color => 
       colorImages[color] && colorImages[color].length > 0
     );
     
-    if (!hasGeneralImages && !hasColorImages) {
+    // Only validate images for new products
+    if (!editingProduct && !hasGeneralImages && !hasColorImages) {
       toast.error('Please select at least one image (general or color-specific)');
+      return;
+    }
+    
+    // For updates, check if at least existing images are present
+    if (editingProduct && !hasGeneralImages && !hasColorImages) {
+      toast.error('Product must have at least one image');
       return;
     }
     

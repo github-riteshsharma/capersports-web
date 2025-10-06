@@ -47,70 +47,68 @@ const AdminDashboard = () => {
     dispatch(getDashboardData());
   }, [dispatch]);
 
-  // E-commerce focused data for Caper Sports
-  const dashboardData = {
-    totalProducts: 156,
-    totalUsers: 1234,
-    totalOrders: 89,
-    totalRevenue: 125000,
-    recentOrders: [
-      {
-        id: 'ORD-001',
-        customer: 'John Smith',
-        product: 'Premium Running Shoes',
-        amount: 4999,
-        status: 'Processing',
-        date: '2025-01-10',
-        avatar: 'JS'
-      },
-      {
-        id: 'ORD-002',
-        customer: 'Sarah Johnson',
-        product: 'Athletic Performance T-Shirt',
-        amount: 1299,
-        status: 'Shipped',
-        date: '2025-01-10',
-        avatar: 'SJ'
-      },
-      {
-        id: 'ORD-003',
-        customer: 'Mike Wilson',
-        product: 'Training Shorts',
-        amount: 2499,
-        status: 'Delivered',
-        date: '2025-01-09',
-        avatar: 'MW'
-      },
-      {
-        id: 'ORD-004',
-        customer: 'Emma Davis',
-        product: 'Compression Leggings',
-        amount: 3299,
-        status: 'Pending',
-        date: '2025-01-09',
-        avatar: 'ED'
-      }
-    ],
-    topProducts: [
-      { id: 1, name: 'Premium Running Shoes', sales: 45, revenue: 224550, trend: 'up' },
-      { id: 2, name: 'Athletic Performance T-Shirt', sales: 38, revenue: 49362, trend: 'up' },
-      { id: 3, name: 'Training Shorts', sales: 32, revenue: 31968, trend: 'down' },
-      { id: 4, name: 'Compression Leggings', sales: 28, revenue: 64372, trend: 'up' },
-      { id: 5, name: 'Performance Hoodie', sales: 25, revenue: 87475, trend: 'up' }
-    ],
-    salesData: {
-      thisMonth: [12, 19, 15, 27, 32, 25, 18, 22, 28, 35, 30, 42],
-      lastMonth: [8, 15, 12, 20, 25, 18, 14, 18, 22, 28, 24, 35]
-    },
-    lowStockProducts: [
-      { id: 1, name: 'Premium Running Shoes', stock: 5, threshold: 10 },
-      { id: 2, name: 'Sports Bra', stock: 3, threshold: 10 },
-      { id: 3, name: 'Training Shorts', stock: 7, threshold: 10 }
-    ]
+  // Helper function to get user initials
+  const getUserInitials = (name) => {
+    if (!name) return 'U';
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
   };
 
-  // Use dashboard data from store or fallback to mock data
-  const data = dashboard.totalProducts ? dashboard : dashboardData;
+  // Format order data from API
+  const formatOrders = (orders) => {
+    if (!orders || !Array.isArray(orders)) return [];
+    
+    return orders.map(order => ({
+      id: order.orderId || order._id,
+      customer: order.shippingAddress?.name || order.user?.name || 'Unknown',
+      product: order.items?.[0]?.product?.name || order.items?.[0]?.name || 'Multiple Items',
+      amount: order.totalAmount || order.total || 0,
+      status: order.status || 'Pending',
+      date: order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-IN') : 'N/A',
+      avatar: getUserInitials(order.shippingAddress?.name || order.user?.name)
+    }));
+  };
+
+  // Format top products data from API
+  const formatTopProducts = (products) => {
+    if (!products || !Array.isArray(products)) return [];
+    
+    return products.map(product => ({
+      id: product._id || product.id,
+      name: product.name || 'Unknown Product',
+      sales: product.totalSales || product.sales || 0,
+      revenue: product.totalRevenue || product.revenue || 0,
+      trend: product.trend || 'up'
+    }));
+  };
+
+  // Format low stock products from API
+  const formatLowStockProducts = (products) => {
+    if (!products || !Array.isArray(products)) return [];
+    
+    return products.map(product => ({
+      id: product._id || product.id,
+      name: product.name || 'Unknown Product',
+      stock: product.stock || product.totalStock || 0,
+      threshold: product.threshold || 10
+    }));
+  };
+
+  // Use actual dashboard data from Redux store
+  const data = {
+    totalProducts: dashboard.totalProducts || 0,
+    totalUsers: dashboard.totalUsers || 0,
+    totalOrders: dashboard.totalOrders || 0,
+    monthlyRevenue: dashboard.monthlyRevenue || 0,
+    recentOrders: formatOrders(dashboard.recentOrders),
+    topProducts: formatTopProducts(dashboard.topProducts),
+    salesData: dashboard.monthlySales || { thisMonth: [], lastMonth: [] },
+    lowStockProducts: formatLowStockProducts(dashboard.lowStockProducts)
+  };
 
   const StatCard = ({ title, value, icon: Icon, change, changeType, color = 'bg-gradient-to-br from-blue-500 to-blue-600' }) => (
     <motion.div
@@ -182,19 +180,51 @@ const AdminDashboard = () => {
     </motion.div>
   );
 
-  const SalesChart = () => (
-    <div className="h-48 flex items-end justify-center space-x-2 pt-4">
-      {(data.salesData?.thisMonth || []).map((value, index) => (
-        <div key={index} className="flex flex-col items-center space-y-1">
-          <div 
-            className="w-6 bg-gradient-to-t from-blue-600 to-blue-400 rounded-t transition-all duration-300 hover:from-blue-700 hover:to-blue-500"
-            style={{ height: `${((value || 0) / 50) * 120}px` }}
-          ></div>
-          <div className="text-xs text-gray-500">{index + 1}</div>
+  const SalesChart = () => {
+    // Get sales data - either from monthlySales array or salesData object
+    const salesData = Array.isArray(dashboard.monthlySales) && dashboard.monthlySales.length > 0
+      ? dashboard.monthlySales
+      : (data.salesData?.thisMonth || []);
+    
+    // If no data, show a placeholder
+    if (!salesData || salesData.length === 0) {
+      return (
+        <div className="h-48 flex items-center justify-center">
+          <p className="text-gray-400 text-sm">No sales data available</p>
         </div>
-      ))}
-    </div>
-  );
+      );
+    }
+
+    // Calculate max value for scaling
+    const maxValue = Math.max(...salesData.map(item => {
+      if (typeof item === 'object') return item.value || item.revenue || item.sales || 0;
+      return item || 0;
+    }), 1);
+
+    return (
+      <div className="h-48 flex items-end justify-center space-x-2 pt-4">
+        {salesData.slice(0, 30).map((item, index) => {
+          const value = typeof item === 'object' ? (item.value || item.revenue || item.sales || 0) : (item || 0);
+          const height = (value / maxValue) * 120;
+          
+          return (
+            <div key={index} className="flex flex-col items-center space-y-1 group relative">
+              <div 
+                className="w-6 bg-gradient-to-t from-blue-600 to-blue-400 rounded-t transition-all duration-300 hover:from-blue-700 hover:to-blue-500"
+                style={{ height: `${height}px`, minHeight: value > 0 ? '4px' : '0px' }}
+              >
+                {/* Tooltip on hover */}
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                  ₹{value.toLocaleString()}
+                </div>
+              </div>
+              <div className="text-xs text-gray-500">{index + 1}</div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
 
   if (loading) {
     return (
@@ -339,9 +369,17 @@ const AdminDashboard = () => {
 
             {/* Orders List */}
             <div className="divide-y divide-gray-100">
-              {(data.recentOrders || []).map((order) => (
-                <OrderRow key={order.id} order={order} />
-              ))}
+              {data.recentOrders && data.recentOrders.length > 0 ? (
+                data.recentOrders.map((order) => (
+                  <OrderRow key={order.id} order={order} />
+                ))
+              ) : (
+                <div className="py-12 text-center">
+                  <FiShoppingCart className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                  <p className="text-gray-500 text-sm">No recent orders</p>
+                  <p className="text-gray-400 text-xs mt-1">Orders will appear here once customers start placing them</p>
+                </div>
+              )}
             </div>
           </motion.div>
 
@@ -395,27 +433,35 @@ const AdminDashboard = () => {
               </div>
               
               <div className="space-y-3">
-                {(data.lowStockProducts || []).map((product) => (
-                  <div key={product.id} className="bg-red-50 rounded-lg p-3 border border-red-200">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">{product.name}</p>
-                        <p className="text-xs text-gray-500">Threshold: {product.threshold}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-bold text-red-600">{product.stock} left</p>
-                        <div className="flex space-x-2 mt-1">
-                          <button className="text-xs text-blue-600 hover:text-blue-800">
-                            <FiEye className="w-3 h-3" />
-                          </button>
-                          <button className="text-xs text-green-600 hover:text-green-800">
-                            <FiEdit className="w-3 h-3" />
-                          </button>
+                {data.lowStockProducts && data.lowStockProducts.length > 0 ? (
+                  data.lowStockProducts.map((product) => (
+                    <div key={product.id} className="bg-red-50 rounded-lg p-3 border border-red-200">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">{product.name}</p>
+                          <p className="text-xs text-gray-500">Threshold: {product.threshold}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-bold text-red-600">{product.stock} left</p>
+                          <div className="flex space-x-2 mt-1">
+                            <button className="text-xs text-blue-600 hover:text-blue-800">
+                              <FiEye className="w-3 h-3" />
+                            </button>
+                            <button className="text-xs text-green-600 hover:text-green-800">
+                              <FiEdit className="w-3 h-3" />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <FiCheck className="w-10 h-10 text-green-500 mx-auto mb-2" />
+                    <p className="text-gray-500 text-sm">All products in stock</p>
+                    <p className="text-gray-400 text-xs mt-1">No low stock alerts</p>
                   </div>
-                ))}
+                )}
               </div>
             </motion.div>
           </div>
@@ -442,29 +488,37 @@ const AdminDashboard = () => {
           </div>
           
           <div className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-              {(data.topProducts || []).map((product, index) => (
-                <div key={product.id} className="bg-gray-50 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-500">#{index + 1}</span>
-                    {product.trend === 'up' ? (
-                      <FiTrendingUp className="w-4 h-4 text-green-500" />
-                    ) : (
-                      <FiTrendingDown className="w-4 h-4 text-red-500" />
-                    )}
+            {data.topProducts && data.topProducts.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                {data.topProducts.map((product, index) => (
+                  <div key={product.id} className="bg-gray-50 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-500">#{index + 1}</span>
+                      {product.trend === 'up' ? (
+                        <FiTrendingUp className="w-4 h-4 text-green-500" />
+                      ) : (
+                        <FiTrendingDown className="w-4 h-4 text-red-500" />
+                      )}
+                    </div>
+                    <h4 className="text-sm font-semibold text-gray-900 mb-2 line-clamp-2">
+                      {product.name}
+                    </h4>
+                    <div className="space-y-1">
+                      <p className="text-xs text-gray-600">{product.sales} sales</p>
+                      <p className="text-sm font-bold text-gray-900">
+                        ₹{(product.revenue || 0).toLocaleString()}
+                      </p>
+                    </div>
                   </div>
-                  <h4 className="text-sm font-semibold text-gray-900 mb-2 line-clamp-2">
-                    {product.name}
-                  </h4>
-                  <div className="space-y-1">
-                    <p className="text-xs text-gray-600">{product.sales} sales</p>
-                    <p className="text-sm font-bold text-gray-900">
-                      ₹{(product.revenue || 0).toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <FiShoppingBag className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                <p className="text-gray-500 text-sm">No product sales yet</p>
+                <p className="text-gray-400 text-xs mt-1">Top selling products will appear here</p>
+              </div>
+            )}
           </div>
         </motion.div>
 

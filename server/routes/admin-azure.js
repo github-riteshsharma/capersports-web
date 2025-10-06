@@ -32,7 +32,7 @@ router.get('/dashboard', async (req, res) => {
 
     // Get total counts
     const totalProducts = await productsCollection.countDocuments({ isActive: true });
-    const totalUsers = await usersCollection.countDocuments({ role: 'user' });
+    const totalUsers = await usersCollection.countDocuments(); // Count all users including admins
     const totalOrders = await ordersCollection.countDocuments();
     
     // Get monthly stats
@@ -172,7 +172,7 @@ router.get('/stats', async (req, res) => {
     // Get quick stats
     const [totalProducts, totalUsers, totalOrders, pendingOrders] = await Promise.all([
       productsCollection.countDocuments({ isActive: true }),
-      usersCollection.countDocuments({ role: 'user' }),
+      usersCollection.countDocuments(), // Count all users including admins
       ordersCollection.countDocuments(),
       ordersCollection.countDocuments({ status: 'pending' })
     ]);

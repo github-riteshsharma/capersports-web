@@ -58,6 +58,7 @@ const ProductDetail = () => {
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [showSizeGuide, setShowSizeGuide] = useState(false);
   
   // Refs for advanced interactions
   const imageRef = useRef(null);
@@ -595,24 +596,28 @@ const ProductDetail = () => {
         blur={true}
       />
 
-      <div className="min-h-screen bg-gray-50 pt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="min-h-screen bg-white pt-16 sm:pt-20">
+        {/* Apple-Style Hero Section */}
+        <div className="bg-gradient-to-b from-gray-50 to-white">
+          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 pt-8 sm:pt-12 pb-4">
+            {/* Breadcrumb - Apple Style */}
+            <nav className="flex items-center gap-2 text-xs text-gray-500 mb-6">
+              <button onClick={() => navigate('/')} className="hover:text-gray-900 transition-colors">
+                Home
+              </button>
+              <span className="text-gray-300">›</span>
+              <button onClick={() => navigate('/products')} className="hover:text-gray-900 transition-colors">
+                Products
+              </button>
+              <span className="text-gray-300">›</span>
+              <span className="text-gray-900">{product.name}</span>
+            </nav>
+          </div>
+        </div>
           
-          {/* Breadcrumb */}
-          <nav className="flex items-center space-x-2 text-sm text-gray-500 mb-8">
-            <button onClick={() => navigate('/')} className="hover:text-red-600 transition-colors">
-              Home
-            </button>
-            <span>/</span>
-            <button onClick={() => navigate('/products')} className="hover:text-red-600 transition-colors">
-              Products
-            </button>
-            <span>/</span>
-            <span className="text-gray-900 font-medium">{product.name}</span>
-          </nav>
-          
-          {/* Main Product Section - Better Proportions */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        {/* Main Product Section - Apple-Style Layout */}
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 py-4 sm:py-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 mb-12">
             
             {/* Image Gallery */}
             <motion.div
@@ -621,8 +626,8 @@ const ProductDetail = () => {
               transition={{ duration: 0.6 }}
               className="space-y-4"
             >
-              {/* Main Image */}
-              <div className="relative bg-white rounded-3xl shadow-lg overflow-hidden group border border-gray-200">
+              {/* Main Image - Apple Style */}
+              <div className="relative bg-gray-50 rounded-2xl overflow-hidden group">
                 <div 
                   className="relative aspect-square cursor-zoom-in"
                   ref={imageRef}
@@ -826,111 +831,68 @@ const ProductDetail = () => {
               )}
             </motion.div>
             
-            {/* Product Info */}
+            {/* Product Info - Apple Style */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
-              className="bg-white rounded-3xl shadow-lg p-8 border border-gray-200 space-y-6"
+              className="space-y-5"
             >
-              {/* Title and Rating */}
-              <div className="border-b border-gray-100 pb-6">
-                <h1 className="text-3xl font-bold text-gray-900 mb-4 leading-tight">
+              {/* Title - Apple Typography */}
+              <div>
+                <p className="text-xs text-gray-500 mb-1.5 tracking-wide uppercase">{product.category || 'New'}</p>
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 mb-3 leading-tight tracking-tight">
                   {product.name}
                 </h1>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-4">
-                    <div className="flex items-center space-x-1">
-                      {[...Array(5)].map((_, i) => (
-                        <FiStar
-                          key={i}
-                          className={`w-5 h-5 ${
-                            i < averageRating 
-                              ? 'text-yellow-400 fill-current' 
-                              : 'text-gray-300'
-                          }`}
-                        />
-                      ))}
-                      <span className="text-sm font-medium text-gray-700 ml-2">
-                        {averageRating.toFixed(1)} ({totalReviews} reviews)
-                      </span>
+                
+                {/* Rating - Clean & Minimal */}
+                {averageRating > 0 && (
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1">
+                      <FiStar className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                      <span className="text-sm font-medium text-gray-900">{averageRating.toFixed(1)}</span>
                     </div>
+                    <span className="text-sm text-gray-500">({totalReviews} {totalReviews === 1 ? 'review' : 'reviews'})</span>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm text-gray-500">SKU:</span>
-                    <span className="text-sm font-mono text-gray-700 bg-gray-100 px-2 py-1 rounded-lg">
-                      {product.sku || 'CS001'}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-3 text-sm">
-                  <span className="bg-gradient-to-r from-red-100 to-red-200 text-red-800 px-3 py-1 rounded-full font-medium">
-                    {product.brand || 'Caper Sports'}
-                  </span>
-                  <span className="text-gray-400">•</span>
-                  <span className="bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 px-3 py-1 rounded-full font-medium">
-                    {product.category || 'T-Shirts'}
-                  </span>
-                </div>
+                )}
               </div>
               
-              {/* Price Section */}
-              <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 border border-gray-200">
-                <div className="flex items-center space-x-4 mb-2">
-                  <span className="text-4xl font-bold text-gray-900">
+              {/* Price - Apple Style */}
+              <div className="pb-5 border-b border-gray-200">
+                <div className="flex items-baseline gap-2.5 mb-1">
+                  <span className="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight">
                     ₹{(product.salePrice || product.price)?.toLocaleString()}
                   </span>
                   {product.salePrice && product.price > product.salePrice && (
-                    <>
-                      <span className="text-2xl text-gray-500 line-through">
-                        ₹{product.price?.toLocaleString()}
-                      </span>
-                      <span className="bg-gradient-to-r from-red-500 to-red-600 text-white text-sm px-3 py-1 rounded-full font-bold shadow-lg">
-                        Save {Math.round(((product.price - product.salePrice) / product.price) * 100)}%
-                      </span>
-                    </>
+                    <span className="text-lg text-gray-400 line-through">
+                      ₹{product.price?.toLocaleString()}
+                    </span>
                   )}
                 </div>
-                <p className="text-sm text-gray-600">
-                  Inclusive of all taxes • Free shipping on orders above ₹499
+                {product.salePrice && product.price > product.salePrice && (
+                  <p className="text-sm text-red-600 font-medium">
+                    Save {Math.round(((product.price - product.salePrice) / product.price) * 100)}% • ₹{(product.price - product.salePrice).toLocaleString()} off
+                  </p>
+                )}
+                <p className="text-xs text-gray-500 mt-1.5">
+                  Inclusive of all taxes
                 </p>
               </div>
               
-              {/* Stock Status */}
-              <div className="flex items-center justify-between bg-gradient-to-r from-green-50 to-green-100 rounded-2xl p-4 border border-green-200">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center">
-                    <FiCheck className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-green-800">In Stock</p>
-                    <p className="text-sm text-green-600">
-                      {(() => {
-                        const totalStock = product.sizes ? 
-                          product.sizes.reduce((total, size) => total + (size.stock || 0), 0) : 
-                          50; // Fallback
-                        return `${totalStock} items available`;
-                      })()}
-                    </p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm text-green-600 font-medium">Ready to ship</p>
-                  <p className="text-xs text-green-500">Delivery in 2-3 days</p>
-                </div>
+              {/* Stock & Delivery - Apple Style */}
+              <div className="flex items-center gap-2 text-sm">
+                <FiCheck className="w-4 h-4 text-green-600" />
+                <span className="text-green-600 font-medium">In Stock</span>
+                <span className="text-gray-300">•</span>
+                <span className="text-gray-600">Free delivery</span>
               </div>
               
-              {/* Colors */}
+              {/* Colors - Apple Style */}
               {product.colors && product.colors.length > 0 && (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      Color
-                    </h3>
-                    <span className="text-sm font-medium text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
-                      {selectedColor || 'General Images'}
-                    </span>
-                  </div>
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-gray-900">
+                    Color {selectedColor && `— ${selectedColor}`}
+                  </h3>
                   <div className="flex flex-wrap gap-3">
                     {/* General Images Option */}
                     <motion.button
@@ -1110,28 +1072,20 @@ const ProductDetail = () => {
                 </div>
               )}
               
-              {/* Sizes */}
+              {/* Sizes - Apple Style */}
               {product.sizes && product.sizes.length > 0 && (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      Size
+                    <h3 className="text-sm font-semibold text-gray-900">
+                      Size {selectedSize && `— ${selectedSize}`}
                     </h3>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm font-medium text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
-                        {selectedSize || 'Select Size'}
-                      </span>
-                      <button 
-                        onClick={() => {
-                          // Size guide functionality would go here
-                          toast.info('Size guide feature coming soon!');
-                        }}
-                        className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center space-x-1"
-                      >
-                        <FiSliders className="w-4 h-4" />
-                        <span>Size Guide</span>
-                      </button>
-                    </div>
+                    <button 
+                      onClick={() => setShowSizeGuide(true)}
+                      className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center space-x-1"
+                    >
+                      <FiSliders className="w-4 h-4" />
+                      <span>Size Guide</span>
+                    </button>
                   </div>
                   <div className="grid grid-cols-4 gap-3">
                     {product.sizes.map((size, index) => {
@@ -1154,12 +1108,12 @@ const ProductDetail = () => {
                           whileTap={{ scale: isOutOfStock ? 1 : 0.95 }}
                           onClick={() => !isOutOfStock && setSelectedSize(sizeName)}
                           disabled={isOutOfStock}
-                          className={`relative px-4 py-3 rounded-xl border-2 font-semibold transition-all duration-200 ${
+                          className={`relative px-3 py-2 rounded-lg border font-medium text-sm transition-all duration-200 ${
                             selectedSize === sizeName
-                              ? 'border-red-500 bg-red-50 text-red-700 shadow-lg shadow-red-500/25'
+                              ? 'border-gray-900 bg-gray-900 text-white'
                               : isOutOfStock
                               ? 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'
-                              : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+                              : 'border-gray-300 bg-white text-gray-700 hover:border-gray-900'
                           }`}
                         >
                           <span className="block text-center">
@@ -1212,8 +1166,8 @@ const ProductDetail = () => {
               </div>
               
               {/* Action Buttons */}
-              <div className="space-y-4 pt-6 border-t border-gray-100">
-                <div className="flex space-x-4">
+              <div className="space-y-3 pt-5 border-t border-gray-100">
+                <div className="flex gap-3">
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -1225,20 +1179,20 @@ const ProductDetail = () => {
                       (getTotalStock(product) <= 0) ||
                       isAddingToCart
                     }
-                    className={`flex-1 py-4 px-6 rounded-2xl font-semibold text-lg transition-all duration-200 flex items-center justify-center space-x-3 shadow-lg ${
+                    className={`flex-1 py-3 px-5 rounded-xl font-medium text-base transition-all duration-200 flex items-center justify-center gap-2 ${
                       (selectedSize && getSizeStock(product, selectedSize) <= 0) || getTotalStock(product) <= 0
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        : 'bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white hover:shadow-xl'
+                        : 'bg-gray-900 hover:bg-gray-800 text-white'
                     }`}
                   >
                     {isAddingToCart ? (
                       <>
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                         <span>Adding...</span>
                       </>
                     ) : (
                       <>
-                        <FiShoppingCart className="w-6 h-6" />
+                        <FiShoppingCart className="w-5 h-5" />
                         <span>
                           {(() => {
                             const hasColors = product.colors && product.colors.length > 0;
@@ -1270,24 +1224,24 @@ const ProductDetail = () => {
                         toast.success('Added to wishlist!');
                       }
                     }}
-                    className={`p-4 rounded-2xl border-2 transition-all duration-200 shadow-lg ${
+                    className={`p-3 rounded-xl border transition-all duration-200 ${
                       isInWishlist 
                         ? 'border-red-500 bg-gradient-to-r from-red-50 to-red-100 text-red-600 shadow-red-500/25'
                         : 'border-gray-200 bg-white text-gray-600 hover:border-red-300 hover:bg-gradient-to-r hover:from-red-50 hover:to-red-100 hover:text-red-600'
                     }`}
                     title={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
                   >
-                    <FiHeart className={`w-6 h-6 ${isInWishlist ? 'fill-current' : ''}`} />
+                    <FiHeart className={`w-5 h-5 ${isInWishlist ? 'fill-current' : ''}`} />
                   </motion.button>
                   
                   <motion.button 
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleShare}
-                    className="p-4 rounded-2xl border-2 border-gray-200 bg-white text-gray-600 hover:border-blue-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 hover:text-blue-600 transition-all duration-200 shadow-lg"
+                    className="p-3 rounded-xl border border-gray-200 bg-white text-gray-600 hover:border-gray-900 transition-all duration-200"
                     title="Share this product"
                   >
-                    <FiShare2 className="w-6 h-6" />
+                    <FiShare2 className="w-5 h-5" />
                   </motion.button>
                 </div>
                 
@@ -1688,6 +1642,106 @@ const ProductDetail = () => {
             </div>
           </div>
         )}
+
+        {/* Size Guide Modal */}
+        <AnimatePresence>
+          {showSizeGuide && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+              onClick={() => setShowSizeGuide(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+                style={{
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none',
+                }}
+              >
+                <style jsx>{`
+                  div::-webkit-scrollbar {
+                    display: none;
+                  }
+                `}</style>
+                {/* Header */}
+                <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between rounded-t-3xl z-10">
+                  <div>
+                    <h2 className="text-2xl font-semibold text-gray-900">Size Guide</h2>
+                    <p className="text-sm text-gray-500 mt-1">Find your perfect fit</p>
+                  </div>
+                  <button
+                    onClick={() => setShowSizeGuide(false)}
+                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  >
+                    <FiX className="w-6 h-6 text-gray-500" />
+                  </button>
+                </div>
+
+                {/* Content */}
+                <div className="p-6">
+                  {/* Men's T-Shirt Size Chart */}
+                  <div className="mb-8">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Men's T-Shirt Sizes</h3>
+                    <div className="overflow-x-auto">
+                      <table className="w-full border-collapse">
+                        <thead>
+                          <tr className="bg-gray-50">
+                            <th className="border border-gray-200 px-4 py-3 text-left text-sm font-semibold text-gray-900">Size</th>
+                            <th className="border border-gray-200 px-4 py-3 text-left text-sm font-semibold text-gray-900">Chest (inches)</th>
+                            <th className="border border-gray-200 px-4 py-3 text-left text-sm font-semibold text-gray-900">Length (inches)</th>
+                            <th className="border border-gray-200 px-4 py-3 text-left text-sm font-semibold text-gray-900">Shoulder (inches)</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {[
+                            { size: '5XS', chest: '28-30', length: '24', shoulder: '14' },
+                            { size: '4XS', chest: '30-32', length: '25', shoulder: '15' },
+                            { size: '3XS', chest: '32-34', length: '26', shoulder: '16' },
+                            { size: '2XS', chest: '34-36', length: '27', shoulder: '17' },
+                            { size: 'XS', chest: '36-38', length: '28', shoulder: '18' },
+                            { size: 'S', chest: '38-40', length: '29', shoulder: '19' },
+                            { size: 'M', chest: '40-42', length: '30', shoulder: '20' },
+                            { size: 'L', chest: '42-44', length: '31', shoulder: '21' },
+                            { size: 'XL', chest: '44-46', length: '32', shoulder: '22' },
+                            { size: '2XL', chest: '46-48', length: '33', shoulder: '23' },
+                            { size: '3XL', chest: '48-50', length: '34', shoulder: '24' },
+                            { size: '4XL', chest: '50-52', length: '35', shoulder: '25' },
+                            { size: '5XL', chest: '52-54', length: '36', shoulder: '26' },
+                          ].map((row) => (
+                            <tr key={row.size} className="hover:bg-gray-50">
+                              <td className="border border-gray-200 px-4 py-3 text-sm font-medium text-gray-900">{row.size}</td>
+                              <td className="border border-gray-200 px-4 py-3 text-sm text-gray-600">{row.chest}</td>
+                              <td className="border border-gray-200 px-4 py-3 text-sm text-gray-600">{row.length}</td>
+                              <td className="border border-gray-200 px-4 py-3 text-sm text-gray-600">{row.shoulder}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* How to Measure */}
+                  <div className="bg-blue-50 rounded-2xl p-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">How to Measure</h3>
+                    <div className="space-y-3 text-sm text-gray-700">
+                      <p><strong>Chest:</strong> Measure around the fullest part of your chest, keeping the tape horizontal.</p>
+                      <p><strong>Length:</strong> Measure from the highest point of the shoulder to the bottom hem.</p>
+                      <p><strong>Shoulder:</strong> Measure from one shoulder point to the other across the back.</p>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </>
   );

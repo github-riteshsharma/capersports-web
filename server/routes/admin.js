@@ -21,7 +21,7 @@ router.get('/dashboard', async (req, res) => {
 
     // Get total counts
     const totalProducts = await Product.countDocuments({ isActive: true });
-    const totalUsers = await User.countDocuments({ role: 'user' });
+    const totalUsers = await User.countDocuments(); // Count all users including admins
     const totalOrders = await Order.countDocuments();
     
     // Get monthly stats

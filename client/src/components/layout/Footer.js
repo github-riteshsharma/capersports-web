@@ -65,21 +65,11 @@ const Footer = () => {
                   onError={(e) => {
                     // Fallback to CSS logo if image fails
                     e.target.style.display = 'none';
-                    const fallback = e.target.nextSibling;
-                    if (fallback) {
-                      fallback.style.display = 'flex';
-                    }
                   }}
                 />
-                {/* Fallback Logo */}
-                <div className="hidden items-center space-x-2">
-                  <div className="w-10 h-10 bg-gradient-to-br from-red-600 via-red-700 to-blue-900 rounded-xl flex items-center justify-center shadow-lg">
-                    <span className="text-white font-bold text-lg">CS</span>
-                  </div>
-                  <span className="text-xl font-bold bg-gradient-to-r from-red-600 to-blue-900 bg-clip-text text-transparent">
-                    Caper Sports
-                  </span>
-                </div>
+                <span className="text-2xl font-bold bg-gradient-to-r from-red-600 to-blue-900 bg-clip-text text-transparent">
+                  CAPER SPORTS
+                </span>
               </div>
               
               <div>
