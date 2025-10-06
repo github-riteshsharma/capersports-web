@@ -61,7 +61,7 @@ jobs:
             "name": "capersports-deploy",
             "version": "1.0.0",
             "scripts": {
-              "start": "cd server && npm install --production && node server-azure.js"
+              "start": "cd server && npm install --production && node server.js"
             },
             "engines": {
               "node": ">=18.x",

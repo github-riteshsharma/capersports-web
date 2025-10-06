@@ -5,12 +5,12 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "start:azure": "node server-azure.js",
+    "start:mongodb": "node server-mongodb.js",
     "dev": "nodemon server.js",
-    "dev:azure": "nodemon server-azure.js",
+    "dev:mongodb": "nodemon server-mongodb.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:production": "NODE_ENV=production node server.js",
-    "start:production:azure": "NODE_ENV=production node server-azure.js",
+    "start:production:mongodb": "NODE_ENV=production node server-mongodb.js",
     "seed": "node scripts/seedData.js",
     "migrate:azure": "node scripts/migrateToAzure.js"
   },
