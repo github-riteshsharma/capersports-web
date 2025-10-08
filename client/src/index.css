@@ -112,6 +112,11 @@
   animation: gradient 3s ease-in-out infinite;
 }
 
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+  background-size: 200% 100%;
+}
+
 .dark a {
   color: theme('colors.primary.400');
 }

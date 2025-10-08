@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { FiArrowRight, FiHeart, FiEye, FiCheck, FiChevronLeft, FiChevronRight, FiMessageCircle, FiEdit, FiSettings, FiTruck, FiInstagram, FiMoreHorizontal } from 'react-icons/fi';
+import { FiArrowRight, FiHeart, FiEye, FiCheck, FiChevronLeft, FiChevronRight, FiMessageCircle, FiEdit, FiSettings, FiTruck, FiInstagram, FiMoreHorizontal, FiPackage } from 'react-icons/fi';
 
 // Components
 import ProductCard from '../components/products/ProductCard';
@@ -27,9 +27,48 @@ const Home = () => {
   const [instagramPosts, setInstagramPosts] = useState([]);
   const [instagramLoading, setInstagramLoading] = useState(true);
 
+  // Featured Products Carousel State
+  const carouselRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
   useEffect(() => {
     dispatch(getFeaturedProducts(8));
   }, [dispatch]);
+
+  // Check scroll position for navigation buttons
+  const checkScrollPosition = () => {
+    if (carouselRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
+
+  // Update scroll position when products load
+  useEffect(() => {
+    if (featuredProducts.length > 0) {
+      checkScrollPosition();
+    }
+  }, [featuredProducts]);
+
+  // Scroll carousel left
+  const scrollLeft = () => {
+    if (carouselRef.current) {
+      const scrollAmount = carouselRef.current.clientWidth * 0.8;
+      carouselRef.current.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+      setTimeout(checkScrollPosition, 300);
+    }
+  };
+
+  // Scroll carousel right
+  const scrollRight = () => {
+    if (carouselRef.current) {
+      const scrollAmount = carouselRef.current.clientWidth * 0.8;
+      carouselRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      setTimeout(checkScrollPosition, 300);
+    }
+  };
 
   // Fetch Instagram posts on component mount
   useEffect(() => {
@@ -201,105 +240,272 @@ const Home = () => {
       </Helmet>
 
       <div className="min-h-screen bg-gray-50">
-        {/* Hero Section - Full Viewport Height */}
-        <section className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-12 xl:px-16 2xl:px-20 w-full pt-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 w-full max-w-[90rem] py-8 sm:py-12 lg:py-16">
-            <motion.div
-              className="space-y-6 sm:space-y-8 flex flex-col justify-center text-center lg:text-left order-last lg:order-first"
-              variants={fadeInUp}
-              initial="hidden"
-              animate="visible"
-            >
-              <div className="space-y-3 sm:space-y-4">
-                <p className="text-xs sm:text-sm font-medium text-red-600 tracking-wider uppercase">
-                  PREMIUM <span className="text-blue-600">ATHLETIC</span> GEAR
-                </p>
-                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight">
-                  Unleash Your
-                  <br />
-                  <span className="bg-gradient-to-r from-red-600 to-blue-600 bg-clip-text text-transparent">Potential</span>
-                </h1>
-                <p className="text-base sm:text-lg lg:text-xl text-gray-600 leading-relaxed max-w-lg mx-auto lg:mx-0">
-                  Premium sports clothing and gear for athletes who never settle for less. Quality, comfort, and performance in every product.
-                </p>
-              </div>
-          
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-3 sm:space-y-0 sm:space-x-4">
-                <motion.button
-                  className="w-full sm:w-auto bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-6 sm:px-8 py-3 rounded-full font-medium transition-all shadow-lg text-sm sm:text-base"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => navigate('/products')}
-                >
-                  Shop Now
-                </motion.button>
-                <Link
-                  to="/about"
-                  className="text-gray-600 hover:text-gray-900 font-medium flex items-center space-x-2 transition-colors text-sm sm:text-base"
-                >
-                  <span>Learn More</span>
-                  <FiArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </motion.div>
-            
-            {/* Hero Image */}
-            <motion.div
-              className="relative flex items-center justify-center order-first lg:order-last"
-              variants={fadeInUp}
-              initial="hidden"
-              animate="visible"
-            >
-              <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl sm:shadow-2xl w-full">
-                {/* Hero Image Container with Smart Responsive Aspect Ratio */}
-                <div 
-                  className="relative w-full bg-gray-100"
-                  style={{ 
-                    aspectRatio: '4/3',
-                    minHeight: '250px'
-                  }}
-                >
-                  <img
-                    src="/images/hero.png"
-                    alt="Caper Sports Athletes in Action"
-                    className="absolute inset-0 w-full h-full object-cover sm:object-contain md:object-cover lg:object-contain xl:object-cover transition-all duration-300"
-                    style={{
-                      objectPosition: 'center center'
-                    }}
-                    onError={(e) => {
-                      // Fallback to gradient if image fails
-                      e.target.style.display = 'none';
-                      const fallback = e.target.nextSibling;
-                      if (fallback) {
-                        fallback.style.display = 'flex';
-                      }
-                    }}
-                  />
-                  {/* Fallback */}
-                  <div className="hidden absolute inset-0 w-full h-full bg-gradient-to-br from-red-500 via-orange-500 to-blue-600 items-center justify-center">
-                    <div className="text-white text-center p-4">
-                      <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 sm:mb-4">CAPER SPORTS</div>
-                      <div className="text-sm sm:text-lg lg:text-xl opacity-80">Premium Athletic Gear</div>
-                    </div>
-                  </div>
-                  
-                  {/* Subtle overlay for better badge visibility */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent pointer-events-none"></div>
-                  
-                  {/* Premium Quality Badge */}
-                  <div className="absolute top-3 sm:top-6 left-3 sm:left-6 bg-white/90 backdrop-blur-sm rounded-full px-3 sm:px-4 py-1.5 sm:py-2 shadow-lg border border-white/20">
-                    <span className="text-xs sm:text-sm font-medium text-gray-900">Premium Quality</span>
-                  </div>
-                  
-                  {/* Mobile-specific enhancement: Subtle vignette effect */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-black/5 pointer-events-none sm:hidden"></div>
-                  
-                  {/* Corner decoration for premium feel */}
-                  <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-white/10 to-transparent pointer-events-none"></div>
-                </div>
-              </div>
-            </motion.div>
+        {/* Hero Section - Minimalistic Professional Design */}
+        <section className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-100">
+          {/* Subtle Background Pattern */}
+          <div className="absolute inset-0 opacity-[0.02]">
+            <div className="absolute inset-0" style={{
+              backgroundImage: 'radial-gradient(circle at 2px 2px, #000 1px, transparent 0)',
+              backgroundSize: '40px 40px'
+            }}></div>
           </div>
+
+          {/* Main Content Grid */}
+          <div className="relative z-10 min-h-screen flex items-center px-4 sm:px-6 lg:px-12 xl:px-20 2xl:px-24 pt-24 pb-16">
+            <div className="w-full max-w-[90rem] mx-auto">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                {/* Left Content */}
+                <motion.div
+                  className="space-y-8"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.3 }}
+                >
+                  {/* Small Label */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2, duration: 0.6 }}
+                    className="inline-flex items-center space-x-2 px-4 py-2 bg-gray-900 text-white rounded-full text-xs font-medium tracking-wider uppercase"
+                  >
+                    <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+                    <span>Trusted by Champions</span>
+                  </motion.div>
+
+                  {/* Main Heading */}
+                  <div className="space-y-6">
+                    <motion.h1
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3, duration: 0.8 }}
+                      className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[1.05] text-gray-900 tracking-tight"
+                    >
+                      Premium
+                      <br />
+                      <span className="relative inline-block">
+                        Athletic Gear
+                        <motion.div
+                          className="absolute -bottom-2 left-0 h-1 bg-gradient-to-r from-red-600 to-blue-600 rounded-full"
+                          initial={{ width: 0 }}
+                          animate={{ width: "60%" }}
+                          transition={{ delay: 1, duration: 0.8 }}
+                        />
+                      </span>
+                    </motion.h1>
+                    <motion.p
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5, duration: 0.8 }}
+                      className="text-lg sm:text-xl text-gray-600 leading-relaxed max-w-lg"
+                    >
+                      Custom designed athletic wear for teams and athletes who demand excellence in every stitch.
+                    </motion.p>
+                  </div>
+          
+                  {/* CTA Buttons */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.7, duration: 0.6 }}
+                    className="flex flex-col sm:flex-row items-start gap-4 pt-4"
+                  >
+                    <motion.button
+                      className="group relative bg-gray-900 hover:bg-gray-800 text-white px-8 py-4 rounded-2xl font-semibold text-base transition-all duration-300 shadow-lg shadow-gray-900/10 hover:shadow-xl hover:shadow-gray-900/20"
+                      whileHover={{ scale: 1.02, y: -2 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => navigate('/products')}
+                    >
+                      <span className="flex items-center space-x-2">
+                        <span>Explore Collection</span>
+                        <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                      </span>
+                    </motion.button>
+
+                    <motion.button
+                      onClick={() => navigate('/contact')}
+                      className="group flex items-center space-x-2 px-8 py-4 text-gray-900 font-semibold text-base hover:text-gray-600 transition-colors"
+                      whileHover={{ x: 4 }}
+                    >
+                      <span>Get Custom Quote</span>
+                      <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </motion.button>
+                  </motion.div>
+
+                  {/* Stats */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.9, duration: 0.6 }}
+                    className="flex items-center gap-8 pt-8 border-t border-gray-200"
+                  >
+                    <div>
+                      <div className="text-3xl font-bold text-gray-900">1000+</div>
+                      <div className="text-sm text-gray-500">Happy Athletes</div>
+                    </div>
+                    <div>
+                      <div className="text-3xl font-bold text-gray-900">100%</div>
+                      <div className="text-sm text-gray-500">Custom Made</div>
+                    </div>
+                    <div>
+                      <div className="text-3xl font-bold text-gray-900">10+</div>
+                      <div className="text-sm text-gray-500">Years Experience</div>
+                    </div>
+                  </motion.div>
+                </motion.div>
+            
+                {/* Right Side - Premium Design Like Apple/Nike */}
+                <motion.div
+                  className="relative"
+                  initial={{ opacity: 0, x: 60 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 1, delay: 0.3, ease: [0.19, 1, 0.22, 1] }}
+                >
+                  {/* Large Ambient Gradient Orbs */}
+                  <motion.div 
+                    className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-red-500/20 to-orange-500/20 rounded-full blur-3xl"
+                    animate={{
+                      scale: [1, 1.2, 1],
+                      opacity: [0.3, 0.5, 0.3]
+                    }}
+                    transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                  />
+                  <motion.div 
+                    className="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-tr from-blue-500/20 to-purple-500/20 rounded-full blur-3xl"
+                    animate={{
+                      scale: [1.2, 1, 1.2],
+                      opacity: [0.3, 0.5, 0.3]
+                    }}
+                    transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                  />
+
+                  {/* Main Card Container */}
+                  <div className="relative max-w-xl mx-auto lg:mx-0">
+                    
+                    {/* Decorative Accent Elements */}
+                    <motion.div
+                      className="absolute -top-8 -right-8 w-32 h-32 border-4 border-red-600/20 rounded-full"
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                    />
+                    <motion.div
+                      className="absolute -bottom-8 -left-8 w-24 h-24 bg-gradient-to-br from-blue-600/30 to-purple-600/30 rounded-2xl blur-xl"
+                      animate={{ rotate: [0, 180, 360] }}
+                      transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                    />
+
+                    {/* Premium Card with Glass Effect */}
+                    <motion.div
+                      className="relative bg-white/80 backdrop-blur-xl rounded-[2.5rem] p-2 shadow-2xl shadow-black/10"
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.8, delay: 0.5, ease: [0.19, 1, 0.22, 1] }}
+                      whileHover={{ scale: 1.02 }}
+                    >
+                      {/* Gradient Border Effect */}
+                      <div className="absolute inset-0 rounded-[2.5rem] p-[2px] bg-gradient-to-br from-red-600/50 via-purple-600/50 to-blue-600/50 -z-10"></div>
+                      
+                      {/* Inner Shadow Card */}
+                      <div className="relative bg-white rounded-[2.3rem] p-3 shadow-inner">
+                        <div className="relative aspect-[3/4] rounded-[2rem] overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+                          <img
+                            src="/images/testimonials/famousPersonality1.jpg"
+                            alt="Chris Gayle - Cricket Legend"
+                            className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 hover:scale-105"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              const fallback = e.target.nextSibling;
+                              if (fallback) {
+                                fallback.style.display = 'flex';
+                              }
+                            }}
+                          />
+                          {/* Fallback */}
+                          <div className="hidden absolute inset-0 w-full h-full bg-gradient-to-br from-red-500 to-blue-600 items-center justify-center">
+                            <div className="text-white text-center p-4">
+                              <div className="text-4xl font-bold mb-4">CAPER SPORTS</div>
+                              <div className="text-xl opacity-80">Premium Athletic Gear</div>
+                            </div>
+                          </div>
+
+                          {/* Sophisticated Gradient Overlays */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-white/10 pointer-events-none"></div>
+                          <div className="absolute inset-0 bg-gradient-to-br from-red-600/5 via-transparent to-blue-600/5 pointer-events-none"></div>
+
+                          {/* Floating Top Badge - Premium Look */}
+                          <motion.div
+                            className="absolute top-4 left-4"
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.8, duration: 0.5 }}
+                          >
+                            <div className="bg-gradient-to-r from-red-600 to-orange-600 text-white px-4 py-2 rounded-full shadow-xl backdrop-blur-sm flex items-center space-x-2">
+                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                              <span className="text-xs font-bold uppercase tracking-wider">Featured</span>
+                            </div>
+                          </motion.div>
+
+                          {/* Main Info Badge - Glassmorphism */}
+                          <motion.div
+                            className="absolute bottom-4 left-4 right-4"
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 1, duration: 0.6, ease: [0.19, 1, 0.22, 1] }}
+                          >
+                            <div className="bg-white/90 backdrop-blur-2xl rounded-3xl p-6 shadow-2xl border border-white/20 relative overflow-hidden">
+                              {/* Shimmer Effect */}
+                              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 animate-shimmer"></div>
+                              
+                              <div className="relative flex items-center justify-between gap-4">
+                                <div className="flex-1">
+                                  <div className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-2 flex items-center space-x-2">
+                                    <span className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></span>
+                                    <span>Featured Athlete</span>
+                                  </div>
+                                  <div className="text-2xl font-black text-gray-900 mb-1">Chris Gayle</div>
+                                  <div className="text-sm text-gray-600 font-semibold">Cricket Legend • Champion</div>
+                                </div>
+                                <div className="flex-shrink-0">
+                                  <div className="relative">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-red-600 to-blue-600 rounded-2xl blur-lg opacity-50"></div>
+                                    <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-red-600 via-orange-600 to-blue-600 flex items-center justify-center shadow-2xl">
+                                      <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                                      </svg>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </motion.div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          </div>
+
+          {/* Scroll Indicator - Minimalistic */}
+          <motion.div
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.5, duration: 1 }}
+          >
+            <motion.div
+              className="flex flex-col items-center space-y-2 text-gray-400 cursor-pointer"
+              animate={{ y: [0, 8, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              onClick={() => window.scrollBy({ top: window.innerHeight, behavior: 'smooth' })}
+            >
+              <span className="text-xs font-medium uppercase tracking-widest">Scroll</span>
+              <div className="w-px h-12 bg-gradient-to-b from-gray-300 to-transparent"></div>
+            </motion.div>
+          </motion.div>
+
         </section>
             
         {/* Featured Products Section */}
@@ -313,9 +519,6 @@ const Home = () => {
               viewport={{ once: true }}
             >
             <div className="space-y-4 sm:space-y-6">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-red-500 to-blue-600 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto shadow-lg">
-                <span className="text-xl sm:text-3xl">🏆</span>
-              </div>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight px-4">
                 <span className="bg-gradient-to-r from-red-600 to-blue-600 bg-clip-text text-transparent">Featured Products</span>
               </h2>
@@ -326,24 +529,79 @@ const Home = () => {
             </motion.div>
             
             {loading ? (
-            <div className="flex justify-center items-center py-20">
-              <CaperSportsLoader size="lg" />
-            </div>
+              <div className="flex justify-center items-center py-20">
+                <CaperSportsLoader size="lg" />
+              </div>
             ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {featuredProducts.map((product, index) => (
-            <motion.div
-                  key={product._id}
-                  variants={fadeInUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-              >
-                    <ProductCard product={product} />
-            </motion.div>
-                ))}
-          </div>
+              <div className="relative px-4 md:px-16">
+                {/* Left Navigation Button - Outside carousel on LEFT */}
+                {featuredProducts.length > 4 && canScrollLeft && (
+                  <motion.button
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    onClick={scrollLeft}
+                    className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-30 bg-gradient-to-br from-white via-white to-gray-50 hover:from-gray-50 hover:via-white hover:to-white backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.16)] rounded-full p-5 transition-all duration-500 hover:scale-110 border border-white/50 group items-center justify-center overflow-hidden"
+                    aria-label="Scroll left"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
+                    <FiChevronLeft className="w-7 h-7 text-gray-900 group-hover:text-red-600 transition-all duration-300 relative z-10" />
+                  </motion.button>
+                )}
+
+                {/* Right Navigation Button - Outside carousel on RIGHT */}
+                {featuredProducts.length > 4 && canScrollRight && (
+                  <motion.button
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    onClick={scrollRight}
+                    className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-30 bg-gradient-to-br from-white via-white to-gray-50 hover:from-gray-50 hover:via-white hover:to-white backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.16)] rounded-full p-5 transition-all duration-500 hover:scale-110 border border-white/50 group items-center justify-center overflow-hidden"
+                    aria-label="Scroll right"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
+                    <FiChevronRight className="w-7 h-7 text-gray-900 group-hover:text-red-600 transition-all duration-300 relative z-10" />
+                  </motion.button>
+                )}
+
+                {/* Carousel Scroll Container */}
+                <div
+                  ref={carouselRef}
+                  onScroll={checkScrollPosition}
+                  className="flex overflow-x-auto gap-6 scroll-smooth scrollbar-hide pb-4"
+                  style={{
+                    scrollSnapType: 'x proximity',
+                    WebkitOverflowScrolling: 'touch'
+                  }}
+                >
+                  {featuredProducts.map((product, index) => (
+                    <motion.div
+                      key={product._id}
+                      className="flex-shrink-0 w-[280px] sm:w-[300px] lg:w-[320px]"
+                      style={{ scrollSnapAlign: 'start' }}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: index * 0.1, duration: 0.5 }}
+                    >
+                      <ProductCard product={product} />
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* Scroll Progress Indicator */}
+                {featuredProducts.length > 4 && (
+                  <div className="flex justify-center mt-8 gap-2">
+                    {Array.from({ length: Math.ceil(featuredProducts.length / 4) }).map((_, index) => (
+                      <div
+                        key={index}
+                        className="h-1.5 rounded-full bg-gray-200 transition-all duration-300"
+                        style={{ width: index === 0 ? '32px' : '12px' }}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
             )}
           
           <motion.div

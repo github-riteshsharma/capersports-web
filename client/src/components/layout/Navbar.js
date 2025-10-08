@@ -101,18 +101,18 @@ const Navbar = () => {
       <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 2xl:px-20">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <div className="flex items-center min-w-0 flex-shrink-0">
-            <Link to="/" className="flex items-center space-x-4 group">
+          <div className="flex items-center flex-shrink-0">
+            <Link to="/" className="flex items-center space-x-3 group">
               <motion.div
-                className="flex items-center space-x-4"
+                className="flex items-center space-x-3"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <div className="relative">
+                <div className="relative flex-shrink-0">
                   <img
                     src="/images/logo.png"
                     alt="Caper Sports"
-                    className="h-16 w-auto object-contain"
+                    className="h-12 sm:h-14 lg:h-16 w-auto object-contain"
                     onError={(e) => {
                       e.target.src = "/images/capersports-logo.png";
                       e.target.onerror = (err) => {
@@ -125,19 +125,19 @@ const Navbar = () => {
                     }}
                   />
                 </div>
-                {/* Brand Text - Desktop Only */}
-                <div className="hidden lg:flex flex-col">
-                  <span className="text-2xl font-black bg-gradient-to-r from-red-600 via-red-700 to-blue-700 bg-clip-text text-transparent tracking-tight leading-none">
+                {/* Brand Text - Show on XL screens only when nav is present */}
+                <div className="hidden xl:flex flex-col">
+                  <span className="text-xl xl:text-2xl font-black bg-gradient-to-r from-red-600 via-red-700 to-blue-700 bg-clip-text text-transparent tracking-tight leading-none whitespace-nowrap">
                     CAPER SPORTS
                   </span>
                 </div>
                 {/* Fallback Logo */}
                 <div className="logo-fallback hidden items-center space-x-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-blue-600 rounded-xl flex items-center justify-center">
-                    <span className="text-white font-bold text-lg">CS</span>
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-red-600 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <span className="text-white font-bold text-base sm:text-lg">CS</span>
                   </div>
-                  <div className="hidden lg:flex flex-col">
-                    <span className="text-2xl font-black bg-gradient-to-r from-red-600 via-red-700 to-blue-700 bg-clip-text text-transparent tracking-tight leading-none">
+                  <div className="hidden xl:flex flex-col">
+                    <span className="text-xl xl:text-2xl font-black bg-gradient-to-r from-red-600 via-red-700 to-blue-700 bg-clip-text text-transparent tracking-tight leading-none whitespace-nowrap">
                       CAPER SPORTS
                     </span>
                   </div>
@@ -147,7 +147,7 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Navigation - Centered */}
-          <div className="hidden lg:flex items-center space-x-12 flex-1 justify-center">
+          <div className="hidden lg:flex items-center space-x-6 xl:space-x-12 flex-1 justify-center mx-4">
             {navigation.map((item) => {
               const isActive = location.pathname === item.href;
               return (
@@ -157,7 +157,7 @@ const Navbar = () => {
                   className="relative group"
                 >
                   <motion.div
-                    className={`relative px-4 py-2 text-sm font-semibold transition-all duration-300 ${
+                    className={`relative px-3 lg:px-4 py-2 text-sm font-semibold transition-all duration-300 ${
                       isActive
                         ? 'text-white'
                         : 'text-gray-600 hover:text-gray-900'
@@ -246,7 +246,7 @@ const Navbar = () => {
           </div>
 
           {/* Right Side Actions */}
-          <div className="flex items-center space-x-4 min-w-0 flex-shrink-0">
+          <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4 flex-shrink-0">
             {/* Search - Expanded */}
             <div className="hidden md:flex items-center">
               <form onSubmit={handleSearch} className="relative group">
@@ -262,16 +262,12 @@ const Navbar = () => {
                       <div className="absolute inset-0 bg-red-500/20 rounded-full blur-sm opacity-0 group-focus-within:opacity-100 transition-opacity duration-300"></div>
                     </div>
                   </div>
-                  <motion.input
+                  <input
                     type="text"
-                    placeholder="Search products..."
+                    placeholder="Search..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-96 xl:w-[28rem] pl-12 pr-6 py-3 text-sm bg-transparent border-0 rounded-full focus:outline-none placeholder-gray-400 text-gray-900 font-medium focus:placeholder-gray-300 transition-all duration-300"
-                    whileFocus={{ 
-                      width: "30rem"
-                    }}
-                    transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                    className="w-40 lg:w-52 xl:w-72 2xl:w-96 pl-12 pr-6 py-3 text-sm bg-transparent border-0 rounded-full focus:outline-none placeholder-gray-400 text-gray-900 font-medium focus:placeholder-gray-300 transition-all duration-300"
                   />
                   {/* Premium glow effect */}
                   <div className="absolute inset-0 rounded-full bg-gradient-to-r from-red-500/5 via-purple-500/5 to-blue-500/5 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
@@ -395,16 +391,16 @@ const Navbar = () => {
                 </AnimatePresence>
               </div>
             ) : (
-              <div className="flex items-center space-x-3">
+              <div className="hidden lg:flex items-center space-x-2 xl:space-x-3">
                 <Link
                   to="/login"
-                  className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors duration-200 px-3 py-2 rounded-xl hover:bg-gray-100/50"
+                  className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors duration-200 px-2 xl:px-3 py-2 rounded-xl hover:bg-gray-100/50 whitespace-nowrap"
                 >
                   Sign In
                 </Link>
                 <Link
                   to="/register"
-                  className="px-4 py-2 text-sm font-medium bg-gray-900 hover:bg-gray-800 text-white rounded-xl transition-colors duration-200"
+                  className="px-3 xl:px-4 py-2 text-sm font-medium bg-gray-900 hover:bg-gray-800 text-white rounded-xl transition-colors duration-200 whitespace-nowrap"
                 >
                   Sign Up
                 </Link>
