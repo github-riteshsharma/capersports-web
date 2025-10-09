@@ -146,7 +146,7 @@ const Orders = () => {
                 My Orders
               </motion.h1>
               <motion.p 
-                className="text-xl text-white/90 max-w-2xl mx-auto"
+                className="text-base sm:text-lg lg:text-xl text-white/90 max-w-2xl mx-auto"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}

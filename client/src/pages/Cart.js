@@ -285,7 +285,7 @@ const Cart = () => {
                 Continue Shopping
               </Link>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
               Shopping Cart ({totalItems})
             </h1>
             {items.length > 0 && (

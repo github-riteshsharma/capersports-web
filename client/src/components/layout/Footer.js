@@ -26,8 +26,6 @@ const Footer = () => {
       links: [
         { name: 'Running', href: '/products?category=running' },
         { name: 'Training', href: '/products?category=training' },
-        { name: 'Lifestyle', href: '/products?category=lifestyle' },
-        { name: 'Footwear', href: '/products?category=footwear' },
       ],
     },
     {

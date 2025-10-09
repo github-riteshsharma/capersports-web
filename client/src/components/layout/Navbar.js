@@ -128,7 +128,10 @@ const Navbar = () => {
                 </div>
                 {/* Brand Text - Show on XL screens only when nav is present */}
                 <div className="hidden xl:flex flex-col">
-                  <span className="text-xl xl:text-2xl font-black bg-gradient-to-r from-red-600 via-red-700 to-blue-700 bg-clip-text text-transparent tracking-tight leading-none whitespace-nowrap">
+                  <span 
+                    className="text-xl xl:text-2xl font-black bg-gradient-to-r from-red-600 via-red-700 to-blue-700 bg-clip-text text-transparent tracking-tight leading-none whitespace-nowrap"
+                    style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", letterSpacing: '-0.02em' }}
+                  >
                     CAPER SPORTS
                   </span>
                 </div>
@@ -138,7 +141,10 @@ const Navbar = () => {
                     <span className="text-white font-bold text-base sm:text-lg">CS</span>
                   </div>
                   <div className="hidden xl:flex flex-col">
-                    <span className="text-xl xl:text-2xl font-black bg-gradient-to-r from-red-600 via-red-700 to-blue-700 bg-clip-text text-transparent tracking-tight leading-none whitespace-nowrap">
+                    <span 
+                      className="text-xl xl:text-2xl font-black bg-gradient-to-r from-red-600 via-red-700 to-blue-700 bg-clip-text text-transparent tracking-tight leading-none whitespace-nowrap"
+                      style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", letterSpacing: '-0.02em' }}
+                    >
                       CAPER SPORTS
                     </span>
                   </div>
@@ -165,6 +171,7 @@ const Navbar = () => {
                     }`}
                     whileHover={{ y: -2 }}
                     whileTap={{ y: 0 }}
+                    style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif" }}
                   >
                     {/* Premium Background for Active State */}
                     {isActive && (
@@ -188,7 +195,7 @@ const Navbar = () => {
                     />
                     
                     {/* Text */}
-                    <span className="relative z-10 tracking-wide">
+                    <span className="relative z-10" style={{ letterSpacing: '0.025em' }}>
                       {item.name}
                     </span>
                     
@@ -248,30 +255,37 @@ const Navbar = () => {
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4 flex-shrink-0">
-            {/* Search - Expanded */}
+            {/* Search - Interactive & Premium */}
             <div className="hidden md:flex items-center">
               <form onSubmit={handleSearch} className="relative group">
                 <motion.div 
-                  className="relative bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition-all duration-300 focus-within:border-red-400 focus-within:shadow-lg focus-within:shadow-red-100/50"
-                  whileFocus={{ scale: 1.01 }}
+                  className="relative bg-gradient-to-r from-gray-50 to-white border-2 border-gray-200 rounded-full shadow-sm transition-all duration-300 group-hover:border-gray-300 group-hover:shadow-md focus-within:border-red-500 focus-within:shadow-xl focus-within:shadow-red-500/20 focus-within:from-white focus-within:to-white"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   transition={{ type: "spring", stiffness: 400, damping: 25 }}
                 >
-                  <div className="absolute left-4 top-1/2 transform -translate-y-1/2 group-focus-within:text-red-500 transition-colors duration-300">
-                    <div className="relative">
-                      <FiSearch className="text-gray-400 group-focus-within:text-red-500 transition-colors duration-300" size={18} />
-                      {/* Premium search icon glow */}
-                      <div className="absolute inset-0 bg-red-500/20 rounded-full blur-sm opacity-0 group-focus-within:opacity-100 transition-opacity duration-300"></div>
-                    </div>
-                  </div>
+                  <motion.div 
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 transition-all duration-300"
+                    animate={searchQuery ? { scale: [1, 1.15, 1] } : {}}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <FiSearch 
+                      className="text-gray-400 group-hover:text-gray-500 group-focus-within:text-red-500 transition-colors duration-300" 
+                      size={18} 
+                    />
+                  </motion.div>
                   <input
                     type="text"
-                    placeholder="Search..."
+                    placeholder="Search products..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-40 lg:w-52 xl:w-72 2xl:w-96 pl-12 pr-6 py-3 text-sm bg-transparent border-0 rounded-full focus:outline-none placeholder-gray-400 text-gray-900 font-medium focus:placeholder-gray-300 transition-all duration-300"
+                    className="w-40 lg:w-48 xl:w-56 pl-11 pr-4 py-2.5 text-sm bg-transparent border-0 rounded-full focus:outline-none placeholder-gray-400 text-gray-900 font-medium focus:placeholder-gray-500 transition-all duration-300 focus:w-64 xl:focus:w-72"
+                    style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}
                   />
-                  {/* Premium glow effect */}
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-red-500/5 via-purple-500/5 to-blue-500/5 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                  {/* Animated gradient border on focus */}
+                  <motion.div
+                    className="absolute -inset-0.5 rounded-full bg-gradient-to-r from-red-500 via-pink-500 to-purple-500 opacity-0 group-focus-within:opacity-20 blur-sm transition-opacity duration-500 -z-10"
+                  />
                 </motion.div>
               </form>
             </div>
@@ -395,13 +409,15 @@ const Navbar = () => {
               <div className="hidden lg:flex items-center space-x-2 xl:space-x-3">
                 <Link
                   to="/login"
-                  className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors duration-200 px-2 xl:px-3 py-2 rounded-xl hover:bg-gray-100/50 whitespace-nowrap"
+                  className="text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors duration-200 px-2 xl:px-3 py-2 rounded-xl hover:bg-gray-100/50 whitespace-nowrap"
+                  style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", letterSpacing: '0.015em' }}
                 >
                   Sign In
                 </Link>
                 <Link
                   to="/register"
-                  className="px-3 xl:px-4 py-2 text-sm font-medium bg-gray-900 hover:bg-gray-800 text-white rounded-xl transition-colors duration-200 whitespace-nowrap"
+                  className="px-3 xl:px-4 py-2 text-sm font-semibold bg-gray-900 hover:bg-gray-800 text-white rounded-xl transition-colors duration-200 whitespace-nowrap shadow-sm hover:shadow-md"
+                  style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", letterSpacing: '0.015em' }}
                 >
                   Sign Up
                 </Link>

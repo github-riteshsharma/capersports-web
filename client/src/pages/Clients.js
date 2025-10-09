@@ -26,6 +26,8 @@ const Clients = () => {
     photos: []
   });
   const [photoInput, setPhotoInput] = useState('');
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [uploadingPhotos, setUploadingPhotos] = useState(false);
 
   // Get user from Redux store
   const { user } = useSelector((state) => state.auth);
@@ -48,6 +50,40 @@ const Clients = () => {
   // Mutations
   const [createClient, { isLoading: isCreating }] = useCreateClientMutation();
   const [deleteClient, { isLoading: isDeleting }] = useDeleteClientMutation();
+
+  // Image upload handler
+  const handleImageUpload = async (file, type = 'avatar') => {
+    try {
+      if (type === 'avatar') setUploadingAvatar(true);
+      else setUploadingPhotos(true);
+
+      // Convert file to base64
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      
+      return new Promise((resolve, reject) => {
+        reader.onload = async () => {
+          try {
+            const base64 = reader.result;
+            
+            // For now, store as base64 data URL
+            // In production, you'd upload to Azure Blob Storage or Cloudinary
+            resolve(base64);
+          } catch (error) {
+            reject(error);
+          }
+        };
+        reader.onerror = reject;
+      });
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Failed to upload image. Please try again.');
+      return null;
+    } finally {
+      if (type === 'avatar') setUploadingAvatar(false);
+      else setUploadingPhotos(false);
+    }
+  };
 
   // Calculate tab counts
   const activeCount = clients.filter(c => c.status === 'active').length;
@@ -590,20 +626,33 @@ const Clients = () => {
                     onSubmit={async (e) => {
                       e.preventDefault();
                       
+                      // Validate required fields
+                      if (!newClientData.name.trim()) {
+                        alert('Please enter client name');
+                        return;
+                      }
+                      if (!newClientData.program.trim()) {
+                        alert('Please enter program name');
+                        return;
+                      }
+                      if (!newClientData.clientSince.trim()) {
+                        alert('Please enter client since date');
+                        return;
+                      }
+
                       try {
-                        // Create new client
-                        const allPhotos = newClientData.avatar 
-                          ? [newClientData.avatar, ...newClientData.photos]
-                          : newClientData.photos;
-                        
+                        // Create new client with separate avatar and photos
                         await createClient({
-                          name: newClientData.name,
-                          program: newClientData.program,
-                          avatar: newClientData.avatar,
-                          clientSince: newClientData.clientSince,
+                          name: newClientData.name.trim(),
+                          program: newClientData.program.trim(),
+                          avatar: newClientData.avatar || null,
+                          clientSince: newClientData.clientSince.trim(),
                           status: 'active',
-                          photos: allPhotos.length > 0 ? allPhotos : []
+                          photos: newClientData.photos || []
                         }).unwrap();
+
+                        // Show success message
+                        alert(`✅ Client "${newClientData.name}" added successfully!`);
 
                         // Reset form and close modal
                         setNewClientData({
@@ -617,7 +666,8 @@ const Clients = () => {
                         setShowAddClientModal(false);
                       } catch (error) {
                         console.error('Failed to create client:', error);
-                        alert(error?.data?.message || 'Failed to create client. Please try again.');
+                        const errorMessage = error?.data?.message || error?.message || 'Failed to create client. Please try again.';
+                        alert(`❌ Error: ${errorMessage}`);
                       }
                     }}
                     className="space-y-6"
@@ -667,41 +717,80 @@ const Clients = () => {
                       />
                     </div>
 
-                    {/* Avatar URL */}
+                    {/* Avatar Upload */}
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Avatar Image URL (Optional)
+                        Avatar Image (Optional)
                       </label>
-                      <input
-                        type="text"
-                        value={newClientData.avatar || ''}
-                        onChange={(e) => setNewClientData({ ...newClientData, avatar: e.target.value || null })}
-                        placeholder="Enter image URL or path"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-                      />
+                      <div className="flex items-center gap-4">
+                        {/* Preview */}
+                        {newClientData.avatar ? (
+                          <div className="relative group">
+                            <div className="w-20 h-20 rounded-full overflow-hidden ring-4 ring-green-500">
+                              <img
+                                src={newClientData.avatar}
+                                alt="Avatar preview"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setNewClientData({ ...newClientData, avatar: null })}
+                              className="absolute -top-1 -right-1 p-1 bg-red-500 hover:bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <FiX className="w-3 h-3" />
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center">
+                            <FiUser className="w-8 h-8 text-gray-400" />
+                          </div>
+                        )}
+                        
+                        {/* Upload Button */}
+                        <label className="cursor-pointer">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={async (e) => {
+                              const file = e.target.files[0];
+                              if (file) {
+                                if (file.size > 5 * 1024 * 1024) {
+                                  alert('File size must be less than 5MB');
+                                  return;
+                                }
+                                const imageUrl = await handleImageUpload(file, 'avatar');
+                                if (imageUrl) {
+                                  setNewClientData({ ...newClientData, avatar: imageUrl });
+                                }
+                              }
+                            }}
+                            disabled={uploadingAvatar}
+                          />
+                          <motion.div
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors flex items-center gap-2"
+                          >
+                            {uploadingAvatar ? (
+                              <>
+                                <div className="w-4 h-4 border-2 border-gray-600 border-t-transparent rounded-full animate-spin" />
+                                <span className="text-sm">Uploading...</span>
+                              </>
+                            ) : (
+                              <>
+                                <FiUser className="w-4 h-4" />
+                                <span className="text-sm">Choose Avatar</span>
+                              </>
+                            )}
+                          </motion.div>
+                        </label>
+                      </div>
                       <p className="text-xs text-gray-500 mt-2">
-                        Example: /images/client-photo.jpg
+                        PNG, JPG up to 5MB
                       </p>
                     </div>
-
-                    {/* Avatar Preview */}
-                    {newClientData.avatar && (
-                      <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
-                          Avatar Preview
-                        </label>
-                        <div className="w-24 h-24 rounded-full overflow-hidden ring-4 ring-green-500">
-                          <img
-                            src={newClientData.avatar}
-                            alt="Avatar preview"
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              e.target.src = '/images/placeholder-product.jpg';
-                            }}
-                          />
-                        </div>
-                      </div>
-                    )}
 
                     {/* Client Photos Gallery */}
                     <div>
@@ -712,34 +801,62 @@ const Clients = () => {
                         Add photos of the client wearing your products
                       </p>
                       
-                      {/* Photo Input */}
-                      <div className="flex gap-2">
+                      {/* Photo Upload */}
+                      <label className="cursor-pointer">
                         <input
-                          type="text"
-                          value={photoInput}
-                          onChange={(e) => setPhotoInput(e.target.value)}
-                          placeholder="Enter photo URL or path"
-                          className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-                        />
-                        <motion.button
-                          type="button"
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => {
-                            if (photoInput.trim()) {
-                              setNewClientData({
-                                ...newClientData,
-                                photos: [...newClientData.photos, photoInput.trim()]
-                              });
-                              setPhotoInput('');
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          className="hidden"
+                          onChange={async (e) => {
+                            const files = Array.from(e.target.files);
+                            if (files.length === 0) return;
+
+                            // Check file sizes
+                            const oversizedFiles = files.filter(f => f.size > 5 * 1024 * 1024);
+                            if (oversizedFiles.length > 0) {
+                              alert('Some files are larger than 5MB and will be skipped');
+                              return;
                             }
+
+                            setUploadingPhotos(true);
+                            const newPhotos = [];
+                            
+                            for (const file of files) {
+                              const imageUrl = await handleImageUpload(file, 'photo');
+                              if (imageUrl) {
+                                newPhotos.push(imageUrl);
+                              }
+                            }
+                            
+                            setNewClientData({
+                              ...newClientData,
+                              photos: [...newClientData.photos, ...newPhotos]
+                            });
+                            setUploadingPhotos(false);
+                            e.target.value = ''; // Reset input
                           }}
-                          className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl transition-all duration-300 flex items-center gap-2"
+                          disabled={uploadingPhotos}
+                        />
+                        <motion.div
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          className="w-full px-6 py-4 border-2 border-dashed border-gray-300 hover:border-green-500 rounded-xl transition-all duration-300 flex flex-col items-center justify-center gap-2"
                         >
-                          <FiPlus className="w-4 h-4" />
-                          Add
-                        </motion.button>
-                      </div>
+                          {uploadingPhotos ? (
+                            <>
+                              <div className="w-8 h-8 border-3 border-green-500 border-t-transparent rounded-full animate-spin" />
+                              <span className="text-sm font-medium text-gray-600">Uploading photos...</span>
+                            </>
+                          ) : (
+                            <>
+                              <FiPlus className="w-8 h-8 text-gray-400" />
+                              <span className="text-sm font-medium text-gray-600">Click to upload photos</span>
+                              <span className="text-xs text-gray-500">PNG, JPG up to 5MB (multiple files)</span>
+                            </>
+                          )}
+                        </motion.div>
+                      </label>
 
                       {/* Photos Preview Grid */}
                       {newClientData.photos.length > 0 && (

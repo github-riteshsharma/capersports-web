@@ -797,10 +797,10 @@ const Home = () => {
             viewport={{ once: true }}
           >
             <div className="space-y-6">
-              <h2 className="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+              <h2 className="text-2xl sm:text-3xl lg:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight">
                 <span className="bg-gradient-to-r from-red-600 to-blue-600 bg-clip-text text-transparent">Our Design Showcase</span>
               </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto">
                 Witness the craftsmanship behind our premium athletic wear. Each design tells a story of excellence, crafted with precision and passion.
               </p>
               </div>
@@ -936,10 +936,10 @@ const Home = () => {
               whileInView="visible"
               viewport={{ once: true }}
             >
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-6">
               What Our <span className="bg-gradient-to-r from-red-600 to-blue-600 bg-clip-text text-transparent">Champions</span> Say
               </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto">
               From professional athletes to winning teams, see why champions choose Caper Sports
               </p>
             </motion.div>
@@ -1105,10 +1105,10 @@ const Home = () => {
               whileInView="visible"
               viewport={{ once: true }}
             >
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-6">
               How We Create Your <span className="bg-gradient-to-r from-red-600 to-blue-600 bg-clip-text text-transparent">Perfect Gear</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto">
               Follow our streamlined process to bring your custom athletic wear to life
               </p>
               </motion.div>
