@@ -2,11 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="icon" type="image/png" href="%PUBLIC_URL%/images/logo.png" />
+    <link rel="shortcut icon" type="image/png" href="%PUBLIC_URL%/images/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#0ea5e9" />
+    <meta name="theme-color" content="#dc2626" />
     <meta name="description" content="CaperSports - Premium Sports Clothing and Gear" />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/images/logo.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     
     <!-- Google Fonts -->
@@ -38,17 +39,22 @@
       /* Loading animation */
       .loading-spinner {
         display: inline-block;
-        width: 40px;
-        height: 40px;
-        border: 3px solid #f3f3f3;
-        border-top: 3px solid #0ea5e9;
+        width: 50px;
+        height: 50px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #dc2626;
         border-radius: 50%;
-        animation: spin 1s linear infinite;
+        animation: spin 0.8s linear infinite;
       }
       
       @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
+      }
+      
+      @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
       }
       
       /* Initial loading screen */
@@ -58,30 +64,64 @@
         left: 0;
         width: 100vw;
         height: 100vh;
-        background: white;
+        background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
         display: flex;
         align-items: center;
         justify-content: center;
         z-index: 9999;
         flex-direction: column;
+        gap: 30px;
+      }
+      
+      .initial-loading-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         gap: 20px;
+        animation: fadeIn 0.5s ease-out;
+      }
+      
+      .initial-loading img {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+        filter: drop-shadow(0 4px 12px rgba(220, 38, 38, 0.15));
       }
       
       .initial-loading h1 {
-        font-family: 'Inter', sans-serif;
-        font-size: 24px;
-        font-weight: 600;
-        color: #0ea5e9;
+        font-family: 'Inter', -apple-system, sans-serif;
+        font-size: 28px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
         margin: 0;
+        letter-spacing: -0.02em;
+      }
+      
+      .initial-loading-tagline {
+        font-family: 'Inter', -apple-system, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: #6b7280;
+        margin: -10px 0 0 0;
+        letter-spacing: 0.05em;
       }
       
       /* Dark mode support */
       @media (prefers-color-scheme: dark) {
         .initial-loading {
-          background: #18181b;
+          background: linear-gradient(135deg, #18181b 0%, #27272a 100%);
         }
         .initial-loading h1 {
-          color: #38bdf8;
+          background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        .initial-loading-tagline {
+          color: #9ca3af;
         }
       }
     </style>
@@ -90,7 +130,11 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root">
       <div class="initial-loading">
-        <h1>CaperSports</h1>
+        <div class="initial-loading-content">
+          <img src="%PUBLIC_URL%/images/logo.png" alt="CaperSports Logo" />
+          <h1>CAPER SPORTS</h1>
+          <p class="initial-loading-tagline">PREMIUM ATHLETIC WEAR</p>
+        </div>
         <div class="loading-spinner"></div>
       </div>
     </div>

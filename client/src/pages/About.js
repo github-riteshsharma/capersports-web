@@ -149,6 +149,18 @@ const About = () => {
         instagram: '#',
         email: 'abhishek@capersports.com'
       }
+    },
+    {
+      name: 'Dhananjay Sharma',
+      role: 'Head of Operations',
+      image: '/images/team/dhanajay.jpg',
+      bio: 'Operations expert ensuring seamless execution and quality excellence across all aspects of our business.',
+      expertise: ['Operations Management', 'Quality Assurance', 'Process Optimization'],
+      social: {
+        linkedin: '#',
+        twitter: '#',
+        email: 'dhanajay@capersports.com'
+      }
     }
   ];
 
@@ -586,7 +598,7 @@ const About = () => {
             </motion.div>
 
             <motion.div
-              className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto"
+              className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto"
               variants={staggerContainer}
               initial="hidden"
               whileInView="visible"

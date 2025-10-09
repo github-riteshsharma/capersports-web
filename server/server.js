@@ -43,7 +43,7 @@ const orderRoutes = require('./routes/orders');
 const userRoutes = require('./routes/users-azure'); // Use Azure-compatible user routes
 const adminRoutes = require('./routes/admin-azure'); // Use Azure-compatible admin routes
 const invoiceRoutes = require('./routes/invoices');
-const clientRoutes = require('./routes/clients');
+const clientRoutes = require('./routes/clients-azure'); // Use Azure-compatible clients routes
 
 // Create Express app
 const app = express();
