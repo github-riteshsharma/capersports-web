@@ -7,63 +7,179 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'server/**'
-      - '.github/workflows/main_capersports-api.yml'
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-    
-    steps:
-    - name: 'Checkout code'
-      uses: actions/checkout@v4
-    
-    - name: 'Set up Node.js'
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20.x'
-    
-    - name: 'Create deployment package'
-      run: |
-        cd server
-        # Package server files for deployment
-        zip -r ../deploy.zip . \
-          -x "node_modules/*" \
-          -x ".env" \
-          -x ".env.*" \
-          -x ".git/*" \
-          -x "*.log" \
-          -x "*.zip" \
-          -x ".DS_Store"
-        cd ..
-        echo "Deployment package created:"
-        ls -lh deploy.zip
-        echo "Checking for important files in server folder:"
-        ls -la server/server.js
-        ls -la server/routes/clients-azure.js
-    
-    - name: 'Deploy to Azure Web App'
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: 'capersports-api-bwbecxggbkbnd2ep'
-        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: deploy.zip
-    
-    - name: 'Clean up'
-      run: rm -f deploy.zip
-    
-    - name: 'Wait for deployment'
-      run: sleep 30
-    
-    - name: 'Test deployment'
-      run: |
-        echo "Testing health endpoint..."
-        curl -s https://capersports-api-bwbecxggbkbnd2ep.centralindia-01.azurewebsites.net/api/health || echo "Health check response received"
-        
-        echo "Testing clients endpoint..."
-        curl -s https://capersports-api-bwbecxggbkbnd2ep.centralindia-01.azurewebsites.net/api/clients || echo "Clients endpoint response received"
-        
-        echo "✅ Deployment completed!"
+    permissions:
+      contents: read
 
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+
+      - name: Install root dependencies
+        run: npm install
+
+      - name: Install and build client
+        run: |
+          cd client
+          npm install
+          npm run build
+          cd ..
+        env:
+          CI: true
+
+      - name: Install server dependencies
+        run: |
+          cd server
+          npm install --production
+          cd ..
+
+      - name: Prepare deployment package
+        run: |
+          # Create clean deployment directory
+          mkdir -p deploy
+          
+          # Copy server files (excluding node_modules, we'll install on Azure)
+          rsync -av --exclude='node_modules' --exclude='.env' server/ deploy/
+          
+          # Copy built client files to server public directory
+          mkdir -p deploy/public
+          cp -r client/build/* deploy/public/
+          
+          # Create package.json at root for Azure
+          cat > deploy/package.json << 'EOF'
+{
+  "name": "capersports-api",
+  "version": "1.0.0",
+  "description": "Caper Sports API Server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": "20.x",
+    "npm": "10.x"
+  },
+  "dependencies": {
+    "@azure/cosmos": "^3.17.3",
+    "@azure/storage-blob": "^12.15.0",
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^1.40.0",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.10.0",
+    "express-validator": "^7.0.1",
+    "helmet": "^7.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.5.0",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.4",
+    "stripe": "^13.5.0",
+    "uuid": "^9.0.0"
+  }
+}
+EOF
+          
+          # Create web.config for Azure App Service
+          cat > deploy/web.config << 'EOF'
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <system.webServer>
+    <handlers>
+      <add name="iisnode" path="server.js" verb="*" modules="iisnode"/>
+    </handlers>
+    <rewrite>
+      <rules>
+        <rule name="NodeInspector" patternSyntax="ECMAScript" stopProcessing="true">
+          <match url="^server.js\/debug[\/]?" />
+        </rule>
+        <rule name="StaticContent">
+          <action type="Rewrite" url="public{REQUEST_URI}"/>
+        </rule>
+        <rule name="DynamicContent">
+          <conditions>
+            <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="True"/>
+          </conditions>
+          <action type="Rewrite" url="server.js"/>
+        </rule>
+      </rules>
+    </rewrite>
+    <httpErrors existingResponse="PassThrough" />
+    <iisnode node_env="%NODE_ENV%" 
+             nodeProcessCountPerApplication="1" 
+             loggingEnabled="true" 
+             logDirectory="iisnode" />
+  </system.webServer>
+</configuration>
+EOF
+          
+          # List deployment structure for debugging
+          echo "Deployment structure:"
+          ls -la deploy/
+          echo "Checking for server.js:"
+          ls -la deploy/server.js || echo "server.js not found!"
+          
+      - name: Zip deployment package
+        run: |
+          cd deploy
+          zip -r ../deployment.zip . -x "*.git*"
+          cd ..
+          echo "Deployment package size:"
+          ls -lh deployment.zip
+          
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-app
+          path: deployment.zip
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: node-app
+      
+      - name: Unzip deployment package
+        run: |
+          mkdir -p package
+          unzip deployment.zip -d package
+          echo "Package contents:"
+          ls -la package/
+          
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_8B18964CB13D4CC1AEDB0B122ED7F4BD }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_88DA22FE4AD3433C8EF6FC67FB297F06 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_5F0B14B753FA4C809D0A0958C713F958 }}
+
+      - name: 'Deploy to Azure Web App'
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'capersports-api'
+          slot-name: 'Production'
+          package: package
+          
+      - name: 'Check deployment status'
+        run: |
+          echo "Deployment completed. Checking application health..."
+          sleep 30
+          curl -f https://capersports-api.azurewebsites.net/api/health || echo "Health check failed - app may still be starting"
