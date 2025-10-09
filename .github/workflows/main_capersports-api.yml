@@ -1,0 +1,94 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy Node.js app to Azure Web App - capersports-api (DISABLED)
+
+# DISABLED: Using azure-deploy.yml instead
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+
+      - name: Install server dependencies
+        run: |
+          cd server
+          npm install --production
+          cd ..
+
+      - name: Prepare deployment package
+        run: |
+          # Create clean deployment directory
+          mkdir -p deploy
+          
+          # Copy server files (excluding node_modules, we'll install on Azure)
+          rsync -av --exclude='node_modules' --exclude='.env' --exclude='.env.*' --exclude='*.log' --exclude='deploy*.zip' server/ deploy/
+          
+          # List deployment structure for debugging
+          echo "Deployment structure:"
+          ls -la deploy/
+          echo "Checking for server.js:"
+          ls -la deploy/server.js || echo "server.js not found!"
+          echo "Checking for routes/clients-azure.js:"
+          ls -la deploy/routes/clients-azure.js || echo "clients-azure.js not found!"
+          
+      - name: Zip deployment package
+        run: |
+          cd deploy
+          zip -r ../deployment.zip . -x "*.git*"
+          cd ..
+          echo "Deployment package size:"
+          ls -lh deployment.zip
+          
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-app
+          path: deployment.zip
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: node-app
+      
+      - name: Unzip deployment package
+        run: |
+          mkdir -p package
+          unzip deployment.zip -d package
+          echo "Package contents:"
+          ls -la package/
+          
+      - name: 'Deploy to Azure Web App'
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'capersports-api-bwbecxggbkbnd2ep'
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: package
+          
+      - name: 'Check deployment status'
+        run: |
+          echo "Deployment completed. Checking application health..."
+          sleep 30
+          curl -f https://capersports-api-bwbecxggbkbnd2ep.centralindia-01.azurewebsites.net/api/health || echo "Health check failed - app may still be starting"
+          echo "Checking clients endpoint..."
+          curl -f https://capersports-api-bwbecxggbkbnd2ep.centralindia-01.azurewebsites.net/api/clients || echo "Clients endpoint check failed"
+
