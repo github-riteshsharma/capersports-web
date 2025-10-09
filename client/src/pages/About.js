@@ -519,38 +519,63 @@ const About = () => {
               </p>
             </motion.div>
 
-            <div className="relative">
-              {/* Timeline Line */}
-              <div className="absolute left-1/2 transform -translate-x-1/2 w-1 bg-gradient-to-b from-red-500 to-blue-600 h-full rounded-full" />
+            <div className="relative pl-8 md:pl-0">
+              {/* Timeline Line - Perfectly aligned */}
+              <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 md:w-1 bg-gradient-to-b from-red-500 to-blue-600 rounded-full -z-0" />
               
-              <div className="space-y-16">
+              <div className="space-y-6 md:space-y-16">
                 {timeline.map((item, index) => (
                   <motion.div
                     key={index}
-                    className={`flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}
+                    className={`relative ${index % 2 === 0 ? 'md:flex md:flex-row' : 'md:flex md:flex-row-reverse'} md:items-center`}
                     variants={fadeInUp}
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1 }}
                   >
-                    <div className={`w-1/2 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8 text-left'}`}>
+                    {/* Mobile Layout: Simplified vertical timeline */}
+                    <div className="flex md:hidden items-start relative">
+                      {/* Timeline Node - Mobile (perfectly centered on line) */}
+                      <div className="absolute -left-8 top-0 z-10 flex items-center justify-center w-8 h-8 bg-gradient-to-r from-red-500 to-blue-600 rounded-full shadow-lg">
+                        <item.icon className="w-4 h-4 text-white" />
+                      </div>
+                      
+                      {/* Content - Mobile */}
+                      <div className="w-full">
+                        <motion.div
+                          className="bg-white rounded-2xl p-4 sm:p-5 shadow-lg border border-gray-200"
+                          whileHover={{ scale: 1.01, y: -2 }}
+                        >
+                          <div className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-red-600 to-blue-600 bg-clip-text text-transparent mb-1">
+                            {item.year}
+                          </div>
+                          <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">{item.title}</h3>
+                          <p className="text-sm sm:text-base text-gray-600 leading-relaxed">{item.description}</p>
+                        </motion.div>
+                      </div>
+                    </div>
+
+                    {/* Desktop Layout: Alternating Cards */}
+                    <div className={`hidden md:block md:w-1/2 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8 text-left'}`}>
                       <motion.div
-                        className="bg-white rounded-3xl p-8 shadow-lg border border-gray-200"
+                        className="bg-white rounded-3xl p-6 lg:p-8 shadow-lg border border-gray-200 hover:border-red-200 transition-all duration-300"
                         whileHover={{ scale: 1.02, y: -5 }}
                       >
-                        <div className="text-3xl font-bold text-gray-900 mb-2">{item.year}</div>
-                        <h3 className="text-xl font-bold text-gray-800 mb-3">{item.title}</h3>
-                        <p className="text-gray-600 leading-relaxed">{item.description}</p>
+                        <div className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-red-600 to-blue-600 bg-clip-text text-transparent mb-2">
+                          {item.year}
+                        </div>
+                        <h3 className="text-lg lg:text-xl font-bold text-gray-900 mb-3">{item.title}</h3>
+                        <p className="text-sm lg:text-base text-gray-600 leading-relaxed">{item.description}</p>
                       </motion.div>
                     </div>
                     
-                    {/* Timeline Node */}
-                    <div className="relative z-10 flex items-center justify-center w-16 h-16 bg-gradient-to-r from-red-500 to-blue-600 rounded-full shadow-lg">
-                      <item.icon className="w-8 h-8 text-white" />
+                    {/* Timeline Node - Desktop */}
+                    <div className="hidden md:flex relative z-10 items-center justify-center w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-r from-red-500 to-blue-600 rounded-full shadow-xl">
+                      <item.icon className="w-6 h-6 lg:w-8 lg:h-8 text-white" />
                     </div>
                     
-                    <div className="w-1/2" />
+                    <div className="hidden md:block md:w-1/2" />
                   </motion.div>
                 ))}
               </div>

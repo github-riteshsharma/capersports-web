@@ -24,104 +24,151 @@ router.get('/dashboard', async (req, res) => {
     const today = new Date();
     const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     const startOfYear = new Date(today.getFullYear(), 0, 1);
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
     // Get collections
     const productsCollection = await azureCosmosService.getCollection('products');
     const usersCollection = await azureCosmosService.getCollection('users');
     const ordersCollection = await azureCosmosService.getCollection('orders');
 
-    // Get total counts
-    const totalProducts = await productsCollection.countDocuments({ isActive: true });
-    const totalUsers = await usersCollection.countDocuments(); // Count all users including admins
-    const totalOrders = await ordersCollection.countDocuments();
-    
-    // Get monthly stats
-    const monthlyOrders = await ordersCollection.countDocuments({
-      createdAt: { $gte: startOfMonth }
-    });
-
-    const yearlyOrders = await ordersCollection.countDocuments({
-      createdAt: { $gte: startOfYear }
-    });
-
-    // Get monthly revenue
-    const monthlyRevenue = await ordersCollection.aggregate([
-      {
-        $match: {
-          createdAt: { $gte: startOfMonth },
-          status: { $in: ['delivered', 'completed', 'paid'] }
+    // OPTIMIZATION: Run all queries in parallel using Promise.all
+    const [
+      totalProducts,
+      totalUsers,
+      totalOrders,
+      monthlyOrders,
+      yearlyOrders,
+      monthlyRevenue,
+      yearlyRevenue,
+      recentOrders,
+      topProducts,
+      lowStockProducts,
+      monthlySales
+    ] = await Promise.all([
+      // Total counts
+      productsCollection.countDocuments({ isActive: true }),
+      usersCollection.countDocuments(),
+      ordersCollection.countDocuments(),
+      
+      // Monthly/Yearly stats
+      ordersCollection.countDocuments({ createdAt: { $gte: startOfMonth } }),
+      ordersCollection.countDocuments({ createdAt: { $gte: startOfYear } }),
+      
+      // Monthly revenue
+      ordersCollection.aggregate([
+        {
+          $match: {
+            createdAt: { $gte: startOfMonth },
+            status: { $in: ['delivered', 'completed', 'paid'] }
+          }
+        },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: '$totalAmount' }
+          }
         }
-      },
-      {
-        $group: {
-          _id: null,
-          total: { $sum: '$totalAmount' }
+      ]).toArray(),
+      
+      // Yearly revenue
+      ordersCollection.aggregate([
+        {
+          $match: {
+            createdAt: { $gte: startOfYear },
+            status: { $in: ['delivered', 'completed', 'paid'] }
+          }
+        },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: '$totalAmount' }
+          }
         }
-      }
-    ]).toArray();
-
-    // Get yearly revenue
-    const yearlyRevenue = await ordersCollection.aggregate([
-      {
-        $match: {
-          createdAt: { $gte: startOfYear },
-          status: { $in: ['delivered', 'completed', 'paid'] }
+      ]).toArray(),
+      
+      // Recent orders - with projection to limit fields
+      ordersCollection.find({}, {
+        projection: {
+          _id: 1,
+          user: 1,
+          totalAmount: 1,
+          status: 1,
+          createdAt: 1,
+          orderItems: { $slice: ['$orderItems', 3] } // Limit to first 3 items
         }
-      },
-      {
-        $group: {
-          _id: null,
-          total: { $sum: '$totalAmount' }
-        }
-      }
-    ]).toArray();
-
-    // Get recent orders
-    const recentOrders = await ordersCollection.find()
+      })
       .sort({ createdAt: -1 })
       .limit(5)
-      .toArray();
-
-    // Get top products
-    const topProducts = await productsCollection.find({ isActive: true })
+      .toArray(),
+      
+      // Top products - with projection
+      productsCollection.find(
+        { isActive: true },
+        {
+          projection: {
+            _id: 1,
+            name: 1,
+            price: 1,
+            images: { $slice: ['$images', 1] }, // Only first image
+            'ratings.average': 1,
+            'ratings.count': 1,
+            totalStock: 1,
+            category: 1
+          }
+        }
+      )
       .sort({ 'ratings.average': -1 })
       .limit(5)
-      .toArray();
-
-    // Get low stock products
-    const lowStockProducts = await productsCollection.find({
-      isActive: true,
-      totalStock: { $lt: 10 }
-    })
-    .sort({ totalStock: 1 })
-    .limit(10)
-    .toArray();
-
-    // Get monthly sales chart data (last 6 months)
-    const sixMonthsAgo = new Date();
-    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-
-    const monthlySales = await ordersCollection.aggregate([
-      {
-        $match: {
-          createdAt: { $gte: sixMonthsAgo },
-          status: { $in: ['delivered', 'completed', 'paid'] }
+      .toArray(),
+      
+      // Low stock products - with projection
+      productsCollection.find(
+        {
+          isActive: true,
+          totalStock: { $lt: 10 }
+        },
+        {
+          projection: {
+            _id: 1,
+            name: 1,
+            totalStock: 1,
+            images: { $slice: ['$images', 1] }, // Only first image
+            category: 1,
+            price: 1
+          }
         }
-      },
-      {
-        $group: {
-          _id: {
-            year: { $year: '$createdAt' },
-            month: { $month: '$createdAt' }
-          },
-          revenue: { $sum: '$totalAmount' },
-          orders: { $sum: 1 }
+      )
+      .sort({ totalStock: 1 })
+      .limit(10)
+      .toArray(),
+      
+      // Monthly sales chart
+      ordersCollection.aggregate([
+        {
+          $match: {
+            createdAt: { $gte: sixMonthsAgo },
+            status: { $in: ['delivered', 'completed', 'paid'] }
+          }
+        },
+        {
+          $group: {
+            _id: {
+              year: { $year: '$createdAt' },
+              month: { $month: '$createdAt' }
+            },
+            revenue: { $sum: '$totalAmount' },
+            orders: { $sum: 1 }
+          }
+        },
+        {
+          $sort: { '_id.year': 1, '_id.month': 1 }
+        },
+        {
+          $limit: 6 // Only last 6 months
         }
-      },
-      {
-        $sort: { '_id.year': 1, '_id.month': 1 }
-      }
-    ]).toArray();
+      ]).toArray()
+    ]);
 
     res.json({
       success: true,
@@ -136,7 +183,11 @@ router.get('/dashboard', async (req, res) => {
         recentOrders,
         topProducts,
         lowStockProducts,
-        monthlySales
+        monthlySales: monthlySales.map(item => ({
+          month: `${item._id.year}-${String(item._id.month).padStart(2, '0')}`,
+          revenue: item.revenue,
+          orders: item.orders
+        }))
       }
     });
 

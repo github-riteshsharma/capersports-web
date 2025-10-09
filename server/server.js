@@ -74,22 +74,39 @@ const corsOptions = {
     if (!origin) return callback(null, true);
     
     const allowedOrigins = [
-      process.env.FRONTEND_URL || 'http://localhost:3001',
+      'http://localhost:3001',
+      'http://localhost:3000',
+      'https://polite-hill-006e20e00.2.azurestaticapps.net', // Production frontend
+      process.env.FRONTEND_URL,
       process.env.CORS_ORIGIN
     ].filter(Boolean);
     
-    if (allowedOrigins.includes(origin)) {
+    // Check if origin matches any allowed origin
+    const isAllowed = allowedOrigins.some(allowedOrigin => {
+      if (allowedOrigin === origin) return true;
+      // Also allow subdomains of azurestaticapps.net
+      if (origin && origin.includes('.azurestaticapps.net')) return true;
+      return false;
+    });
+    
+    if (isAllowed) {
       callback(null, true);
     } else {
+      console.warn(`⚠️  CORS blocked origin: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range'],
+  maxAge: 86400 // 24 hours
 };
 
 app.use(cors(corsOptions));
+
+// Handle preflight requests
+app.options('*', cors(corsOptions));
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));

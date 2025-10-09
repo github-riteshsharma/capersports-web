@@ -385,6 +385,22 @@ test-data/
 mock-data/
 sample-data/
 
+# Temporary documentation files
+*_FIX*.md
+*_SUMMARY.md
+*_OPTIMIZATIONS.md
+*_READY.md
+DEPLOYMENT*.md
+CORS*.md
+DATABASE*.md
+TIMELINE*.md
+CLIENT_MANAGEMENT*.md
+
+# Deployment packages
+server/deploy*.zip
+server/*.zip
+deploy*.zip
+
 # ============================================================================
 # SECURITY & CREDENTIALS
 # ============================================================================

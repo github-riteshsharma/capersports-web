@@ -237,6 +237,10 @@ orderSchema.index({ orderNumber: 1 });
 orderSchema.index({ orderStatus: 1 });
 orderSchema.index({ paymentStatus: 1 });
 orderSchema.index({ createdAt: -1 });
+// Additional compound indexes for dashboard queries
+orderSchema.index({ createdAt: -1, orderStatus: 1 });
+orderSchema.index({ createdAt: -1, paymentStatus: 1 });
+orderSchema.index({ user: 1, orderStatus: 1, createdAt: -1 });
 
 // Virtual for order age in days
 orderSchema.virtual('orderAge').get(function() {

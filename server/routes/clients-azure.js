@@ -23,9 +23,11 @@ router.get('/', async (req, res) => {
       ];
     }
     
+    // OPTIMIZATION: Use lean() for faster queries and limit populated fields
     const clients = await Client.find(query)
       .sort({ createdAt: -1 })
-      .populate('createdBy', 'name email')
+      .populate('createdBy', 'firstName lastName email')
+      .lean()
       .maxTimeMS(5000); // 5 second timeout
     
     res.json(clients);
@@ -45,7 +47,9 @@ router.get('/', async (req, res) => {
 // Get single client by ID (public route)
 router.get('/:id', async (req, res) => {
   try {
-    const client = await Client.findById(req.params.id).populate('createdBy', 'name email');
+    const client = await Client.findById(req.params.id)
+      .populate('createdBy', 'firstName lastName email')
+      .lean();
     
     if (!client) {
       return res.status(404).json({ message: 'Client not found' });

@@ -40,9 +40,11 @@ const clientSchema = new mongoose.Schema(
   }
 );
 
-// Index for faster queries
+// Indexes for faster queries
 clientSchema.index({ status: 1 });
 clientSchema.index({ name: 1 });
+clientSchema.index({ status: 1, createdAt: -1 });
+clientSchema.index({ createdBy: 1, status: 1 });
 
 const Client = mongoose.model('Client', clientSchema);
 

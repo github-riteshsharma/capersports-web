@@ -117,16 +117,28 @@ router.get('/', async (req, res) => {
     const limit = parseInt(req.query.limit) || 12;
     const skip = (page - 1) * limit;
 
-    // Execute query
-    const products = await collection
-      .find(query)
-      .sort(sortOption)
-      .skip(skip)
-      .limit(limit)
-      .toArray();
+    // OPTIMIZATION: Use projection to limit fields returned (exclude reviews)
+    const projection = {
+      reviews: 0, // Exclude reviews array for list view
+      seoTitle: 0,
+      seoDescription: 0,
+      seoKeywords: 0,
+      careInstructions: 0,
+      barcode: 0,
+      dimensions: 0,
+      weight: 0
+    };
 
-    // Get total count for pagination
-    const total = await collection.countDocuments(query);
+    // OPTIMIZATION: Run query and count in parallel
+    const [products, total] = await Promise.all([
+      collection
+        .find(query, { projection })
+        .sort(sortOption)
+        .skip(skip)
+        .limit(limit)
+        .toArray(),
+      collection.countDocuments(query)
+    ]);
 
     res.json({
       success: true,

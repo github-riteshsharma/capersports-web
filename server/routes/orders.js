@@ -174,12 +174,16 @@ router.get('/', protect, async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const total = await Order.countDocuments({ user: req.user.id });
-    const orders = await Order.find({ user: req.user.id })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .populate('items.product', 'name images');
+    // OPTIMIZATION: Run count and find in parallel using Promise.all
+    const [total, orders] = await Promise.all([
+      Order.countDocuments({ user: req.user.id }),
+      Order.find({ user: req.user.id })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .populate('items.product', 'name images price')
+        .lean()
+    ]);
 
     res.json({
       success: true,
@@ -203,9 +207,11 @@ router.get('/', protect, async (req, res) => {
 // @access  Private
 router.get('/:id', protect, async (req, res) => {
   try {
+    // OPTIMIZATION: Use lean() for faster query
     const order = await Order.findById(req.params.id)
-      .populate('items.product', 'name images')
-      .populate('user', 'firstName lastName email');
+      .populate('items.product', 'name images price')
+      .populate('user', 'firstName lastName email')
+      .lean();
 
     if (!order) {
       return res.status(404).json({
