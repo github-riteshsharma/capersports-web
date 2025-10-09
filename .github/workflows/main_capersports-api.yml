@@ -12,6 +12,9 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     
     steps:
     - name: Checkout code
@@ -36,11 +39,17 @@ jobs:
         cd ..
         ls -lh deploy.zip
     
+    - name: Login to Azure
+      uses: azure/login@v2
+      with:
+        client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_8B18964CB13D4CC1AEDB0B122ED7F4BD }}
+        tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_88DA22FE4AD3433C8EF6FC67FB297F06 }}
+        subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_5F0B14B753FA4C809D0A0958C713F958 }}
+    
     - name: Deploy to Azure Web App
-      uses: azure/webapps-deploy@v2
+      uses: azure/webapps-deploy@v3
       with:
         app-name: 'capersports-api-bwbecxggbkbnd2ep'
-        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
         package: deploy.zip
     
     - name: Wait for deployment
