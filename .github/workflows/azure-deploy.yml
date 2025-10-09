@@ -7,8 +7,9 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: capersports-api
-  NODE_VERSION: '18.x'
+  AZURE_WEBAPP_NAME: capersports-api-bwbecxggbkbnd2ep
+  AZURE_WEBAPP_URL: https://capersports-api-bwbecxggbkbnd2ep.centralindia-01.azurewebsites.net
+  NODE_VERSION: '20.x'
 
 jobs:
   build-and-deploy:
@@ -61,13 +62,16 @@ jobs:
     - name: 'Test deployment health'
       run: |
         echo "Testing health endpoint..."
-        RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net/api/health)
+        RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.AZURE_WEBAPP_URL }}/api/health)
         echo "Health check returned: $RESPONSE"
         if [ "$RESPONSE" != "200" ]; then
           echo "Health check failed with status code: $RESPONSE"
           exit 1
         fi
         echo "✅ Deployment successful and healthy!"
+        
+        echo "Testing clients endpoint..."
+        curl -s ${{ env.AZURE_WEBAPP_URL }}/api/clients || echo "Clients check completed"
     
     - name: 'Notify on failure'
       if: failure()
