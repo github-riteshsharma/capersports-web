@@ -49,7 +49,7 @@ jobs:
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v3
       with:
-        app-name: 'capersports-api-bwbecxggbkbnd2ep'
+        app-name: 'capersports-api'
         package: deploy.zip
     
     - name: Wait for deployment
