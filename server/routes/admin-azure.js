@@ -95,7 +95,7 @@ router.get('/dashboard', async (req, res) => {
           totalAmount: 1,
           status: 1,
           createdAt: 1,
-          orderItems: { $slice: ['$orderItems', 3] } // Limit to first 3 items
+          orderItems: { $slice: 3 } // Limit to first 3 items
         }
       })
       .sort({ createdAt: -1 })
@@ -110,7 +110,7 @@ router.get('/dashboard', async (req, res) => {
             _id: 1,
             name: 1,
             price: 1,
-            images: { $slice: ['$images', 1] }, // Only first image
+            images: { $slice: 1 }, // Only first image
             'ratings.average': 1,
             'ratings.count': 1,
             totalStock: 1,
@@ -133,7 +133,7 @@ router.get('/dashboard', async (req, res) => {
             _id: 1,
             name: 1,
             totalStock: 1,
-            images: { $slice: ['$images', 1] }, // Only first image
+            images: { $slice: 1 }, // Only first image
             category: 1,
             price: 1
           }
