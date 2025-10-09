@@ -14,15 +14,15 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: 'Checkout code'
+    - name: Checkout code
       uses: actions/checkout@v4
     
-    - name: 'Set up Node.js'
+    - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '20.x'
     
-    - name: 'Create deployment package'
+    - name: Create deployment package
       run: |
         cd server
         zip -r ../deploy.zip . \
@@ -34,28 +34,20 @@ jobs:
           -x "*.zip" \
           -x ".DS_Store"
         cd ..
-        echo "Deployment package created:"
         ls -lh deploy.zip
     
-    - name: 'Deploy to Azure Web App'
+    - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
       with:
         app-name: 'capersports-api-bwbecxggbkbnd2ep'
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
         package: deploy.zip
     
-    - name: 'Clean up'
-      run: rm -f deploy.zip
-    
-    - name: 'Wait for deployment'
+    - name: Wait for deployment
       run: sleep 30
     
-    - name: 'Test deployment'
+    - name: Test deployment
       run: |
-        echo "Testing health endpoint..."
         curl -s https://capersports-api-bwbecxggbkbnd2ep.centralindia-01.azurewebsites.net/api/health
         echo ""
-        echo "Testing clients endpoint..."
         curl -s https://capersports-api-bwbecxggbkbnd2ep.centralindia-01.azurewebsites.net/api/clients
-        echo ""
-        echo "✅ Deployment completed!"
