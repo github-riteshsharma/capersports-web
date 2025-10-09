@@ -207,6 +207,19 @@ app.get('/api/debug', (req, res) => {
       AZURE_COSMOS_CONNECTION_STRING: process.env.AZURE_COSMOS_CONNECTION_STRING ? 'SET' : 'NOT SET',
       AZURE_STORAGE_CONNECTION_STRING: process.env.AZURE_STORAGE_CONNECTION_STRING ? 'SET' : 'NOT SET',
       AZURE_COSMOS_DATABASE_NAME: process.env.AZURE_COSMOS_DATABASE_NAME || 'NOT SET'
+    },
+    registeredRoutes: {
+      auth: '/api/auth',
+      products: '/api/products',
+      orders: '/api/orders',
+      users: '/api/users',
+      admin: '/api/admin',
+      invoices: '/api/admin/invoices',
+      clients: '/api/clients'
+    },
+    database: {
+      readyState: mongoose.connection.readyState,
+      readyStateText: ['disconnected', 'connected', 'connecting', 'disconnecting'][mongoose.connection.readyState] || 'unknown'
     }
   });
 });
