@@ -255,7 +255,7 @@ const Home = () => {
             <div className="w-full max-w-[90rem] mx-auto">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                 {/* Left Content */}
-                <motion.div
+            <motion.div
                   className="space-y-8"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -281,7 +281,7 @@ const Home = () => {
                       className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[1.05] text-gray-900 tracking-tight"
                     >
                       Premium
-                      <br />
+                  <br />
                       <span className="relative inline-block">
                         Athletic Gear
                         <motion.div
@@ -300,7 +300,7 @@ const Home = () => {
                     >
                       Custom designed athletic wear for teams and athletes who demand excellence in every stitch.
                     </motion.p>
-                  </div>
+              </div>
           
                   {/* CTA Buttons */}
                   <motion.div
@@ -309,17 +309,17 @@ const Home = () => {
                     transition={{ delay: 0.7, duration: 0.6 }}
                     className="flex flex-col sm:flex-row items-start gap-4 pt-4"
                   >
-                    <motion.button
+                <motion.button
                       className="group relative bg-gray-900 hover:bg-gray-800 text-white px-8 py-4 rounded-2xl font-semibold text-base transition-all duration-300 shadow-lg shadow-gray-900/10 hover:shadow-xl hover:shadow-gray-900/20"
                       whileHover={{ scale: 1.02, y: -2 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => navigate('/products')}
-                    >
+                  onClick={() => navigate('/products')}
+                >
                       <span className="flex items-center space-x-2">
                         <span>Explore Collection</span>
                         <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                       </span>
-                    </motion.button>
+                </motion.button>
 
                     <motion.button
                       onClick={() => navigate('/contact')}
@@ -349,12 +349,12 @@ const Home = () => {
                     <div>
                       <div className="text-3xl font-bold text-gray-900">10+</div>
                       <div className="text-sm text-gray-500">Years Experience</div>
-                    </div>
+              </div>
                   </motion.div>
-                </motion.div>
+            </motion.div>
             
                 {/* Right Side - Premium Design Like Apple/Nike */}
-                <motion.div
+            <motion.div
                   className="relative"
                   initial={{ opacity: 0, x: 60 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -411,22 +411,22 @@ const Home = () => {
                             src="/images/testimonials/famousPersonality1.jpg"
                             alt="Chris Gayle - Cricket Legend"
                             className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 hover:scale-105"
-                            onError={(e) => {
-                              e.target.style.display = 'none';
-                              const fallback = e.target.nextSibling;
-                              if (fallback) {
-                                fallback.style.display = 'flex';
-                              }
-                            }}
-                          />
-                          {/* Fallback */}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      const fallback = e.target.nextSibling;
+                      if (fallback) {
+                        fallback.style.display = 'flex';
+                      }
+                    }}
+                  />
+                  {/* Fallback */}
                           <div className="hidden absolute inset-0 w-full h-full bg-gradient-to-br from-red-500 to-blue-600 items-center justify-center">
-                            <div className="text-white text-center p-4">
+                    <div className="text-white text-center p-4">
                               <div className="text-4xl font-bold mb-4">CAPER SPORTS</div>
                               <div className="text-xl opacity-80">Premium Athletic Gear</div>
-                            </div>
-                          </div>
-
+                    </div>
+                  </div>
+                  
                           {/* Sophisticated Gradient Overlays */}
                           <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-white/10 pointer-events-none"></div>
                           <div className="absolute inset-0 bg-gradient-to-br from-red-600/5 via-transparent to-blue-600/5 pointer-events-none"></div>
@@ -443,7 +443,7 @@ const Home = () => {
                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                               </svg>
                               <span className="text-xs font-bold uppercase tracking-wider">Featured</span>
-                            </div>
+                  </div>
                           </motion.div>
 
                           {/* Main Info Badge - Glassmorphism */}
@@ -476,10 +476,10 @@ const Home = () => {
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-                            </div>
-                          </motion.div>
-                        </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
                       </div>
                     </motion.div>
                   </div>
@@ -490,13 +490,13 @@ const Home = () => {
 
           {/* Scroll Indicator - Minimalistic */}
           <motion.div
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20"
+            className="absolute bottom-0 left-1/2 -translate-x-1/2 z-20"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.5, duration: 1 }}
           >
             <motion.div
-              className="flex flex-col items-center space-y-2 text-gray-400 cursor-pointer"
+              className="flex flex-col items-center space-y-2 text-gray-400 cursor-pointer hover:text-gray-600 transition-colors duration-300"
               animate={{ y: [0, 8, 0] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               onClick={() => window.scrollBy({ top: window.innerHeight, behavior: 'smooth' })}
@@ -508,7 +508,7 @@ const Home = () => {
 
         </section>
             
-        {/* Featured Products Section */}
+        {/* Shop By Category Section */}
         <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-12 xl:px-16 2xl:px-20 w-full">
           <div className="max-w-[90rem] mx-auto">
             <motion.div
@@ -520,90 +520,246 @@ const Home = () => {
             >
             <div className="space-y-4 sm:space-y-6">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight px-4">
-                <span className="bg-gradient-to-r from-red-600 to-blue-600 bg-clip-text text-transparent">Featured Products</span>
+                  <span className="bg-gradient-to-r from-red-600 to-blue-600 bg-clip-text text-transparent">Shop By Category</span>
               </h2>
               <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto px-4">
-                Discover our handpicked selection of premium athletic wear from our championship collection. Each product represents excellence in performance and design.
+                  Explore our premium collection organized by category. Find exactly what you need for your athletic performance.
               </p>
             </div>
             </motion.div>
             
-            {loading ? (
-              <div className="flex justify-center items-center py-20">
-                <CaperSportsLoader size="lg" />
-              </div>
-            ) : (
-              <div className="relative px-4 md:px-16">
-                {/* Left Navigation Button - Outside carousel on LEFT */}
-                {featuredProducts.length > 4 && canScrollLeft && (
-                  <motion.button
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
-                    onClick={scrollLeft}
-                    className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-30 bg-gradient-to-br from-white via-white to-gray-50 hover:from-gray-50 hover:via-white hover:to-white backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.16)] rounded-full p-5 transition-all duration-500 hover:scale-110 border border-white/50 group items-center justify-center overflow-hidden"
-                    aria-label="Scroll left"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
-                    <FiChevronLeft className="w-7 h-7 text-gray-900 group-hover:text-red-600 transition-all duration-300 relative z-10" />
-                  </motion.button>
-                )}
-
-                {/* Right Navigation Button - Outside carousel on RIGHT */}
-                {featuredProducts.length > 4 && canScrollRight && (
-                  <motion.button
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    onClick={scrollRight}
-                    className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-30 bg-gradient-to-br from-white via-white to-gray-50 hover:from-gray-50 hover:via-white hover:to-white backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.16)] rounded-full p-5 transition-all duration-500 hover:scale-110 border border-white/50 group items-center justify-center overflow-hidden"
-                    aria-label="Scroll right"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
-                    <FiChevronRight className="w-7 h-7 text-gray-900 group-hover:text-red-600 transition-all duration-300 relative z-10" />
-                  </motion.button>
-                )}
-
-                {/* Carousel Scroll Container */}
-                <div
-                  ref={carouselRef}
-                  onScroll={checkScrollPosition}
-                  className="flex overflow-x-auto gap-6 scroll-smooth scrollbar-hide pb-4"
-                  style={{
-                    scrollSnapType: 'x proximity',
-                    WebkitOverflowScrolling: 'touch'
-                  }}
-                >
-                  {featuredProducts.map((product, index) => (
-                    <motion.div
-                      key={product._id}
-                      className="flex-shrink-0 w-[280px] sm:w-[300px] lg:w-[320px]"
-                      style={{ scrollSnapAlign: 'start' }}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: index * 0.1, duration: 0.5 }}
-                    >
-                      <ProductCard product={product} />
-                    </motion.div>
-                  ))}
-                </div>
-
-                {/* Scroll Progress Indicator */}
-                {featuredProducts.length > 4 && (
-                  <div className="flex justify-center mt-8 gap-2">
-                    {Array.from({ length: Math.ceil(featuredProducts.length / 4) }).map((_, index) => (
-                      <div
-                        key={index}
-                        className="h-1.5 rounded-full bg-gray-200 transition-all duration-300"
-                        style={{ width: index === 0 ? '32px' : '12px' }}
-                      />
-                    ))}
+            {/* Category Cards Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+              {/* Polo T-Shirt Category */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                onClick={() => navigate('/products?category=T-Shirts')}
+                className="group relative cursor-pointer"
+              >
+                <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100/50 backdrop-blur-sm">
+                  {/* Top Badge */}
+                  <div className="absolute top-4 left-4 z-10">
+                    <div className="bg-black/80 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
+                      Popular
+            </div>
                   </div>
-                )}
-              </div>
-            )}
-          
+
+                  {/* Image Container */}
+                  <div className="relative aspect-[4/5] overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50">
+                    <img
+                      src="/images/Banner-5.png"
+                      alt="Polo T-Shirt"
+                      className="w-full h-full object-contain object-center transition-all duration-700 group-hover:scale-105"
+                      onError={(e) => {
+                        e.target.src = "/images/placeholder-product.jpg";
+                      }}
+                    />
+                    
+                    {/* Gradient Overlays for depth */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent opacity-40"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-red-500/0 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                  </div>
+                  
+                  {/* Category Info - Cleaner Design */}
+                  <div className="p-5 bg-white/80 backdrop-blur-md">
+                    <div className="space-y-2">
+                      <h3 className="text-xl font-bold text-gray-900 tracking-tight">
+                        Polo T-Shirts
+                      </h3>
+                      <p className="text-gray-500 text-sm leading-relaxed">
+                        Premium sublimated designs
+                      </p>
+                    </div>
+                    
+                    {/* Shop Now Link */}
+                    <div className="mt-4 flex items-center justify-between">
+                      <span className="text-sm font-semibold text-gray-900 group-hover:text-red-600 transition-colors duration-300">
+                        Shop Now
+                      </span>
+                      <div className="w-8 h-8 rounded-full bg-gray-100 group-hover:bg-red-600 flex items-center justify-center transition-all duration-300">
+                        <FiArrowRight className="w-4 h-4 text-gray-600 group-hover:text-white group-hover:translate-x-0.5 transition-all duration-300" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Round Neck T-Shirt Category */}
+            <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                onClick={() => navigate('/products?category=T-Shirts')}
+                className="group relative cursor-pointer"
+              >
+                <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100/50 backdrop-blur-sm">
+                  {/* Top Badge */}
+                  <div className="absolute top-4 left-4 z-10">
+                    <div className="bg-black/80 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
+                      Trending
+                    </div>
+                  </div>
+
+                  {/* Image Container */}
+                  <div className="relative aspect-[4/5] overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50">
+                    <img
+                      src="/images/005.png"
+                      alt="Round Neck T-Shirt"
+                      className="w-full h-full object-cover object-center transition-all duration-700 group-hover:scale-105"
+                      onError={(e) => {
+                        e.target.src = "/images/placeholder-product.jpg";
+                      }}
+                    />
+                    
+                    {/* Gradient Overlays for depth */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent opacity-40"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-red-500/0 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                  </div>
+                  
+                  {/* Category Info - Cleaner Design */}
+                  <div className="p-5 bg-white/80 backdrop-blur-md">
+                    <div className="space-y-2">
+                      <h3 className="text-xl font-bold text-gray-900 tracking-tight">
+                        Round Neck T-Shirts
+                      </h3>
+                      <p className="text-gray-500 text-sm leading-relaxed">
+                        Classic everyday comfort
+                      </p>
+                    </div>
+                    
+                    {/* Shop Now Link */}
+                    <div className="mt-4 flex items-center justify-between">
+                      <span className="text-sm font-semibold text-gray-900 group-hover:text-red-600 transition-colors duration-300">
+                        Shop Now
+                      </span>
+                      <div className="w-8 h-8 rounded-full bg-gray-100 group-hover:bg-red-600 flex items-center justify-center transition-all duration-300">
+                        <FiArrowRight className="w-4 h-4 text-gray-600 group-hover:text-white group-hover:translate-x-0.5 transition-all duration-300" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </motion.div>
+
+              {/* Shorts Category */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                onClick={() => navigate('/products?category=Shorts')}
+                className="group relative cursor-pointer"
+              >
+                <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100/50 backdrop-blur-sm">
+                  {/* Top Badge */}
+                  <div className="absolute top-4 left-4 z-10">
+                    <div className="bg-black/80 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
+                      Best Seller
+          </div>
+                  </div>
+
+                  {/* Image Container */}
+                  <div className="relative aspect-[4/5] overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50">
+                    <img
+                      src="/shorts.png"
+                      alt="Athletic Shorts"
+                      className="w-full h-full object-cover object-center transition-all duration-700 group-hover:scale-105"
+                      onError={(e) => {
+                        e.target.src = "/images/placeholder-product.jpg";
+                      }}
+                    />
+                    
+                    {/* Gradient Overlays for depth */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent opacity-40"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-red-500/0 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                  </div>
+                  
+                  {/* Category Info - Cleaner Design */}
+                  <div className="p-5 bg-white/80 backdrop-blur-md">
+                    <div className="space-y-2">
+                      <h3 className="text-xl font-bold text-gray-900 tracking-tight">
+                        Athletic Shorts
+                      </h3>
+                      <p className="text-gray-500 text-sm leading-relaxed">
+                        Performance training wear
+                      </p>
+                    </div>
+                    
+                    {/* Shop Now Link */}
+                    <div className="mt-4 flex items-center justify-between">
+                      <span className="text-sm font-semibold text-gray-900 group-hover:text-red-600 transition-colors duration-300">
+                        Shop Now
+                      </span>
+                      <div className="w-8 h-8 rounded-full bg-gray-100 group-hover:bg-red-600 flex items-center justify-center transition-all duration-300">
+                        <FiArrowRight className="w-4 h-4 text-gray-600 group-hover:text-white group-hover:translate-x-0.5 transition-all duration-300" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Lower/Pants Category */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                onClick={() => navigate('/products?category=Pants')}
+                className="group relative cursor-pointer"
+              >
+                <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100/50 backdrop-blur-sm">
+                  {/* Top Badge */}
+                  <div className="absolute top-4 left-4 z-10">
+                    <div className="bg-black/80 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
+                      Essential
+                    </div>
+                  </div>
+
+                  {/* Image Container */}
+                  <div className="relative aspect-[4/5] overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50">
+                    <img
+                      src="/images/lower.png"
+                      alt="Athletic Lower"
+                      className="w-full h-full object-cover object-center transition-all duration-700 group-hover:scale-105"
+                      onError={(e) => {
+                        e.target.src = "/images/placeholder-product.jpg";
+                      }}
+                    />
+                    
+                    {/* Gradient Overlays for depth */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent opacity-40"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-red-500/0 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                  </div>
+                  
+                  {/* Category Info - Cleaner Design */}
+                  <div className="p-5 bg-white/80 backdrop-blur-md">
+                    <div className="space-y-2">
+                      <h3 className="text-xl font-bold text-gray-900 tracking-tight">
+                        Athletic Lower
+                      </h3>
+                      <p className="text-gray-500 text-sm leading-relaxed">
+                        Track pants & joggers
+                      </p>
+                    </div>
+                    
+                    {/* Shop Now Link */}
+                    <div className="mt-4 flex items-center justify-between">
+                      <span className="text-sm font-semibold text-gray-900 group-hover:text-red-600 transition-colors duration-300">
+                        Shop Now
+                      </span>
+                      <div className="w-8 h-8 rounded-full bg-gray-100 group-hover:bg-red-600 flex items-center justify-center transition-all duration-300">
+                        <FiArrowRight className="w-4 h-4 text-gray-600 group-hover:text-white group-hover:translate-x-0.5 transition-all duration-300" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* View All Products CTA */}
           <motion.div
             className="text-center mt-16"
             variants={fadeInUp}
@@ -641,9 +797,6 @@ const Home = () => {
             viewport={{ once: true }}
           >
             <div className="space-y-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-blue-600 rounded-3xl flex items-center justify-center mx-auto shadow-lg">
-                <span className="text-3xl">✨</span>
-              </div>
               <h2 className="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
                 <span className="bg-gradient-to-r from-red-600 to-blue-600 bg-clip-text text-transparent">Our Design Showcase</span>
               </h2>
@@ -982,7 +1135,7 @@ const Home = () => {
             </div>
 
             {/* Step Content Cards */}
-            <div className="relative h-96 overflow-hidden">
+            <div className="relative min-h-[400px] sm:min-h-[450px] lg:h-96">
               <AnimatePresence mode="wait">
                   <motion.div
                   key={activeStep}
@@ -990,40 +1143,40 @@ const Home = () => {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -300 }}
                   transition={{ duration: 0.4, ease: "easeInOut" }}
-                  className="absolute inset-0"
+                  className="lg:absolute lg:inset-0"
                 >
                   {/* Step 1: Application */}
                   {activeStep === 0 && (
-                    <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-3xl p-8 lg:p-12 h-full flex items-center">
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
-                        <div className="space-y-6">
-                          <div className="flex items-center space-x-4">
-                            <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
-                              <FiMessageCircle className="w-8 h-8 text-white" />
+                    <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-12 h-full flex items-center">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 w-full">
+                        <div className="space-y-4 sm:space-y-6">
+                          <div className="flex items-center space-x-3 sm:space-x-4">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
+                              <FiMessageCircle className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                             </div>
                             <div>
-                              <h3 className="text-3xl font-bold text-gray-900">Share Your Vision</h3>
-                              <p className="text-blue-600 font-medium">Step 1 of 4</p>
+                              <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Share Your Vision</h3>
+                              <p className="text-blue-600 font-medium text-sm sm:text-base">Step 1 of 4</p>
                             </div>
                           </div>
-                          <p className="text-lg text-gray-700 leading-relaxed">
+                          <p className="text-base sm:text-lg text-gray-700 leading-relaxed">
                             Send us your ideas, sketches, or design concepts through our contact form or WhatsApp. 
                             Our team is ready to transform your vision into reality.
                           </p>
-                          <div className="flex items-center space-x-4">
-                            <div className="flex items-center space-x-2 bg-white/70 rounded-full px-4 py-2">
-                              <FiCheck className="w-4 h-4 text-green-600" />
-                              <span className="text-sm font-medium text-gray-700">Free Consultation</span>
+                          <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+                            <div className="flex items-center space-x-2 bg-white/70 rounded-full px-3 sm:px-4 py-1.5 sm:py-2">
+                              <FiCheck className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
+                              <span className="text-xs sm:text-sm font-medium text-gray-700">Free Consultation</span>
                 </div>
-                            <div className="flex items-center space-x-2 bg-white/70 rounded-full px-4 py-2">
-                              <FiCheck className="w-4 h-4 text-green-600" />
-                              <span className="text-sm font-medium text-gray-700">24/7 Support</span>
+                            <div className="flex items-center space-x-2 bg-white/70 rounded-full px-3 sm:px-4 py-1.5 sm:py-2">
+                              <FiCheck className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
+                              <span className="text-xs sm:text-sm font-medium text-gray-700">24/7 Support</span>
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center justify-center">
-                          <div className="w-64 h-64 bg-gradient-to-br from-blue-400 to-blue-600 rounded-3xl flex items-center justify-center shadow-2xl">
-                            <FiMessageCircle className="w-24 h-24 text-white opacity-80" />
+                        <div className="hidden lg:flex items-center justify-center">
+                          <div className="w-48 h-48 xl:w-64 xl:h-64 bg-gradient-to-br from-blue-400 to-blue-600 rounded-3xl flex items-center justify-center shadow-2xl">
+                            <FiMessageCircle className="w-20 h-20 xl:w-24 xl:h-24 text-white opacity-80" />
                           </div>
                         </div>
                       </div>
@@ -1032,36 +1185,36 @@ const Home = () => {
 
                   {/* Step 2: Design */}
                   {activeStep === 1 && (
-                    <div className="bg-gradient-to-br from-purple-50 to-pink-100 rounded-3xl p-8 lg:p-12 h-full flex items-center">
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
-                        <div className="space-y-6">
-                          <div className="flex items-center space-x-4">
-                            <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg">
-                              <FiEdit className="w-8 h-8 text-white" />
+                    <div className="bg-gradient-to-br from-purple-50 to-pink-100 rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-12 h-full flex items-center">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 w-full">
+                        <div className="space-y-4 sm:space-y-6">
+                          <div className="flex items-center space-x-3 sm:space-x-4">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
+                              <FiEdit className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                             </div>
                             <div>
-                              <h3 className="text-3xl font-bold text-gray-900">Design Creation</h3>
-                              <p className="text-purple-600 font-medium">Step 2 of 4</p>
+                              <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Design Creation</h3>
+                              <p className="text-purple-600 font-medium text-sm sm:text-base">Step 2 of 4</p>
                             </div>
                           </div>
-                          <p className="text-lg text-gray-700 leading-relaxed">
+                          <p className="text-base sm:text-lg text-gray-700 leading-relaxed">
                             Our expert designers create a detailed preview of your custom gear. 
                             We'll refine every detail until it matches your perfect vision.
                           </p>
-                          <div className="flex items-center space-x-4">
-                            <div className="flex items-center space-x-2 bg-white/70 rounded-full px-4 py-2">
-                              <FiCheck className="w-4 h-4 text-green-600" />
-                              <span className="text-sm font-medium text-gray-700">3D Preview</span>
+                          <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+                            <div className="flex items-center space-x-2 bg-white/70 rounded-full px-3 sm:px-4 py-1.5 sm:py-2">
+                              <FiCheck className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
+                              <span className="text-xs sm:text-sm font-medium text-gray-700">3D Preview</span>
                             </div>
-                            <div className="flex items-center space-x-2 bg-white/70 rounded-full px-4 py-2">
-                              <FiCheck className="w-4 h-4 text-green-600" />
-                              <span className="text-sm font-medium text-gray-700">Unlimited Revisions</span>
+                            <div className="flex items-center space-x-2 bg-white/70 rounded-full px-3 sm:px-4 py-1.5 sm:py-2">
+                              <FiCheck className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
+                              <span className="text-xs sm:text-sm font-medium text-gray-700">Unlimited Revisions</span>
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center justify-center">
-                          <div className="w-64 h-64 bg-gradient-to-br from-purple-400 to-pink-600 rounded-3xl flex items-center justify-center shadow-2xl">
-                            <FiEdit className="w-24 h-24 text-white opacity-80" />
+                        <div className="hidden lg:flex items-center justify-center">
+                          <div className="w-48 h-48 xl:w-64 xl:h-64 bg-gradient-to-br from-purple-400 to-pink-600 rounded-3xl flex items-center justify-center shadow-2xl">
+                            <FiEdit className="w-20 h-20 xl:w-24 xl:h-24 text-white opacity-80" />
                           </div>
                         </div>
                       </div>
@@ -1070,36 +1223,36 @@ const Home = () => {
 
                   {/* Step 3: Production */}
                   {activeStep === 2 && (
-                    <div className="bg-gradient-to-br from-green-50 to-emerald-100 rounded-3xl p-8 lg:p-12 h-full flex items-center">
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
-                        <div className="space-y-6">
-                          <div className="flex items-center space-x-4">
-                            <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
-                              <FiSettings className="w-8 h-8 text-white" />
+                    <div className="bg-gradient-to-br from-green-50 to-emerald-100 rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-12 h-full flex items-center">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 w-full">
+                        <div className="space-y-4 sm:space-y-6">
+                          <div className="flex items-center space-x-3 sm:space-x-4">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
+                              <FiSettings className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                             </div>
                             <div>
-                              <h3 className="text-3xl font-bold text-gray-900">Premium Production</h3>
-                              <p className="text-green-600 font-medium">Step 3 of 4</p>
+                              <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Premium Production</h3>
+                              <p className="text-green-600 font-medium text-sm sm:text-base">Step 3 of 4</p>
                             </div>
                           </div>
-                          <p className="text-lg text-gray-700 leading-relaxed">
+                          <p className="text-base sm:text-lg text-gray-700 leading-relaxed">
                             Once approved, our skilled craftsmen begin manufacturing your order using 
                             premium materials and cutting-edge techniques.
                           </p>
-                          <div className="flex items-center space-x-4">
-                            <div className="flex items-center space-x-2 bg-white/70 rounded-full px-4 py-2">
-                              <FiCheck className="w-4 h-4 text-green-600" />
-                              <span className="text-sm font-medium text-gray-700">Quality Materials</span>
+                          <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+                            <div className="flex items-center space-x-2 bg-white/70 rounded-full px-3 sm:px-4 py-1.5 sm:py-2">
+                              <FiCheck className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
+                              <span className="text-xs sm:text-sm font-medium text-gray-700">Quality Materials</span>
                             </div>
-                            <div className="flex items-center space-x-2 bg-white/70 rounded-full px-4 py-2">
-                              <FiCheck className="w-4 h-4 text-green-600" />
-                              <span className="text-sm font-medium text-gray-700">10-15 Days</span>
+                            <div className="flex items-center space-x-2 bg-white/70 rounded-full px-3 sm:px-4 py-1.5 sm:py-2">
+                              <FiCheck className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
+                              <span className="text-xs sm:text-sm font-medium text-gray-700">10-15 Days</span>
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center justify-center">
-                          <div className="w-64 h-64 bg-gradient-to-br from-green-400 to-emerald-600 rounded-3xl flex items-center justify-center shadow-2xl">
-                            <FiSettings className="w-24 h-24 text-white opacity-80" />
+                        <div className="hidden lg:flex items-center justify-center">
+                          <div className="w-48 h-48 xl:w-64 xl:h-64 bg-gradient-to-br from-green-400 to-emerald-600 rounded-3xl flex items-center justify-center shadow-2xl">
+                            <FiSettings className="w-20 h-20 xl:w-24 xl:h-24 text-white opacity-80" />
                           </div>
                         </div>
                       </div>
@@ -1108,36 +1261,36 @@ const Home = () => {
 
                   {/* Step 4: Delivery */}
                   {activeStep === 3 && (
-                    <div className="bg-gradient-to-br from-orange-50 to-red-100 rounded-3xl p-8 lg:p-12 h-full flex items-center">
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
-                        <div className="space-y-6">
-                          <div className="flex items-center space-x-4">
-                            <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg">
-                              <FiTruck className="w-8 h-8 text-white" />
+                    <div className="bg-gradient-to-br from-orange-50 to-red-100 rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-12 h-full flex items-center">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 w-full">
+                        <div className="space-y-4 sm:space-y-6">
+                          <div className="flex items-center space-x-3 sm:space-x-4">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-orange-500 to-red-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
+                              <FiTruck className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                             </div>
                             <div>
-                              <h3 className="text-3xl font-bold text-gray-900">Fast Delivery</h3>
-                              <p className="text-orange-600 font-medium">Step 4 of 4</p>
+                              <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Fast Delivery</h3>
+                              <p className="text-orange-600 font-medium text-sm sm:text-base">Step 4 of 4</p>
                             </div>
                           </div>
-                          <p className="text-lg text-gray-700 leading-relaxed">
+                          <p className="text-base sm:text-lg text-gray-700 leading-relaxed">
                             Your custom athletic gear is carefully packaged and shipped directly to you. 
                             Track your order every step of the way.
                           </p>
-                          <div className="flex items-center space-x-4">
-                            <div className="flex items-center space-x-2 bg-white/70 rounded-full px-4 py-2">
-                              <FiCheck className="w-4 h-4 text-green-600" />
-                              <span className="text-sm font-medium text-gray-700">Global Shipping</span>
+                          <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+                            <div className="flex items-center space-x-2 bg-white/70 rounded-full px-3 sm:px-4 py-1.5 sm:py-2">
+                              <FiCheck className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
+                              <span className="text-xs sm:text-sm font-medium text-gray-700">Global Shipping</span>
                             </div>
-                            <div className="flex items-center space-x-2 bg-white/70 rounded-full px-4 py-2">
-                              <FiCheck className="w-4 h-4 text-green-600" />
-                              <span className="text-sm font-medium text-gray-700">Order Tracking</span>
+                            <div className="flex items-center space-x-2 bg-white/70 rounded-full px-3 sm:px-4 py-1.5 sm:py-2">
+                              <FiCheck className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
+                              <span className="text-xs sm:text-sm font-medium text-gray-700">Order Tracking</span>
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center justify-center">
-                          <div className="w-64 h-64 bg-gradient-to-br from-orange-400 to-red-600 rounded-3xl flex items-center justify-center shadow-2xl">
-                            <FiTruck className="w-24 h-24 text-white opacity-80" />
+                        <div className="hidden lg:flex items-center justify-center">
+                          <div className="w-48 h-48 xl:w-64 xl:h-64 bg-gradient-to-br from-orange-400 to-red-600 rounded-3xl flex items-center justify-center shadow-2xl">
+                            <FiTruck className="w-20 h-20 xl:w-24 xl:h-24 text-white opacity-80" />
                           </div>
                         </div>
                       </div>

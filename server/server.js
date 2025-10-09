@@ -43,6 +43,7 @@ const orderRoutes = require('./routes/orders');
 const userRoutes = require('./routes/users-azure'); // Use Azure-compatible user routes
 const adminRoutes = require('./routes/admin-azure'); // Use Azure-compatible admin routes
 const invoiceRoutes = require('./routes/invoices');
+const clientRoutes = require('./routes/clients');
 
 // Create Express app
 const app = express();
@@ -116,6 +117,16 @@ async function initializeDatabase() {
       
       await azureCosmosService.connect();
       
+      // IMPORTANT: Also connect Mongoose for model operations
+      console.log('🔵 Connecting Mongoose to Azure Cosmos DB...');
+      await mongoose.connect(process.env.AZURE_COSMOS_CONNECTION_STRING, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        serverSelectionTimeoutMS: 10000,
+        socketTimeoutMS: 45000,
+      });
+      console.log('✅ Mongoose connected to Azure Cosmos DB');
+      
       // Initialize blob storage containers
       console.log('🔵 Initializing Azure Blob Storage...');
       await azureBlobService.initializeContainers();
@@ -153,6 +164,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/admin/invoices', invoiceRoutes);
+app.use('/api/clients', clientRoutes);
 
 // Health check endpoint with detailed diagnostics
 app.get('/api/health', (req, res) => {

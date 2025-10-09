@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { FiFilter, FiSearch, FiX, FiChevronDown, FiStar, FiLoader, FiPackage, FiArrowRight } from 'react-icons/fi';
 
 // Components
@@ -27,6 +27,7 @@ const PremiumProductLoader = () => {
 const Products = () => {
   const dispatch = useDispatch();
   const { products, loading, error, categories, brands } = useSelector((state) => state.products);
+  const [searchParams] = useSearchParams();
   
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -40,6 +41,14 @@ const Products = () => {
   const [productsLoaded, setProductsLoaded] = useState(false);
   const [activeFilter, setActiveFilter] = useState('All');
   const [isDesktop, setIsDesktop] = useState(false);
+
+  // Read category from URL parameters on mount
+  useEffect(() => {
+    const categoryFromUrl = searchParams.get('category');
+    if (categoryFromUrl) {
+      setSelectedCategory(categoryFromUrl);
+    }
+  }, [searchParams]);
 
   // Detect if screen is desktop size
   useEffect(() => {
@@ -77,14 +86,26 @@ const Products = () => {
   // Subcategories based on main categories
   const getSubCategories = (category) => {
     const subCategoryMap = {
-      'T-Shirts': ['Basic Tees', 'Polo Shirts', 'Long Sleeve', 'Tank Tops', 'Graphic Tees'],
-      'Jerseys': ['Football', 'Basketball', 'Soccer', 'Baseball', 'Hockey', 'Custom'],
-      'Shorts': ['Athletic Shorts', 'Running Shorts', 'Basketball Shorts', 'Swim Shorts'],
-      'Pants': ['Track Pants', 'Joggers', 'Leggings', 'Compression Pants'],
-      'Hoodies': ['Pullover', 'Zip-up', 'Sleeveless', 'Cropped'],
-      'Jackets': ['Wind Breakers', 'Rain Jackets', 'Varsity', 'Bomber'],
-      'Shoes': ['Running', 'Basketball', 'Training', 'Casual', 'Cleats'],
-      'Accessories': ['Caps', 'Bags', 'Gloves', 'Socks', 'Belts', 'Watches']
+      'T-Shirts': ['Polo T-Shirt', 'Sublimation', 'Round Neck', 'Travel', 'Training'],
+      'Jackets': ['Wind Breakers', 'Rain Jackets', 'Varsity', 'Bomber', 'Custom'],
+      'Tracksuits': ['Full Set', 'Top Only', 'Bottom Only', 'Custom'],
+      'Hoodies': ['Pullover', 'Zip-up', 'Sleeveless', 'Custom'],
+      'Shorts': ['Athletic Shorts', 'Running Shorts', 'Basketball Shorts', 'Training Shorts'],
+      'Pants': ['Track Pants', 'Joggers', 'Training Pants', 'Custom'],
+      'Bags': ['Backpack', 'Duffle Bag', 'Gym Bag', 'Kit Bag', 'Custom'],
+      'Caps': ['Baggy Cap', 'Bucket Cap', 'Snapback', 'Custom'],
+      'Hats': ['Sun Hat', 'Beanie', 'Visor', 'Custom'],
+      'Cricket Whites': ['Full Kit', 'Shirt', 'Trousers', 'Sweater', 'Custom'],
+      'Cricket Coloured': ['Full Kit', 'Jersey', 'Trousers', 'Training Wear', 'Custom'],
+      'Basketball': ['Jersey', 'Shorts', 'Full Kit', 'Warm-up', 'Custom'],
+      'Football': ['Jersey', 'Shorts', 'Full Kit', 'Training Wear', 'Custom'],
+      'Marathon': ['Running Vest', 'Running Shorts', 'Full Kit', 'Training Wear', 'Custom'],
+      'Gathering': ['T-Shirts', 'Polo Shirts', 'Hoodies', 'Caps', 'Custom'],
+      'Officials': ['Shirt', 'Trousers', 'Full Kit', 'Accessories', 'Custom'],
+      'Accessories': ['Gloves', 'Socks', 'Belts', 'Watches', 'Custom'],
+      'Sportswear': ['Training Wear', 'Competition Wear', 'Casual Wear', 'Custom'],
+      'Athleisure': ['Casual', 'Street Style', 'Lounge Wear', 'Custom'],
+      'Swimwear': ['Swimsuit', 'Trunks', 'Rash Guard', 'Custom']
     };
     return subCategoryMap[category] || [];
   };

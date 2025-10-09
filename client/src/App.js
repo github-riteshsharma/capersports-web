@@ -26,6 +26,7 @@ import Wishlist from './pages/Wishlist';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import SizeGuide from './pages/SizeGuide';
+import Clients from './pages/Clients';
 import NotFound from './pages/NotFound';
 
 // Admin Pages
@@ -118,6 +119,7 @@ function App() {
               <Route path="/products/:id" element={<ProductDetail />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/clients" element={<Clients />} />
               <Route path="/size-guide" element={<SizeGuide />} />
               
               {/* Auth Routes */}

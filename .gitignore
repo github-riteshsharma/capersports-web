@@ -101,7 +101,6 @@ dist
 
 # Gatsby files
 .cache/
-public
 
 # Storybook build outputs
 .out
@@ -426,6 +425,18 @@ db-config.json
 # Performance monitoring
 newrelic_agent.log
 newrelic.js
+
+# ============================================================================
+# IMAGES & MEDIA FILES
+# ============================================================================
+# Exclude all image files from version control
+
+# Image directories
+client/public/uploads/**/*
+server/uploads/**/*
+uploads/**/*
+
+# Exclude specific image folders but keep placeholder
 
 # ============================================================================
 # END OF .GITIGNORE
