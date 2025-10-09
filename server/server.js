@@ -183,6 +183,25 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/admin/invoices', invoiceRoutes);
 app.use('/api/clients', clientRoutes);
 
+// Debug endpoint to verify routes are loaded
+app.get('/api/routes-check', (req, res) => {
+  res.json({
+    message: 'Routes loaded successfully',
+    timestamp: new Date().toISOString(),
+    server: 'server.js (Azure-compatible)',
+    routes: {
+      auth: !!authRoutes,
+      products: !!productRoutes,
+      orders: !!orderRoutes,
+      users: !!userRoutes,
+      admin: !!adminRoutes,
+      invoices: !!invoiceRoutes,
+      clients: !!clientRoutes,
+      clientsRouteType: clientRoutes ? 'clients-azure' : 'unknown'
+    }
+  });
+});
+
 // Health check endpoint with detailed diagnostics
 app.get('/api/health', (req, res) => {
   res.status(200).json({
