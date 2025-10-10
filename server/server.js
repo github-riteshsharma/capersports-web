@@ -43,7 +43,26 @@ const orderRoutes = require('./routes/orders');
 const userRoutes = require('./routes/users-azure'); // Use Azure-compatible user routes
 const adminRoutes = require('./routes/admin-azure'); // Use Azure-compatible admin routes
 const invoiceRoutes = require('./routes/invoices');
-const clientRoutes = require('./routes/clients-azure'); // Use Azure-compatible clients routes
+
+// Try to load clients route with error handling
+let clientRoutes;
+try {
+  clientRoutes = require('./routes/clients-azure'); // Use Azure-compatible clients routes
+  console.log('✅ clients-azure.js loaded successfully');
+} catch (error) {
+  console.error('❌ ERROR loading clients-azure.js:', error.message);
+  console.error('Stack trace:', error.stack);
+  // Create a dummy route to prevent server crash
+  const express = require('express');
+  clientRoutes = express.Router();
+  clientRoutes.get('/', (req, res) => {
+    res.status(500).json({
+      error: 'Clients route failed to load',
+      message: error.message,
+      stack: error.stack
+    });
+  });
+}
 
 // Create Express app
 const app = express();
