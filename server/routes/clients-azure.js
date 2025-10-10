@@ -3,8 +3,20 @@ const router = express.Router();
 const Client = require('../models/Client');
 const { protect } = require('../middleware/auth-azure'); // Use Azure auth middleware
 
+// TEMPORARY TEST ENDPOINT - Remove after fixing
+router.get('/test', (req, res) => {
+  res.json({
+    message: 'CLIENTS ROUTE IS WORKING!',
+    timestamp: new Date().toISOString(),
+    file: 'clients-azure.js'
+  });
+});
+
 // Get all clients (public route)
 router.get('/', async (req, res) => {
+  // TEMPORARY DEBUG - Remove after fixing
+  console.log('🔥 CLIENTS ROUTE HIT!', new Date().toISOString());
+  
   try {
     const { status, search } = req.query;
     
