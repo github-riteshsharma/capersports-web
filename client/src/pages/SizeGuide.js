@@ -60,56 +60,25 @@ const SizeGuide = () => {
                 </p>
               </div>
 
-              {/* T-Shirt Diagram */}
-              <div className="flex justify-center mb-8">
-                <div className="bg-gray-50 rounded-2xl p-6 max-w-2xl">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                    {/* Front View */}
-                    <div className="text-center">
-                      <h3 className="font-semibold text-gray-800 mb-4">Front View</h3>
-                      <div className="relative">
-                        <svg viewBox="0 0 200 240" className="w-32 h-40 mx-auto">
-                          {/* T-shirt outline */}
-                          <path d="M40 60 L40 40 L60 40 L60 20 L140 20 L140 40 L160 40 L160 60 L180 80 L180 220 L20 220 L20 80 Z" 
-                                fill="none" stroke="#374151" strokeWidth="2"/>
-                          {/* Collar */}
-                          <path d="M60 40 L80 40 L80 50 L120 50 L120 40 L140 40" 
-                                fill="none" stroke="#374151" strokeWidth="2"/>
-                          {/* Chest measurement line */}
-                          <ellipse cx="100" cy="120" rx="50" ry="15" 
-                                  fill="none" stroke="#ef4444" strokeWidth="2" strokeDasharray="5,5"/>
-                          {/* Shoulder line */}
-                          <line x1="40" y1="45" x2="160" y2="45" stroke="#ef4444" strokeWidth="2" strokeDasharray="5,5"/>
-                          {/* Sleeve length */}
-                          <line x1="20" y1="60" x2="20" y2="100" stroke="#ef4444" strokeWidth="2" strokeDasharray="5,5"/>
-                        </svg>
-                        <div className="mt-2 space-y-1 text-xs text-red-600 font-semibold">
-                          <div>SHOULDER</div>
-                          <div>CHEST</div>
-                          <div>SLEEVE LENGTH</div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Back View */}
-                    <div className="text-center">
-                      <h3 className="font-semibold text-gray-800 mb-4">Back View</h3>
-                      <div className="relative">
-                        <svg viewBox="0 0 200 240" className="w-32 h-40 mx-auto">
-                          {/* T-shirt outline */}
-                          <path d="M40 60 L40 40 L60 40 L60 20 L140 20 L140 40 L160 40 L160 60 L180 80 L180 220 L20 220 L20 80 Z" 
-                                fill="none" stroke="#374151" strokeWidth="2"/>
-                          {/* Length measurement */}
-                          <line x1="170" y1="20" x2="170" y2="220" stroke="#ef4444" strokeWidth="2" strokeDasharray="5,5"/>
-                          {/* Armhole */}
-                          <path d="M40 60 Q50 70 60 60" fill="none" stroke="#ef4444" strokeWidth="2" strokeDasharray="5,5"/>
-                        </svg>
-                        <div className="mt-2 space-y-1 text-xs text-red-600 font-semibold">
-                          <div>LENGTH</div>
-                          <div>ARMHOLE</div>
-                        </div>
-                      </div>
-                    </div>
+              {/* Measurement Guide Photo */}
+              <div className="mb-8">
+                <h3 className="text-xl font-semibold text-gray-900 mb-4 text-center">Measurement Guide</h3>
+                <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 border border-gray-200 max-w-4xl mx-auto">
+                  <img
+                    src="/images/size-photo.png"
+                    alt="How to measure your size"
+                    className="w-full h-auto rounded-xl shadow-lg"
+                    onError={(e) => {
+                      console.error('Size guide image failed to load');
+                      e.target.style.display = 'none';
+                      const fallback = e.target.nextSibling;
+                      if (fallback && fallback.classList) {
+                        fallback.style.display = 'block';
+                      }
+                    }}
+                  />
+                  <div className="hidden">
+                    <p className="text-center text-gray-600 text-sm">Measurement guide image not available</p>
                   </div>
                 </div>
               </div>

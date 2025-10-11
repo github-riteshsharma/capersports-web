@@ -382,7 +382,7 @@ router.post('/:id/reviews', async (req, res) => {
       });
     }
 
-    // Create review object
+    // Create review object (without adminResponse - let frontend handle it)
     const review = {
       _id: new ObjectId(),
       user: user._id,

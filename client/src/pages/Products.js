@@ -41,6 +41,7 @@ const Products = () => {
   const [productsLoaded, setProductsLoaded] = useState(false);
   const [activeFilter, setActiveFilter] = useState('All');
   const [isDesktop, setIsDesktop] = useState(false);
+  const [isInitialMount, setIsInitialMount] = useState(true);
 
   // Read category from URL parameters on mount
   useEffect(() => {
@@ -129,47 +130,50 @@ const Products = () => {
       } catch (error) {
         console.error('Failed to load initial data:', error);
       } finally {
-      setInitialLoading(false);
+        setInitialLoading(false);
+        // Mark initial mount as complete after a short delay
+        setTimeout(() => setIsInitialMount(false), 100);
       }
     };
     
     loadInitialData();
   }, [dispatch]);
 
-  // Optimized filter effect with debouncing
+  // Optimized filter effect with debouncing - only run when filters actually change
   useEffect(() => {
-    if (initialLoading) return;
+    // Skip if initial loading or if this is the initial mount
+    if (initialLoading || isInitialMount) return;
     
     const timeoutId = setTimeout(() => {
-    const filters = {
-      search: searchQuery,
-      category: selectedCategory,
+      const filters = {
+        search: searchQuery,
+        category: selectedCategory,
         subCategory: selectedSubCategory,
         size: selectedSize,
         color: selectedColor,
-      minPrice: priceRange[0],
-      maxPrice: priceRange[1],
-      sortBy: sortBy,
-    };
+        minPrice: priceRange[0],
+        maxPrice: priceRange[1],
+        sortBy: sortBy,
+      };
 
-    // Apply active filter tab logic
-    if (activeFilter === 'Men') {
-      filters.gender = 'Men';
-    } else if (activeFilter === 'Women') {
-      filters.gender = 'Women';
-    } else if (activeFilter === 'New Arrivals') {
-      // For new arrivals, we'll sort by newest and limit to recent products
-      filters.sortBy = 'createdAt';
-      const weekAgo = new Date();
-      weekAgo.setDate(weekAgo.getDate() - 30); // 30 days for more results
-      filters.createdAfter = weekAgo.toISOString();
-    }
-    
-    dispatch(getProducts(filters));
+      // Apply active filter tab logic
+      if (activeFilter === 'Men') {
+        filters.gender = 'Men';
+      } else if (activeFilter === 'Women') {
+        filters.gender = 'Women';
+      } else if (activeFilter === 'New Arrivals') {
+        // For new arrivals, we'll sort by newest and limit to recent products
+        filters.sortBy = 'createdAt';
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 30); // 30 days for more results
+        filters.createdAfter = weekAgo.toISOString();
+      }
+      
+      dispatch(getProducts(filters));
     }, 300); // Debounce API calls
 
     return () => clearTimeout(timeoutId);
-  }, [dispatch, searchQuery, selectedCategory, selectedSubCategory, selectedSize, selectedColor, priceRange, sortBy, activeFilter, initialLoading]);
+  }, [dispatch, searchQuery, selectedCategory, selectedSubCategory, selectedSize, selectedColor, priceRange, sortBy, activeFilter, initialLoading, isInitialMount]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -349,7 +353,7 @@ const Products = () => {
           </AnimatePresence>
 
           {/* Apple-Style Main Layout */}
-          <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+          <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 lg:h-[calc(100vh-12rem)]">
             {/* Apple-Style Filter Sidebar - Always visible on desktop, drawer on mobile */}
             <AnimatePresence>
               {(showFilters || isDesktop) && (
@@ -358,7 +362,7 @@ const Products = () => {
                   animate={{ x: 0, opacity: 1 }}
                   exit={{ x: isDesktop ? 0 : -320, opacity: isDesktop ? 1 : 0 }}
                   transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                  className="fixed left-0 top-0 bottom-0 lg:relative lg:top-auto lg:bottom-auto z-50 lg:z-auto w-80 lg:w-72 xl:w-80 flex-shrink-0 bg-white lg:rounded-3xl shadow-2xl lg:shadow-lg border-r lg:border border-gray-200 overflow-y-auto lg:sticky lg:top-24 max-h-screen lg:max-h-[calc(100vh-6rem)] custom-scrollbar"
+                  className="fixed left-0 top-0 bottom-0 lg:relative lg:top-auto lg:bottom-auto z-50 lg:z-auto w-80 lg:w-72 xl:w-80 flex-shrink-0 bg-white lg:rounded-3xl shadow-2xl lg:shadow-lg border-r lg:border border-gray-200 overflow-y-auto lg:h-full custom-scrollbar"
                 >
                   {/* Apple-Style Header */}
                   <div className="sticky top-0 bg-white z-10 px-6 py-5 border-b border-gray-100">
@@ -596,7 +600,7 @@ const Products = () => {
             </AnimatePresence>
 
             {/* Products Content - Apple-Style Centered */}
-            <div className="flex-1 min-w-0 max-w-[1400px] mx-auto w-full">
+            <div className="flex-1 min-w-0 max-w-[1400px] mx-auto w-full lg:overflow-y-auto lg:h-full custom-scrollbar lg:pr-2">
               {loading ? (
                 /* Loading Skeleton Grid */
                 <ProductGridSkeleton count={12} />

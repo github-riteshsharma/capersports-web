@@ -31,6 +31,7 @@ const initialState = {
     featuredProducts: null,
     categories: null,
     brands: null,
+    productDetails: {}, // Cache for individual product details by ID
     lastFetch: null,
     cacheExpiry: 5 * 60 * 1000, // 5 minutes
   },
@@ -74,10 +75,31 @@ export const getFeaturedProducts = createAsyncThunk(
 
 export const getProductById = createAsyncThunk(
   'products/getProductById',
-  async (id, { rejectWithValue }) => {
+  async (id, { rejectWithValue, getState }) => {
     try {
+      const state = getState();
+      const { products, cache, currentProduct } = state.products;
+      const currentTime = Date.now();
+      
+      // Check if we're already displaying this product
+      if (currentProduct && currentProduct._id === id) {
+        return { product: currentProduct };
+      }
+      
+      // Check if product is in the products list (from Products page)
+      const cachedProduct = products.find(p => p._id === id);
+      if (cachedProduct) {
+        // We have basic product info, but fetch full details for reviews
+        // Only use cache if we recently fetched it
+        const productCache = cache.productDetails[id];
+        if (productCache && (currentTime - productCache.timestamp) < cache.cacheExpiry) {
+          return { product: productCache.data };
+        }
+      }
+      
+      // Fetch from API
       const response = await productService.getProductById(id);
-      return response.data;
+      return { product: response.data.product, fromAPI: true };
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch product');
     }
@@ -166,6 +188,8 @@ const productSlice = createSlice({
     },
     clearCurrentProduct: (state) => {
       state.currentProduct = null;
+      // Also clear product detail cache to force refetch with fresh data
+      state.cache.productDetails = {};
     },
     setFilters: (state, action) => {
       state.filters = { ...state.filters, ...action.payload };
@@ -234,6 +258,13 @@ const productSlice = createSlice({
       .addCase(getProductById.fulfilled, (state, action) => {
         state.loading = false;
         state.currentProduct = action.payload.product;
+        // Cache the product details if it was fetched from API
+        if (action.payload.fromAPI && action.payload.product) {
+          state.cache.productDetails[action.payload.product._id] = {
+            data: action.payload.product,
+            timestamp: Date.now()
+          };
+        }
         state.error = null;
       })
       .addCase(getProductById.rejected, (state, action) => {

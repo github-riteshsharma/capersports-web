@@ -329,14 +329,13 @@ router.post('/:id/reviews', protect, [
       });
     }
 
-    // Add review
+    // Add review (without adminResponse - let frontend handle it)
     const review = {
       user: req.user.id,
       rating,
       comment,
       title,
       createdAt: new Date(),
-      adminResponse: `Thank you for your ${rating}-star review! We truly appreciate you taking the time to share your experience with this product. Your feedback helps us continue to deliver quality athletic wear that meets our customers' expectations. If you have any questions or concerns, please don't hesitate to reach out to our customer service team. - Caper Sports Team 🏃‍♂️`,
     };
 
     product.reviews.push(review);
@@ -356,13 +355,16 @@ router.post('/:id/reviews', protect, [
     
     await product.save();
 
-    // Populate the new review
+    // Populate the new review with user data
     await product.populate('reviews.user', 'firstName lastName avatar');
+
+    // Get the newly added review
+    const newReview = product.reviews[product.reviews.length - 1];
 
     res.status(201).json({
       success: true,
       message: 'Review added successfully',
-      review: product.reviews[product.reviews.length - 1],
+      review: newReview,
     });
   } catch (error) {
     console.error('Add review error:', error);
