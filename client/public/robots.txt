@@ -1,0 +1,25 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://capersports.com/sitemap.xml
+
+# Disallow admin and private pages
+User-agent: *
+Disallow: /admin
+Disallow: /checkout
+Disallow: /cart
+Disallow: /profile
+Disallow: /settings
+
+# Allow search engines to crawl products and public pages
+User-agent: Googlebot
+Allow: /products
+Allow: /about
+Allow: /contact
+Allow: /clients
+
+# Crawl delay for polite bots
+Crawl-delay: 1
+
